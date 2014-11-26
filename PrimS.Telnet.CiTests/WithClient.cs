@@ -1,0 +1,141 @@
+﻿using System;
+using System.Linq;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using FluentAssertions;
+using System.Threading.Tasks;
+using System.Text.RegularExpressions;
+
+namespace PrimS.Telnet.CiTests
+{
+  [TestClass]
+  public class WithClient
+  {
+    private const int TimeoutMs = 500;
+
+    [TestMethod]
+    public void ShouldConnect()
+    {
+      using (TelnetServer server = new TelnetServer())
+      {
+        using (Client client = new Client(server.IPAddress.ToString(), server.Port, new System.Threading.CancellationToken()))
+        {
+          client.IsConnected.Should().Be(true);
+        }
+      }
+    }
+
+    [TestMethod, Timeout(2000)]
+    public async Task ShouldTerminateWithASemiColon()
+    {
+      using (TelnetServer server = new TelnetServer())
+      {
+        using (Client client = new Client(server.IPAddress.ToString(), server.Port, new System.Threading.CancellationToken()))
+        {
+          client.IsConnected.Should().Be(true);
+          string s = await client.TerminatedReadAsync(":", TimeSpan.FromMilliseconds(TimeoutMs));
+          s.Should().EndWith(":");
+        }
+      }
+    }
+
+    [TestMethod, Timeout(2000)]
+    public async Task ShouldBePromptingForAccount()
+    {
+      using (TelnetServer server = new TelnetServer())
+      {
+        using (Client client = new Client(server.IPAddress.ToString(), server.Port, new System.Threading.CancellationToken()))
+        {
+          client.IsConnected.Should().Be(true);
+          string s = await client.TerminatedReadAsync("Account:", TimeSpan.FromMilliseconds(TimeoutMs));
+          s.Should().Contain("Account:");
+        }
+      }
+    }
+
+    [TestMethod, Timeout(2000)]
+    public async Task ShouldBePromptingForPassword()
+    {
+      using (TelnetServer server = new TelnetServer())
+      {
+        using (Client client = new Client(server.IPAddress.ToString(), server.Port, new System.Threading.CancellationToken()))
+        {
+          client.IsConnected.Should().Be(true);
+          string s = await client.TerminatedReadAsync("Account:", TimeSpan.FromMilliseconds(TimeoutMs));
+          s.Should().Contain("Account:");
+          client.WriteLine("username");
+          s = await client.TerminatedReadAsync("Password:", TimeSpan.FromMilliseconds(TimeoutMs));
+        }
+      }
+    }
+
+    [TestMethod, Timeout(3000)]
+    public async Task ShouldPromptForInput()
+    {
+      using (TelnetServer server = new TelnetServer())
+      {
+        using (Client client = new Client(server.IPAddress.ToString(), server.Port, new System.Threading.CancellationToken()))
+        {
+          client.IsConnected.Should().Be(true);
+          string s = await client.TerminatedReadAsync("Account:", TimeSpan.FromMilliseconds(TimeoutMs));
+          client.WriteLine("username");
+          s = await client.TerminatedReadAsync("Password:", TimeSpan.FromMilliseconds(TimeoutMs));
+          client.WriteLine("password");
+          s = await client.TerminatedReadAsync(">", TimeSpan.FromMilliseconds(TimeoutMs));
+        }
+      }
+    }
+
+    [TestMethod, Timeout(5000)]
+    public async Task ShouldRespondWithWan2Info()
+    {
+      using (TelnetServer server = new TelnetServer())
+      {
+        using (Client client = new Client(server.IPAddress.ToString(), server.Port, new System.Threading.CancellationToken()))
+        {
+          client.IsConnected.Should().Be(true);
+          (await client.TryLoginAsync("username", "password", 1500)).Should().Be(true);
+          client.WriteLine("show statistic wan2");
+          string s = await client.TerminatedReadAsync(">", TimeSpan.FromMilliseconds(TimeoutMs));
+          s.Should().Contain(">");
+          s.Should().Contain("WAN2");
+        }
+      }
+    }
+
+    [TestMethod, Timeout(3000)]
+    public async Task ShouldLogin()
+    {
+      using (TelnetServer server = new TelnetServer())
+      {
+        using (Client client = new Client(server.IPAddress.ToString(), server.Port, new System.Threading.CancellationToken()))
+        {
+          client.IsConnected.Should().Be(true);
+          (await client.TryLoginAsync("username", "password", TimeoutMs)).Should().Be(true);
+        }
+      }
+    }
+
+    [TestMethod]
+    public async Task ReadmeExample()
+    {
+      using (TelnetServer server = new TelnetServer())
+      {
+        using (Client client = new Client(server.IPAddress.ToString(), server.Port, new System.Threading.CancellationToken()))
+        {
+          client.IsConnected.Should().Be(true);
+          (await client.TryLoginAsync("username", "password", TimeoutMs)).Should().Be(true);
+          client.WriteLine("show statistic wan2");
+          string s = await client.TerminatedReadAsync(">", TimeSpan.FromMilliseconds(TimeoutMs));
+          s.Should().Contain(">");
+          s.Should().Contain("WAN2");
+          System.Text.RegularExpressions.Regex regEx = new System.Text.RegularExpressions.Regex("(?!WAN2 total TX: )([0-9.]*)(?! GB ,RX: )([0-9.]*)(?= GB)");
+          regEx.IsMatch(s).Should().Be(true);
+          MatchCollection matches = regEx.Matches(s);
+          decimal tx = decimal.Parse(matches[0].Value);
+          decimal rx = decimal.Parse(matches[1].Value);
+          (tx + rx).Should().BeLessThan(50);
+        }
+      }
+    }
+  }
+}
