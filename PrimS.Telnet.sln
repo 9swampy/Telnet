@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrimS.Telnet.CiTests", "Pri
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrimS.Telnet.40", "PrimS.Telnet.40\PrimS.Telnet.40.csproj", "{E99132BB-F35D-44FB-885C-CCB4AEC1CF34}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrimS.Telnet.40.CiTests", "Telnet.40.CiTests\PrimS.Telnet.40.CiTests.csproj", "{C06628AF-EC29-42D9-A445-8F32FC949C11}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrimS.Telnet.40.CiTests", "PrimS.Telnet.40.CiTests\PrimS.Telnet.40.CiTests.csproj", "{C06628AF-EC29-42D9-A445-8F32FC949C11}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
