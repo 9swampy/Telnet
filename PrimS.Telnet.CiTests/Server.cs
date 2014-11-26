@@ -17,8 +17,8 @@ namespace PrimS.Telnet.CiTest
     {
       this.IsListening = true;
 
-      IPHostEntry ipHostInfo = Dns.Resolve(Dns.GetHostName());
-      this.IPAddress = ipHostInfo.AddressList[0];
+      IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
+      this.IPAddress = ipHostInfo.AddressList.First(o => o.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork);
       this.Port = 11000;
 
       t = new System.Threading.Thread(new System.Threading.ThreadStart(this.SpinListen));

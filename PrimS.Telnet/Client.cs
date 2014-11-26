@@ -36,7 +36,6 @@ namespace PrimS.Telnet
       token.Register(() => this.internalCancellation.Cancel());
     }
 
-
     /// <summary>
     /// Tries to login asynchronously.
     /// </summary>
@@ -70,16 +69,14 @@ namespace PrimS.Telnet
       return (await this.TerminatedReadAsync(terminator, TimeSpan.FromMilliseconds(loginTimeOutMs), 1)).TrimEnd().EndsWith(terminator);
     }
 
-
     /// <summary>
     /// Writes the line to the server.
     /// </summary>
     /// <param name="command">The command.</param>
-    public void WriteLine(string command)
+    public async void WriteLine(string command)
     {
-      this.Write(string.Format("{0}\n", command));
+      await this.Write(string.Format("{0}\n", command));
     }
-
 
     /// <summary>
     /// Writes the specified command to the server.
@@ -92,7 +89,7 @@ namespace PrimS.Telnet
       {
         await this.sendRateLimit.WaitAsync(this.internalCancellation.Token);
         byte[] buf = System.Text.ASCIIEncoding.ASCII.GetBytes(command.Replace("\0xFF", "\0xFF\0xFF"));
-        this.tcpSocket.GetStream().WriteAsync(buf, 0, buf.Length, this.internalCancellation.Token);
+        await this.tcpSocket.GetStream().WriteAsync(buf, 0, buf.Length, this.internalCancellation.Token);
         this.sendRateLimit.Release();
       }
     }
@@ -105,7 +102,6 @@ namespace PrimS.Telnet
     {
       return await this.ReadAsync(TimeSpan.FromMilliseconds(DefaultTimeOutMs));
     }
-
 
     /// <summary>
     /// Reads asynchronously from the stream.
@@ -133,7 +129,6 @@ namespace PrimS.Telnet
       return sb.ToString();
     }
 
-
     /// <summary>
     /// Reads asynchronously from the stream, terminating as soon as the <see cref="terminator"/> is located.
     /// </summary>
@@ -154,7 +149,6 @@ namespace PrimS.Telnet
     {
       return await this.TerminatedReadAsync(terminator, timeout, 1);
     }
-
 
     /// <summary>
     /// Reads asynchronously from the stream, terminating as soon as the <see cref="terminator"/> is located.
@@ -198,7 +192,6 @@ namespace PrimS.Telnet
         return this.tcpSocket.Available > 0;
       }
     }
-
 
     /// <summary>
     /// Gets a value indicating whether this instance is connected.
@@ -271,7 +264,6 @@ namespace PrimS.Telnet
       return false;
     }
 
-
     /// <summary>
     /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
     /// </summary>
@@ -279,7 +271,7 @@ namespace PrimS.Telnet
     {
       try
       {
-        Dispose(true);
+        this.Dispose(true);
         GC.SuppressFinalize(this);
       }
       catch (Exception)
