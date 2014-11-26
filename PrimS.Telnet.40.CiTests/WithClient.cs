@@ -1,9 +1,8 @@
-﻿using System;
+﻿using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using FluentAssertions;
-using System.Threading.Tasks;
+using System;
 
-namespace PrimS.Telnet.CiTest
+namespace PrimS.Telnet.CiTests
 {
   [TestClass]
   public class WithClient

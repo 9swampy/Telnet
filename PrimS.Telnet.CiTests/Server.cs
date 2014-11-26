@@ -1,4 +1,4 @@
-﻿namespace PrimS.Telnet.CiTest
+﻿namespace PrimS.Telnet.CiTests
 {
   using System;
   using System.Linq;
@@ -84,6 +84,7 @@
           }
 
           System.Diagnostics.Debug.Print("Account entered, respond with Password: prompt");
+          Console.WriteLine("Account entered, respond with Password: prompt");
           handler.Send(Encoding.ASCII.GetBytes("Password:"));
 
           // Wait for username
@@ -96,13 +97,14 @@
             if (data == "password\n")
             {
               System.Diagnostics.Debug.Print("Password response received");
+              Console.WriteLine("Password response received");
               break;
             }
           }
 
           System.Diagnostics.Debug.Print("Password entered, respond with Command> prompt");
-
-          handler.Send(Encoding.ASCII.GetBytes("Command>"));
+          Console.WriteLine("Password entered, respond with Command> prompt");
+          handler.Send(Encoding.ASCII.GetBytes("Command >"));
 
           // Wait for username
           data = string.Empty;

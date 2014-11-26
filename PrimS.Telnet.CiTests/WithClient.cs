@@ -3,7 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using FluentAssertions;
 using System.Threading.Tasks;
 
-namespace PrimS.Telnet.CiTest
+namespace PrimS.Telnet.CiTests
 {
   [TestClass]
   public class WithClient
