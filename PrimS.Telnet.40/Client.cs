@@ -4,7 +4,6 @@ namespace PrimS.Telnet
   using System.Net.Sockets;
   using System.Text;
   using System.Threading;
-  using System.Threading.Tasks;
 
   //Referencing https://support.microsoft.com/kb/231866?wa=wsignin1.0 and http://www.codeproject.com/Articles/19071/Quick-tool-A-minimalistic-Telnet-library got me started
 
@@ -43,18 +42,18 @@ namespace PrimS.Telnet
     /// <param name="password">The password.</param>
     /// <param name="loginTimeOutMs">The login time out ms.</param>
     /// <returns>True if successful.</returns>
-    public async Task<bool> TryLoginAsync(string username, string password, int loginTimeOutMs)
+    public bool TryLogin(string username, string password, int loginTimeOutMs)
     {
       try
       {
-        if (await this.IsTerminatedWith(loginTimeOutMs, ":"))
+        if (this.IsTerminatedWith(loginTimeOutMs, ":"))
         {
           this.WriteLine(username);
-          if (await this.IsTerminatedWith(loginTimeOutMs, ":"))
+          if (this.IsTerminatedWith(loginTimeOutMs, ":"))
           {
             this.WriteLine(password);
           }
-          return await this.IsTerminatedWith(loginTimeOutMs, ">");
+          return this.IsTerminatedWith(loginTimeOutMs, ">");
         }
       }
       catch (Exception)
@@ -64,18 +63,18 @@ namespace PrimS.Telnet
       return false;
     }
 
-    private async Task<bool> IsTerminatedWith(int loginTimeOutMs, string terminator)
+    private bool IsTerminatedWith(int loginTimeOutMs, string terminator)
     {
-      return (await this.TerminatedReadAsync(terminator, TimeSpan.FromMilliseconds(loginTimeOutMs), 1)).TrimEnd().EndsWith(terminator);
+      return (this.TerminatedRead(terminator, TimeSpan.FromMilliseconds(loginTimeOutMs), 1)).TrimEnd().EndsWith(terminator);
     }
 
     /// <summary>
     /// Writes the line to the server.
     /// </summary>
     /// <param name="command">The command.</param>
-    public async void WriteLine(string command)
+    public void WriteLine(string command)
     {
-      await this.Write(string.Format("{0}\n", command));
+      this.Write(string.Format("{0}\n", command));
     }
 
     /// <summary>
@@ -83,13 +82,13 @@ namespace PrimS.Telnet
     /// </summary>
     /// <param name="command">The command.</param>
     /// <returns></returns>
-    public async Task Write(string command)
+    public void Write(string command)
     {
       if (this.tcpSocket.Connected && !this.internalCancellation.Token.IsCancellationRequested)
       {
-        await this.sendRateLimit.WaitAsync(this.internalCancellation.Token);
+        this.sendRateLimit.Wait(this.internalCancellation.Token);
         byte[] buf = System.Text.ASCIIEncoding.ASCII.GetBytes(command.Replace("\0xFF", "\0xFF\0xFF"));
-        await this.tcpSocket.GetStream().WriteAsync(buf, 0, buf.Length, this.internalCancellation.Token);
+        this.tcpSocket.GetStream().Write(buf, 0, buf.Length);
         this.sendRateLimit.Release();
       }
     }
@@ -98,9 +97,9 @@ namespace PrimS.Telnet
     /// Reads asynchronously from the stream.
     /// </summary>
     /// <returns>Any content retrieved.</returns>
-    public async Task<string> ReadAsync()
+    public string Read()
     {
-      return await this.ReadAsync(TimeSpan.FromMilliseconds(DefaultTimeOutMs));
+      return this.Read(TimeSpan.FromMilliseconds(DefaultTimeOutMs));
     }
 
     /// <summary>
@@ -108,7 +107,7 @@ namespace PrimS.Telnet
     /// </summary>
     /// <param name="timeout">The timeout.</param>
     /// <returns></returns>
-    public async Task<string> ReadAsync(TimeSpan timeout)
+    public string Read(TimeSpan timeout)
     {
       DateTime endInitialTimeout = DateTime.Now.Add(timeout);
       if (!this.tcpSocket.Connected || this.internalCancellation.Token.IsCancellationRequested)
@@ -125,7 +124,7 @@ namespace PrimS.Telnet
           rollingTimeout = ExtendRollingTimeout(timeout);
         }
       }
-      while (!this.internalCancellation.Token.IsCancellationRequested && (this.IsResponsePending || IsWaitForInitialResponse(endInitialTimeout, sb) || await IsWaitForIncrementalResponse(rollingTimeout)));
+      while (!this.internalCancellation.Token.IsCancellationRequested && (this.IsResponsePending || IsWaitForInitialResponse(endInitialTimeout, sb) || IsWaitForIncrementalResponse(rollingTimeout)));
       return sb.ToString();
     }
 
@@ -134,9 +133,9 @@ namespace PrimS.Telnet
     /// </summary>
     /// <param name="terminator">The terminator.</param>
     /// <returns></returns>
-    public async Task<string> TerminatedReadAsync(string terminator)
+    public string TerminatedRead(string terminator)
     {
-      return await this.TerminatedReadAsync(terminator, TimeSpan.FromMilliseconds(DefaultTimeOutMs));
+      return this.TerminatedRead(terminator, TimeSpan.FromMilliseconds(DefaultTimeOutMs));
     }
 
     /// <summary>
@@ -145,9 +144,9 @@ namespace PrimS.Telnet
     /// <param name="terminator">The terminator.</param>
     /// <param name="timeout">The timeout.</param>
     /// <returns></returns>
-    public async Task<string> TerminatedReadAsync(string terminator, TimeSpan timeout)
+    public string TerminatedRead(string terminator, TimeSpan timeout)
     {
-      return await this.TerminatedReadAsync(terminator, timeout, 1);
+      return this.TerminatedRead(terminator, timeout, 1);
     }
 
     /// <summary>
@@ -157,13 +156,13 @@ namespace PrimS.Telnet
     /// <param name="timeout">The maximum time to wait.</param>
     /// <param name="millisecondSpin">The millisecond spin between each read from the stream.</param>
     /// <returns></returns>
-    public async Task<string> TerminatedReadAsync(string terminator, TimeSpan timeout, int millisecondSpin)
+    public string TerminatedRead(string terminator, TimeSpan timeout, int millisecondSpin)
     {
       DateTime endTimeout = DateTime.Now.Add(timeout);
       string s = string.Empty;
       while (!s.TrimEnd().EndsWith(terminator) && endTimeout >= DateTime.Now)
       {
-        s += await this.ReadAsync(TimeSpan.FromMilliseconds(1));
+        s += this.Read(TimeSpan.FromMilliseconds(1));
       }
       return s;
     }
@@ -173,10 +172,11 @@ namespace PrimS.Telnet
       return DateTime.Now.Add(TimeSpan.FromMilliseconds(timeout.TotalMilliseconds / 100));
     }
 
-    private static async Task<bool> IsWaitForIncrementalResponse(DateTime rollingTimeout)
+    private static bool IsWaitForIncrementalResponse(DateTime rollingTimeout)
     {
       bool result = DateTime.Now < rollingTimeout;
-      await Task.Delay(1);
+      
+      System.Threading.Thread.Sleep(1);
       return result;
     }
 

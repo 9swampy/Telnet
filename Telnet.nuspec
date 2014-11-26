@@ -12,7 +12,7 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>A minimal Telnet client library implementation.</description>
     <releaseNotes>
-      Initial release.
+      Adds a synchronous Net.4.0 target
     </releaseNotes>
     <copyright>Copyright (c) 9swampy, Telnet contributors</copyright>
     <tags>Telnet</tags>
@@ -21,5 +21,7 @@
     <file src="License.txt" target="content" />
     <file src="PrimS.Telnet\Bin\Release\PrimS.Telnet.dll" target="lib\net45" />
     <file src="PrimS.Telnet\Bin\Release\PrimS.Telnet.xml" target="lib\net45" />
+	<file src="PrimS.Telnet.40\Bin\Release\PrimS.Telnet.dll" target="lib\net40" />
+    <file src="PrimS.Telnet.40\Bin\Release\PrimS.Telnet.xml" target="lib\net40" />
   </files>
 </package>

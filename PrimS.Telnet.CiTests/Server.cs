@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Sockets;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace PrimS.Telnet.CiTest
+﻿namespace PrimS.Telnet.CiTest
 {
+  using System;
+  using System.Linq;
+  using System.Net;
+  using System.Net.Sockets;
+  using System.Text;
+  
   public class TelnetServer : System.Net.Sockets.Socket
   {
     private readonly System.Threading.Thread t;
@@ -17,8 +15,8 @@ namespace PrimS.Telnet.CiTest
     {
       this.IsListening = true;
 
-      IPHostEntry ipHostInfo = Dns.Resolve(Dns.GetHostName());
-      this.IPAddress = ipHostInfo.AddressList[0];
+      IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
+      this.IPAddress = ipHostInfo.AddressList.First(o => o.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork);
       this.Port = 11000;
 
       t = new System.Threading.Thread(new System.Threading.ThreadStart(this.SpinListen));
