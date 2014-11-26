@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>Telnet</id>
+    <version>0.1.0-beta</version>
+    <title>Telnet</title>
+    <authors>Telnet contributors</authors>
+    <owners>9swampy</owners>
+    <licenseUrl>https://github.com/9swampy/Telnet/blob/License.txt</licenseUrl>
+    <projectUrl>https://github.com/9swampy/Telnet/</projectUrl>
+    <iconUrl>https://raw.githubusercontent.com/9swampy/SelectedItemsSynchronizer/SelectedItemsSynchronizer/Psync128.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>A minimal Telnet client library implementation.</description>
+    <releaseNotes>
+      Initial release.
+    </releaseNotes>
+    <copyright>Copyright (c) 9swampy, Telnet contributors</copyright>
+    <tags>Telnet</tags>
+  </metadata>
+  <files>
+    <file src="License.txt" target="content" />
+    <file src="PrimS.Telnet\Bin\Release\PrimS.Telnet.dll" target="lib\net45" />
+    <file src="PrimS.Telnet\Bin\Release\PrimS.Telnet.xml" target="lib\net45" />
+  </files>
+</package>
