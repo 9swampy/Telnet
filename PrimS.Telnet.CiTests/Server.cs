@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Sockets;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace PrimS.Telnet.CiTest
+﻿namespace PrimS.Telnet.CiTest
 {
+  using System;
+  using System.Linq;
+  using System.Net;
+  using System.Net.Sockets;
+  using System.Text;
+  
   public class TelnetServer : System.Net.Sockets.Socket
   {
     private readonly System.Threading.Thread t;

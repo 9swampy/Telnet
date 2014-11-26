@@ -7,6 +7,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrimS.Telnet", "PrimS.Telne
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrimS.Telnet.CiTests", "PrimS.Telnet.CiTests\PrimS.Telnet.CiTests.csproj", "{A6FFDD66-624F-421B-B402-B6F02071CC10}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrimS.Telnet.40", "PrimS.Telnet.40\PrimS.Telnet.40.csproj", "{E99132BB-F35D-44FB-885C-CCB4AEC1CF34}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrimS.Telnet.40.CiTests", "Telnet.40.CiTests\PrimS.Telnet.40.CiTests.csproj", "{C06628AF-EC29-42D9-A445-8F32FC949C11}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +25,14 @@ Global
 		{A6FFDD66-624F-421B-B402-B6F02071CC10}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A6FFDD66-624F-421B-B402-B6F02071CC10}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A6FFDD66-624F-421B-B402-B6F02071CC10}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E99132BB-F35D-44FB-885C-CCB4AEC1CF34}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E99132BB-F35D-44FB-885C-CCB4AEC1CF34}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E99132BB-F35D-44FB-885C-CCB4AEC1CF34}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E99132BB-F35D-44FB-885C-CCB4AEC1CF34}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C06628AF-EC29-42D9-A445-8F32FC949C11}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C06628AF-EC29-42D9-A445-8F32FC949C11}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C06628AF-EC29-42D9-A445-8F32FC949C11}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C06628AF-EC29-42D9-A445-8F32FC949C11}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
