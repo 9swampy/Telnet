@@ -24,7 +24,7 @@ Usage:
           string s = await client.TerminatedReadAsync(">", TimeSpan.FromMilliseconds(TimeoutMs));
           s.Should().Contain(">");
           s.Should().Contain("WAN2");
-          System.Text.RegularExpressions.Regex regEx = new System.Text.RegularExpressions.Regex("(?!WAN2 total TX: )([0-9.]*)(?! GB ,RX: )([0-9.]*)(?= GB)");
+          Regex regEx = new Regex("(?!WAN2 total TX: )([0-9.]*)(?! GB ,RX: )([0-9.]*)(?= GB)");
           regEx.IsMatch(s).Should().Be(true);
           MatchCollection matches = regEx.Matches(s);
           decimal tx = decimal.Parse(matches[0].Value);
