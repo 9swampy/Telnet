@@ -8,7 +8,7 @@
     <owners>9swampy</owners>
     <licenseUrl>https://github.com/9swampy/Telnet/blob/master/License.txt</licenseUrl>
     <projectUrl>https://github.com/9swampy/Telnet/</projectUrl>
-    <iconUrl>https://raw.githubusercontent.com/9swampy/SelectedItemsBindingDemo/SelectedItemsSynchronizer/Psync128.png</iconUrl>
+	<iconUrl>https://raw.githubusercontent.com/9swampy/Telnet/master/Ptelnet128x600.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>A minimal C# 4.0/4.5 Telnet client library implementation, just enough to replicate manual command and response parsing.</description>
     <releaseNotes>
