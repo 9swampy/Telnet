@@ -10,9 +10,9 @@
     <projectUrl>https://github.com/9swampy/Telnet/</projectUrl>
     <iconUrl>https://raw.githubusercontent.com/9swampy/SelectedItemsBindingDemo/SelectedItemsSynchronizer/Psync128.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>A minimal Telnet client library implementation.</description>
+    <description>A minimal C# 4.0/4.5 Telnet client library implementation, just enough to replicate manual command and response parsing.</description>
     <releaseNotes>
-      Initial commit. Net 4.5 and a synchronous Net 4.0 target
+      Add custom icon.
     </releaseNotes>
     <copyright>Copyright (c) 9swampy, Telnet contributors</copyright>
     <tags>Telnet</tags>
