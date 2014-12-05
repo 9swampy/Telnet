@@ -5,13 +5,12 @@
   using System.Net;
   using System.Net.Sockets;
   using System.Text;
-  
+
   public class TelnetServer : System.Net.Sockets.Socket
   {
     private readonly System.Threading.Thread t;
 
-    public TelnetServer()
-      : base(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)
+    public TelnetServer() : base(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)
     {
       this.IsListening = true;
 
@@ -19,8 +18,8 @@
       this.IPAddress = ipHostInfo.AddressList.First(o => o.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork);
       this.Port = 11000;
 
-      t = new System.Threading.Thread(new System.Threading.ThreadStart(this.SpinListen));
-      t.Start();
+      this.t = new System.Threading.Thread(new System.Threading.ThreadStart(this.SpinListen));
+      this.t.Start();
     }
 
     protected override void Dispose(bool disposing)
@@ -30,11 +29,7 @@
       System.Threading.Thread.Sleep(10);
     }
 
-    public bool IsListening
-    {
-      get;
-      private set;
-    }
+    public bool IsListening { get; private set; }
 
     public void StopListening()
     {
@@ -42,6 +37,7 @@
     }
 
     private static string data = null;
+    private readonly TimeSpan spinWait = TimeSpan.FromMilliseconds(10);
 
     public IPAddress IPAddress { get; private set; }
 
@@ -56,69 +52,28 @@
         this.Bind(localEndPoint);
         this.Listen(10);
 
-        // Data buffer for incoming data.
-        byte[] bytes = new Byte[1024];
-
-        while (IsListening)
+        while (this.IsListening)
         {
           Console.WriteLine("Waiting for a connection...");
-          // Program is suspended while waiting for an incoming connection.
           Socket handler = this.Accept();
           data = null;
 
-          System.Diagnostics.Debug.Print("Connection made, respond with Account: prompt");
+          Console.WriteLine("Connection made, respond with Account: prompt");
           handler.Send(Encoding.ASCII.GetBytes("Account:"));
 
-          // Wait for username
-          while (true)
-          {
-            bytes = new byte[1024];
-            int bytesRec = handler.Receive(bytes);
-            data += Encoding.ASCII.GetString(bytes, 0, bytesRec);
-            if (data == "username\n")
-            {
-              System.Diagnostics.Debug.Print("Username response received");
-              break;
-            }
-          }
+          this.WaitFor(handler, "username\n");
 
-          System.Diagnostics.Debug.Print("Account entered, respond with Password: prompt");
           Console.WriteLine("Account entered, respond with Password: prompt");
           handler.Send(Encoding.ASCII.GetBytes("Password:"));
 
-          // Wait for username
-          data = string.Empty;
-          while (true)
-          {
-            bytes = new byte[1024];
-            int bytesRec = handler.Receive(bytes);
-            data += Encoding.ASCII.GetString(bytes, 0, bytesRec);
-            if (data == "password\n")
-            {
-              System.Diagnostics.Debug.Print("Password response received");
-              Console.WriteLine("Password response received");
-              break;
-            }
-          }
+          this.WaitFor(handler, "password\n");
 
-          System.Diagnostics.Debug.Print("Password entered, respond with Command> prompt");
           Console.WriteLine("Password entered, respond with Command> prompt");
           handler.Send(Encoding.ASCII.GetBytes("Command >"));
 
-          // Wait for username
-          data = string.Empty;
-          while (true)
-          {
-            bytes = new byte[1024];
-            int bytesRec = handler.Receive(bytes);
-            data += Encoding.ASCII.GetString(bytes, 0, bytesRec);
-            if (data == "show statistic wan2\n")
-            {
-              break;
-            }
-          }
+          this.WaitFor(handler, "show statistic wan2\n");
 
-          System.Diagnostics.Debug.Print("Command entered, respond with WAN2 terminated reply");
+          Console.WriteLine("Command entered, respond with WAN2 terminated reply");
           handler.Send(Encoding.ASCII.GetBytes("show statistic wan2\n\r WAN1 total TX: 0 Bytes ,RX: 0 Bytes \n\r WAN2 total TX: 6.3 GB ,RX: 6.9 GB \n\r WAN3 total TX: 0 Bytes ,RX: 0 Bytes \n\r WAN4 total TX: 0 Bytes ,RX: 0 Bytes \n\r WAN5 total TX: 0 Bytes ,RX: 0 Bytes \n\r>"));
 
           //handler.Send(new byte[] { (byte)PrimS.Telnet.Commands.InterpretAsCommand, (byte)PrimS.Telnet.Commands.Do });
@@ -130,11 +85,47 @@
           handler.Shutdown(SocketShutdown.Both);
           handler.Close();
         }
-
       }
       catch (Exception e)
       {
         Console.WriteLine(e.ToString());
+      }
+    }
+
+    private void WaitFor(Socket handler, string awaitedResponse)
+    {
+      data = string.Empty;
+      while (true)
+      {
+        ReceiveResponse(handler);
+        if (this.IsResponseReceived(data, awaitedResponse))
+        {
+          break;
+        }
+      }
+    }
+
+    private static void ReceiveResponse(Socket handler)
+    {
+      byte[] bytes = new byte[1024];
+      int bytesRec = handler.Receive(bytes);
+      data += Encoding.ASCII.GetString(bytes, 0, bytesRec);
+    }
+
+    private bool IsResponseReceived(string currentResponse, string responseAwaited)
+    {
+      if (currentResponse == responseAwaited)
+      {
+        System.Diagnostics.Debug.Print("{0} response received", responseAwaited);
+        Console.WriteLine("{0} response received", responseAwaited);
+        return true;
+      }
+      else
+      {
+        System.Diagnostics.Debug.Print("Waiting for {1} response, received {0}", currentResponse, responseAwaited);
+        Console.WriteLine("Waiting for {1} response, received {0}", currentResponse, responseAwaited);
+        System.Threading.Thread.Sleep(this.spinWait);
+        return false;
       }
     }
   }

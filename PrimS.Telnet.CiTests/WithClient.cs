@@ -10,7 +10,7 @@ namespace PrimS.Telnet.CiTests
   [TestClass]
   public class WithClient
   {
-    private const int TimeoutMs = 500;
+    private const int TimeoutMs = 100;
 
     [TestMethod]
     public void ShouldConnect()
