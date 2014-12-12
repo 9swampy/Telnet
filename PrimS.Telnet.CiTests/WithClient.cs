@@ -24,7 +24,7 @@ namespace PrimS.Telnet.CiTests
       }
     }
 
-    [TestMethod, Timeout(2000)]
+    [TestMethod]//, Timeout(2000)]
     public async Task ShouldTerminateWithASemiColon()
     {
       using (TelnetServer server = new TelnetServer())
