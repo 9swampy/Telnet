@@ -17,7 +17,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -40,11 +40,26 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\PrimS.Telnet\BaseClient.cs">
+      <Link>BaseClient.cs</Link>
+    </Compile>
+    <Compile Include="..\PrimS.Telnet\ByteStreamHandler.cs">
+      <Link>ByteStreamHandler.cs</Link>
+    </Compile>
     <Compile Include="..\PrimS.Telnet\Commands.cs">
       <Link>Commands.cs</Link>
     </Compile>
+    <Compile Include="..\PrimS.Telnet\IByteStream.cs">
+      <Link>IByteStream.cs</Link>
+    </Compile>
+    <Compile Include="..\PrimS.Telnet\IByteStreamHandler.cs">
+      <Link>IByteStreamHandler.cs</Link>
+    </Compile>
     <Compile Include="..\PrimS.Telnet\Options.cs">
       <Link>Options.cs</Link>
+    </Compile>
+    <Compile Include="..\PrimS.Telnet\TcpByteStream.cs">
+      <Link>TcpByteStream.cs</Link>
     </Compile>
     <Compile Include="Client.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -22,7 +22,7 @@ namespace PrimS.Telnet.CiTests
     }
 
     [TestMethod, Timeout(2000)]
-    public void ShouldTerminateWithASemiColon()
+    public void ShouldTerminateWithAColon()
     {
       using (TelnetServer server = new TelnetServer())
       {
