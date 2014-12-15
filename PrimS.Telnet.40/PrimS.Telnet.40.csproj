@@ -40,6 +40,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\PrimS.Telnet\BaseClient.cs">
+      <Link>BaseClient.cs</Link>
+    </Compile>
     <Compile Include="..\PrimS.Telnet\ByteStreamHandler.cs">
       <Link>ByteStreamHandler.cs</Link>
     </Compile>

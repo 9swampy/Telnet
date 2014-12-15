@@ -42,6 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BaseClient.cs" />
     <Compile Include="ByteStreamHandler.cs" />
     <Compile Include="Commands.cs" />
     <Compile Include="IByteStream.cs" />

@@ -1,7 +1,6 @@
 namespace PrimS.Telnet
 {
   using System;
-  using System.Net.Sockets;
   using System.Threading;
   using System.Threading.Tasks;
 
@@ -10,15 +9,8 @@ namespace PrimS.Telnet
   /// <summary>
   /// Basic Telnet client
   /// </summary>
-  public class Client : IDisposable
-  {
-    private readonly IByteStream byteStream;
-
-    private readonly SemaphoreSlim sendRateLimit;
-    private readonly CancellationTokenSource internalCancellation;
-
-    private const int DefaultTimeOutMs = 100;
-
+  public class Client : BaseClient
+  { 
     /// <summary>
     /// Initializes a new instance of the <see cref="Client"/> class.
     /// </summary>
@@ -26,17 +18,12 @@ namespace PrimS.Telnet
     /// <param name="port">The port.</param>
     /// <param name="token">The token.</param>
     public Client(string hostname, int port, CancellationToken token)
+      : base(new TcpByteStream(hostname, port), token)
     {
-      this.byteStream = new TcpByteStream(hostname, port);
-
       while (!this.byteStream.Connected)
       {
         System.Threading.Thread.Sleep(2);
       }
-
-      this.sendRateLimit = new SemaphoreSlim(1);
-      this.internalCancellation = new CancellationTokenSource();
-      token.Register(() => this.internalCancellation.Cancel());
     }
 
     /// <summary>
@@ -163,51 +150,6 @@ namespace PrimS.Telnet
     private static bool IsTerminatorLocated(string terminator, string s)
     {
       return s.TrimEnd().EndsWith(terminator);
-    }
-
-    /// <summary>
-    /// Gets a value indicating whether this instance is connected.
-    /// </summary>
-    /// <value>
-    /// <c>true</c> if this instance is connected; otherwise, <c>false</c>.
-    /// </value>
-    public bool IsConnected
-    {
-      get
-      {
-        return this.byteStream.Connected;
-      }
-    }
-    
-    /// <summary>
-    /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-    /// </summary>
-    public void Dispose()
-    {
-      try
-      {
-        this.Dispose(true);
-        GC.SuppressFinalize(this);
-      }
-      catch (Exception)
-      {
-        //NOP
-      }
-    }
-
-    /// <summary>
-    /// Releases unmanaged and - optionally - managed resources.
-    /// </summary>
-    /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
-    protected virtual void Dispose(bool disposing)
-    {
-      if (disposing)
-      {
-        this.byteStream.Close();
-        this.sendRateLimit.Dispose();
-        this.internalCancellation.Dispose();
-      }
-      System.Threading.Thread.Sleep(100);
     }
   }
 }
