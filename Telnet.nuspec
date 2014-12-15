@@ -12,7 +12,7 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>A minimal C# 4.0/4.5 Telnet client library implementation, just enough to send simple text commands from your application, retrieve the response for parsing and react appropriately.</description>
     <releaseNotes>
-      Rationalisation of test suite and add extra debugging code.
+      Deduplicating Net4.0 and 4.5, linking common files with conditional compilation deltas.
     </releaseNotes>
     <copyright>Copyright (c) 9swampy, Telnet contributors</copyright>
     <tags>Telnet</tags>
