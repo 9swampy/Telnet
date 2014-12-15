@@ -1,6 +1,8 @@
 using System;
 using System.Net.Sockets;
+#if ASYNC
 using System.Threading.Tasks;
+#endif
 
 namespace PrimS.Telnet
 {
@@ -8,11 +10,15 @@ namespace PrimS.Telnet
   {
     private readonly TcpClient tcpSocket;
 
-    public TcpByteStream(TcpClient tcpClient)
+    public TcpByteStream(string hostname, int port)
     {
-      this.tcpSocket = tcpClient;
+      this.tcpSocket = new TcpClient(hostname, port);
+#if ASYNC
+#else
+      System.Threading.Thread.Sleep(20);
+#endif
     }
-    
+
     public int ReadByte()
     {
       return this.tcpSocket.GetStream().ReadByte();
@@ -51,9 +57,21 @@ namespace PrimS.Telnet
       }
     }
 
+#if ASYNC
     public Task WriteAsync(byte[] buffer, int offset, int count, System.Threading.CancellationToken cancellationToken)
     {
       return this.tcpSocket.GetStream().WriteAsync(buffer, offset, count, cancellationToken);
+    }
+#else
+    public void Write(byte[] buffer, int offset, int count)
+    {
+      this.tcpSocket.GetStream().Write(buffer, offset, count);
+    }
+#endif
+
+    public void Close()
+    {
+      this.tcpSocket.Close();
     }
   }
 }

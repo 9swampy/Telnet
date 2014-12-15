@@ -3,7 +3,9 @@ namespace PrimS.Telnet
   using System;
   using System.Text;
   using System.Threading;
+#if ASYNC
   using System.Threading.Tasks;
+#endif
 
   public class ByteStreamHandler : IByteStreamHandler
   {
@@ -29,10 +31,18 @@ namespace PrimS.Telnet
       return DateTime.Now.Add(TimeSpan.FromMilliseconds(timeout.TotalMilliseconds / 100));
     }
 
+#if ASYNC
     private static async Task<bool> IsWaitForIncrementalResponse(DateTime rollingTimeout)
+#else
+    private static bool IsWaitForIncrementalResponse(DateTime rollingTimeout)
+#endif
     {
       bool result = DateTime.Now < rollingTimeout;
+#if ASYNC
       await Task.Delay(1);
+#else
+      System.Threading.Thread.Sleep(1);
+#endif
       return result;
     }
 
@@ -41,12 +51,21 @@ namespace PrimS.Telnet
       return (sb.Length == 0 && DateTime.Now < endInitialTimeout);
     }
 
+#if ASYNC
     /// <summary>
     /// Reads asynchronously from the stream.
     /// </summary>
     /// <param name="timeout">The timeout.</param>
     /// <returns></returns>
     public async Task<string> ReadAsync(TimeSpan timeout)
+#else
+    /// <summary>
+    /// Reads from the stream.
+    /// </summary>
+    /// <param name="timeout">The timeout.</param>
+    /// <returns></returns>
+    public string Read(TimeSpan timeout)
+#endif
     {
       if (!this.byteStream.Connected || this.internalCancellation.Token.IsCancellationRequested)
       {
@@ -63,7 +82,11 @@ namespace PrimS.Telnet
           rollingTimeout = ExtendRollingTimeout(timeout);
         }
       }
-      while (!this.internalCancellation.Token.IsCancellationRequested && (this.IsResponsePending || IsWaitForInitialResponse(endInitialTimeout, sb) || await IsWaitForIncrementalResponse(rollingTimeout)));
+      while (!this.internalCancellation.Token.IsCancellationRequested && (this.IsResponsePending || IsWaitForInitialResponse(endInitialTimeout, sb) ||
+#if ASYNC
+                                                                                              await
+#endif
+                                                                                                    IsWaitForIncrementalResponse(rollingTimeout)));
       if (DateTime.Now >= rollingTimeout)
       {
         System.Diagnostics.Debug.Print("RollingTimeout exceeded {0}", DateTime.Now.ToString("ss:fff"));

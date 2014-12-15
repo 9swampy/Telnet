@@ -12,7 +12,6 @@ namespace PrimS.Telnet
   /// </summary>
   public class Client : IDisposable
   {
-    private readonly TcpClient tcpSocket;
     private readonly IByteStream byteStream;
 
     private readonly SemaphoreSlim sendRateLimit;
@@ -28,10 +27,9 @@ namespace PrimS.Telnet
     /// <param name="token">The token.</param>
     public Client(string hostname, int port, CancellationToken token)
     {
-      this.tcpSocket = new TcpClient(hostname, port);
-      this.byteStream = new TcpByteStream(this.tcpSocket);
-      
-      while (!this.tcpSocket.Connected)
+      this.byteStream = new TcpByteStream(hostname, port);
+
+      while (!this.byteStream.Connected)
       {
         System.Threading.Thread.Sleep(2);
       }
@@ -205,7 +203,7 @@ namespace PrimS.Telnet
     {
       if (disposing)
       {
-        this.tcpSocket.Close();
+        this.byteStream.Close();
         this.sendRateLimit.Dispose();
         this.internalCancellation.Dispose();
       }

@@ -1,8 +1,10 @@
 ﻿namespace PrimS.Telnet
 {
   using System;
+#if ASYNC
   using System.Threading;
   using System.Threading.Tasks;
+#endif
 
   public interface IByteStream
   {
@@ -23,6 +25,7 @@
     /// <exception cref="System.ObjectDisposedException">Methods were called after the stream was closed.</exception>
     void WriteByte(byte value);
 
+#if ASYNC
     /// <summary>
     /// Asynchronously writes a sequence of bytes to the current stream, advances the current position within this stream by the number of bytes written, and monitors cancellation requests.
     /// </summary>
@@ -38,6 +41,21 @@
     /// <exception cref="System.ObjectDisposedException">The stream has been disposed.</exception>
     /// <exception cref="System.InvalidOperationException">The stream is currently in use by a previous write operation.</exception>
     Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken);
+#else
+    /// <summary>
+    /// Writes a sequence of bytes to the current stream, advances the current position within this stream by the number of bytes written.
+    /// </summary>
+    /// <param name="buffer">The buffer to write data from.</param>
+    /// <param name="offset">The zero-based byte offset in buffer from which to begin copying bytes to the stream.</param>
+    /// <param name="count">The maximum number of bytes to write.</param>
+    /// <returns>A task that represents the asynchronous write operation.</returns>
+    /// <exception cref="System.ArgumentNullException">The buffer parameter is null.</exception>
+    /// <exception cref="System.ArgumentOutOfRangeException">The offset parameter is less than 0.-or- The offset parameter is greater than the length of buffer.-or- The size parameter is less than 0.-or- The size parameter is greater than the length of buffer minus the value of the offset parameter.</exception>
+    /// <exception cref="System.ObjectDisposedException">The stream has been disposed.</exception>
+    /// <exception cref="System.IO.IOException">There was a failure while writing to the network. -or-An error occurred when accessing the socket. See the Remarks section for more information.</exception>
+    /// <exception cref="System.ObjectDisposedException">The System.Net.Sockets.NetworkStream is closed.-or- There was a failure reading from the network.</exception>
+    void Write(byte[] buffer, int offset, int count);
+#endif
 
     /// <summary>
     /// Gets the amount of data that has been received from the network and is available to be read.
@@ -64,5 +82,10 @@
     /// The time-out value of the connection in milliseconds. The default value is 0.
     /// </value>
     int ReceiveTimeout { get; set; }
+
+    /// <summary>
+    /// Disposes the instance and requests that the underlying connection be closed.
+    /// </summary>
+    void Close();
   }
 }
