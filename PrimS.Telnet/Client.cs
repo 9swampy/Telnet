@@ -146,10 +146,5 @@ namespace PrimS.Telnet
       ByteStreamHandler handler = new ByteStreamHandler(this.byteStream, this.internalCancellation);
       return await handler.ReadAsync(timeout);
     }
-
-    private static bool IsTerminatorLocated(string terminator, string s)
-    {
-      return s.TrimEnd().EndsWith(terminator);
-    }
   }
 }

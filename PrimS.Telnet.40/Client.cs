@@ -98,11 +98,6 @@ namespace PrimS.Telnet
       return handler.Read(timeout);
     }
 
-    private static bool IsTerminatorLocated(string terminator, string s)
-    {
-      return s.TrimEnd().EndsWith(terminator);
-    }
-
     /// <summary>
     /// Reads asynchronously from the stream, terminating as soon as the <see cref="terminator"/> is located.
     /// </summary>

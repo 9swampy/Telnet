@@ -64,5 +64,10 @@ namespace PrimS.Telnet
       }
       System.Threading.Thread.Sleep(100);
     }
+
+    protected static bool IsTerminatorLocated(string terminator, string s)
+    {
+      return s.TrimEnd().EndsWith(terminator);
+    }
   }
 }
