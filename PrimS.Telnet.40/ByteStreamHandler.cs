@@ -3,7 +3,6 @@ namespace PrimS.Telnet
   using System;
   using System.Text;
   using System.Threading;
-  using System.Threading.Tasks;
 
   public class ByteStreamHandler : IByteStreamHandler
   {
@@ -29,10 +28,10 @@ namespace PrimS.Telnet
       return DateTime.Now.Add(TimeSpan.FromMilliseconds(timeout.TotalMilliseconds / 100));
     }
 
-    private static async Task<bool> IsWaitForIncrementalResponse(DateTime rollingTimeout)
+    private static bool IsWaitForIncrementalResponse(DateTime rollingTimeout)
     {
       bool result = DateTime.Now < rollingTimeout;
-      await Task.Delay(1);
+      System.Threading.Thread.Sleep(1);
       return result;
     }
 
@@ -42,19 +41,19 @@ namespace PrimS.Telnet
     }
 
     /// <summary>
-    /// Reads asynchronously from the stream.
+    /// Reads from the stream.
     /// </summary>
     /// <param name="timeout">The timeout.</param>
     /// <returns></returns>
-    public async Task<string> ReadAsync(TimeSpan timeout)
+    public string Read(TimeSpan timeout)
     {
+      DateTime endInitialTimeout = DateTime.Now.Add(timeout);
       if (!this.byteStream.Connected || this.internalCancellation.Token.IsCancellationRequested)
       {
         return string.Empty;
       }
       StringBuilder sb = new StringBuilder();
       this.byteStream.ReceiveTimeout = (int)timeout.TotalMilliseconds;
-      DateTime endInitialTimeout = DateTime.Now.Add(timeout);
       DateTime rollingTimeout = ExtendRollingTimeout(timeout);
       do
       {
@@ -63,11 +62,7 @@ namespace PrimS.Telnet
           rollingTimeout = ExtendRollingTimeout(timeout);
         }
       }
-      while (!this.internalCancellation.Token.IsCancellationRequested && (this.IsResponsePending || IsWaitForInitialResponse(endInitialTimeout, sb) || await IsWaitForIncrementalResponse(rollingTimeout)));
-      if (DateTime.Now >= rollingTimeout)
-      {
-        System.Diagnostics.Debug.Print("RollingTimeout exceeded {0}", DateTime.Now.ToString("ss:fff"));
-      }
+      while (!this.internalCancellation.Token.IsCancellationRequested && (this.IsResponsePending || IsWaitForInitialResponse(endInitialTimeout, sb) || IsWaitForIncrementalResponse(rollingTimeout)));
       return sb.ToString();
     }
 
