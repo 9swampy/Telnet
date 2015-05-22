@@ -118,7 +118,7 @@ namespace PrimS.Telnet
       string s = string.Empty;
       while (!IsTerminatorLocated(terminator, s) && endTimeout >= DateTime.Now)
       {
-        s += await this.ReadAsync(TimeSpan.FromMilliseconds(5));
+        s += await this.ReadAsync(TimeSpan.FromMilliseconds(millisecondSpin));
       }
       if (!IsTerminatorLocated(terminator, s))
       {
