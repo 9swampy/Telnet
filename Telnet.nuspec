@@ -2,17 +2,20 @@
 <package >
   <metadata>
     <id>Telnet</id>
-    <version>0.2.6</version>
+    <version>0.2.7</version>
     <title>Telnet</title>
     <authors>Telnet contributors</authors>
     <owners>9swampy</owners>
     <licenseUrl>https://github.com/9swampy/Telnet/blob/master/License.txt</licenseUrl>
     <projectUrl>https://github.com/9swampy/Telnet/</projectUrl>
-	<iconUrl>https://raw.githubusercontent.com/9swampy/Telnet/master/Ptelnet128x600.png</iconUrl>
+    <iconUrl>https://raw.githubusercontent.com/9swampy/Telnet/master/Ptelnet128x600.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>A minimal C# 4.0/4.5 Telnet client library implementation, just enough to send simple text commands from your application, retrieve the response for parsing and react appropriately.</description>
     <releaseNotes>
-      Minor bug fix to TerminatedReadAsync which had been ignoring millisecondSpin.
+    Add Client.ctor overload to accept IByteStream facilitating better testing.
+    Adding tests to cover minor TerminatedReadAsync bug fixed in 0.2.6.
+    Minor bug fix in TerminatedReadAsync's debug output.
+    Add overload on IByteStream.Write to accept a simple string.
     </releaseNotes>
     <copyright>Copyright (c) 9swampy, Telnet contributors</copyright>
     <tags>Telnet</tags>
@@ -21,7 +24,7 @@
     <file src="License.txt" target="content" />
     <file src="PrimS.Telnet\Bin\Release\PrimS.Telnet.dll" target="lib\net45" />
     <file src="PrimS.Telnet\Bin\Release\PrimS.Telnet.xml" target="lib\net45" />
-	<file src="PrimS.Telnet.40\Bin\Release\PrimS.Telnet.40.dll" target="lib\net40" />
+    <file src="PrimS.Telnet.40\Bin\Release\PrimS.Telnet.40.dll" target="lib\net40" />
     <file src="PrimS.Telnet.40\Bin\Release\PrimS.Telnet.40.xml" target="lib\net40" />
   </files>
 </package>
