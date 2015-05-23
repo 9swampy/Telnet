@@ -3,6 +3,7 @@ namespace PrimS.Telnet
   using System;
   using System.Threading;
   using System.Threading.Tasks;
+  using LiteGuard;
 
   //Referencing https://support.microsoft.com/kb/231866?wa=wsignin1.0 and http://www.codeproject.com/Articles/19071/Quick-tool-A-minimalistic-Telnet-library got me started
 
@@ -10,19 +11,47 @@ namespace PrimS.Telnet
   /// Basic Telnet client
   /// </summary>
   public class Client : BaseClient
-  { 
+  {
     /// <summary>
     /// Initializes a new instance of the <see cref="Client"/> class.
     /// </summary>
-    /// <param name="hostname">The hostname.</param>
-    /// <param name="port">The port.</param>
-    /// <param name="token">The token.</param>
+    /// <param name="hostname">The hostname to connect to.</param>
+    /// <param name="port">The port to connect to.</param>
+    /// <param name="token">The cancellation token.</param>
     public Client(string hostname, int port, CancellationToken token)
-      : base(new TcpByteStream(hostname, port), token)
+      : this(new TcpByteStream(hostname, port), token)
     {
-      while (!this.byteStream.Connected)
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="Client"/> class.
+    /// </summary>
+    /// <param name="byteStream">The stream served by the host connected to.</param>
+    /// <param name="token">The cancellation token.</param>
+    /// /// <param name="timeout">The timeout to wait for initial successful connection to <cref>byteStream</cref>.</param>
+    public Client(IByteStream byteStream, CancellationToken token)
+      : this(byteStream, token, new TimeSpan(0, 0, 30))
+    { }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="Client"/> class.
+    /// </summary>
+    /// <param name="byteStream">The stream served by the host connected to.</param>
+    /// <param name="token">The cancellation token.</param>
+    /// /// <param name="timeout">The timeout to wait for initial successful connection to <cref>byteStream</cref>.</param>
+    public Client(IByteStream byteStream, CancellationToken token, TimeSpan timeout)
+      : base(byteStream, token)
+    {
+      Guard.AgainstNullArgument("byteStream", byteStream);
+
+      DateTime timeoutEnd = DateTime.Now.Add(timeout);
+      while (!this.byteStream.Connected && timeoutEnd > DateTime.Now)
       {
         System.Threading.Thread.Sleep(2);
+      }
+      if (!this.byteStream.Connected)
+      {
+        throw new InvalidOperationException("Unable to connect to the host.");
       }
     }
 
@@ -78,12 +107,11 @@ namespace PrimS.Telnet
       if (this.byteStream.Connected && !this.internalCancellation.Token.IsCancellationRequested)
       {
         await this.sendRateLimit.WaitAsync(this.internalCancellation.Token);
-        byte[] buf = System.Text.ASCIIEncoding.ASCII.GetBytes(command.Replace("\0xFF", "\0xFF\0xFF"));
-        await this.byteStream.WriteAsync(buf, 0, buf.Length, this.internalCancellation.Token);
+        await this.byteStream.WriteAsync(command, this.internalCancellation.Token);
         this.sendRateLimit.Release();
       }
     }
-    
+
     /// <summary>
     /// Reads asynchronously from the stream, terminating as soon as the <see cref="terminator"/> is located.
     /// </summary>
@@ -122,7 +150,7 @@ namespace PrimS.Telnet
       }
       if (!IsTerminatorLocated(terminator, s))
       {
-        System.Diagnostics.Debug.Print("Failed to terminate '{0}' with '{1)'", s, terminator);
+        System.Diagnostics.Debug.Print("Failed to terminate '{0}' with '{1}'", s, terminator);
       }
       return s;
     }

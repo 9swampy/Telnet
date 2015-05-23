@@ -72,8 +72,7 @@ namespace PrimS.Telnet
       if (this.byteStream.Connected && !this.internalCancellation.Token.IsCancellationRequested)
       {
         this.sendRateLimit.Wait(this.internalCancellation.Token);
-        byte[] buf = System.Text.ASCIIEncoding.ASCII.GetBytes(command.Replace("\0xFF", "\0xFF\0xFF"));
-        this.byteStream.Write(buf, 0, buf.Length);
+        this.byteStream.Write(command);
         this.sendRateLimit.Release();
       }
     }

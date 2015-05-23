@@ -69,6 +69,26 @@ namespace PrimS.Telnet
     }
 #endif
 
+#if ASYNC
+    public Task WriteAsync(string command, System.Threading.CancellationToken cancellationToken)
+    {
+      byte[] buffer = ConvertStringToByteArray(command);
+      return this.tcpSocket.GetStream().WriteAsync(buffer, 0, buffer.Length, cancellationToken);
+    }
+#else
+    public void Write(string command)
+    {        
+      byte[] buffer = ConvertStringToByteArray(command);
+      this.tcpSocket.GetStream().Write(buffer, 0, buffer.Length);
+    }
+#endif
+
+    private static byte[] ConvertStringToByteArray(string command)
+    {
+      byte[] buffer = System.Text.ASCIIEncoding.ASCII.GetBytes(command.Replace("\0xFF", "\0xFF\0xFF"));
+      return buffer;
+    }
+
     public void Close()
     {
       this.tcpSocket.Close();

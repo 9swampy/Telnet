@@ -57,6 +57,31 @@
     void Write(byte[] buffer, int offset, int count);
 #endif
 
+#if ASYNC
+    /// <summary>
+    /// Asynchronously writes a string to the current stream, advances the current position within this stream by the number of bytes written, and monitors cancellation requests.
+    /// </summary>
+    /// <param name="value">The string to write.</param>
+    /// <param name="cancellationToken">The token to monitor for cancellation requests. The default value is System.Threading.CancellationToken.None.</param>
+    /// <returns>A task that represents the asynchronous write operation.</returns>
+    /// <exception cref="System.ArgumentNullException">buffer is null.</exception>
+    /// <exception cref="System.NotSupportedException">The stream does not support writing.</exception>
+    /// <exception cref="System.ObjectDisposedException">The stream has been disposed.</exception>
+    /// <exception cref="System.InvalidOperationException">The stream is currently in use by a previous write operation.</exception>
+    Task WriteAsync(string value, CancellationToken cancellationToken);
+#else
+    /// <summary>
+    /// Writes a sequence of bytes to the current stream, advances the current position within this stream by the number of bytes written.
+    /// </summary>
+    /// <param name="value">The string to write.</param>
+    /// <returns>A task that represents the asynchronous write operation.</returns>
+    /// <exception cref="System.ArgumentNullException">The buffer parameter is null.</exception>
+    /// <exception cref="System.ObjectDisposedException">The stream has been disposed.</exception>
+    /// <exception cref="System.IO.IOException">There was a failure while writing to the network. -or-An error occurred when accessing the socket. See the Remarks section for more information.</exception>
+    /// <exception cref="System.ObjectDisposedException">The System.Net.Sockets.NetworkStream is closed.-or- There was a failure reading from the network.</exception>
+    void Write(string value);
+#endif
+
     /// <summary>
     /// Gets the amount of data that has been received from the network and is available to be read.
     /// </summary>
