@@ -3,21 +3,42 @@ namespace PrimS.Telnet
   using System;
   using System.Threading;
 
+  /// <summary>
+  /// The base class for Clients.
+  /// </summary>
   public abstract class BaseClient : IDisposable
   {
-    protected readonly IByteStream byteStream;
-
-    protected readonly SemaphoreSlim sendRateLimit;
-    protected readonly CancellationTokenSource internalCancellation;
-
+    /// <summary>
+    /// The default time out ms.
+    /// </summary>
     protected const int DefaultTimeOutMs = 100;
 
+    /// <summary>
+    /// The byte stream.
+    /// </summary>
+    protected readonly IByteStream ByteStream;
+
+    /// <summary>
+    /// The send rate limit.
+    /// </summary>
+    protected readonly SemaphoreSlim SendRateLimit;
+
+    /// <summary>
+    /// The internal cancellation token.
+    /// </summary>
+    protected readonly CancellationTokenSource InternalCancellation;
+
+    /// <summary>
+    /// Initialises a new instance of the <see cref="BaseClient"/> class.
+    /// </summary>
+    /// <param name="byteStream">The byte stream.</param>
+    /// <param name="token">The token.</param>
     protected BaseClient(IByteStream byteStream, CancellationToken token)
     {
-      this.byteStream = byteStream;
-      this.sendRateLimit = new SemaphoreSlim(1);
-      this.internalCancellation = new CancellationTokenSource();
-      token.Register(() => this.internalCancellation.Cancel());
+      this.ByteStream = byteStream;
+      this.SendRateLimit = new SemaphoreSlim(1);
+      this.InternalCancellation = new CancellationTokenSource();
+      token.Register(() => this.InternalCancellation.Cancel());
     }
 
     /// <summary>
@@ -30,7 +51,7 @@ namespace PrimS.Telnet
     {
       get
       {
-        return this.byteStream.Connected;
+        return this.ByteStream.Connected;
       }
     }
 
@@ -46,8 +67,19 @@ namespace PrimS.Telnet
       }
       catch (Exception)
       {
-        //NOP
+        // NOP
       }
+    }
+
+    /// <summary>
+    /// Determines whether the specified terminator has been located.
+    /// </summary>
+    /// <param name="terminator">The terminator to search for.</param>
+    /// <param name="s">The content to search for the <see cref="terminator"/>.</param>
+    /// <returns>True if the terminator is located, otherwise false.</returns>
+    protected static bool IsTerminatorLocated(string terminator, string s)
+    {
+      return s.TrimEnd().EndsWith(terminator);
     }
 
     /// <summary>
@@ -58,16 +90,12 @@ namespace PrimS.Telnet
     {
       if (disposing)
       {
-        this.byteStream.Close();
-        this.sendRateLimit.Dispose();
-        this.internalCancellation.Dispose();
+        this.ByteStream.Close();
+        this.SendRateLimit.Dispose();
+        this.InternalCancellation.Dispose();
       }
-      System.Threading.Thread.Sleep(100);
-    }
 
-    protected static bool IsTerminatorLocated(string terminator, string s)
-    {
-      return s.TrimEnd().EndsWith(terminator);
+      System.Threading.Thread.Sleep(100);
     }
   }
 }
