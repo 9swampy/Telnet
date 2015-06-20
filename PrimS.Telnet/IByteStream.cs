@@ -6,82 +6,11 @@
   using System.Threading.Tasks;
 #endif
 
+  /// <summary>
+  /// Contract of core functionality provided by a ByteStream.
+  /// </summary>
   public interface IByteStream
   {
-    /// <summary>
-    /// Reads a byte from the stream and advances the position within the stream by one byte, or returns -1 if at the end of the stream.
-    /// </summary>
-    /// <returns>The unsigned byte cast to an Int32, or -1 if at the end of the stream.</returns>
-    /// <exception cref="System.NotSupportedException">The stream does not support reading.</exception>
-    /// <exception cref="System.ObjectDisposedException">Methods were called after the stream was closed.</exception>
-    int ReadByte();  
-
-    /// <summary>
-    /// Writes a byte to the current position in the stream and advances the position within the stream by one byte.
-    /// </summary>
-    /// <param name="value">The byte to write to the stream.</param>
-    /// <exception cref="System.IO.IOException">An I/O error occurs.</exception>
-    /// <exception cref="System.NotSupportedException">The stream does not support writing, or the stream is already closed.</exception>
-    /// <exception cref="System.ObjectDisposedException">Methods were called after the stream was closed.</exception>
-    void WriteByte(byte value);
-
-#if ASYNC
-    /// <summary>
-    /// Asynchronously writes a sequence of bytes to the current stream, advances the current position within this stream by the number of bytes written, and monitors cancellation requests.
-    /// </summary>
-    /// <param name="buffer">The buffer to write data from.</param>
-    /// <param name="offset">The zero-based byte offset in buffer from which to begin copying bytes to the stream.</param>
-    /// <param name="count">The maximum number of bytes to write.</param>
-    /// <param name="cancellationToken">The token to monitor for cancellation requests. The default value is System.Threading.CancellationToken.None.</param>
-    /// <returns>A task that represents the asynchronous write operation.</returns>
-    /// <exception cref="System.ArgumentNullException">buffer is null.</exception>
-    /// <exception cref="System.ArgumentOutOfRangeException">offset or count is negative.</exception>
-    /// <exception cref="System.ArgumentException">The sum of offset and count is larger than the buffer length.</exception>
-    /// <exception cref="System.NotSupportedException">The stream does not support writing.</exception>
-    /// <exception cref="System.ObjectDisposedException">The stream has been disposed.</exception>
-    /// <exception cref="System.InvalidOperationException">The stream is currently in use by a previous write operation.</exception>
-    Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken);
-#else
-    /// <summary>
-    /// Writes a sequence of bytes to the current stream, advances the current position within this stream by the number of bytes written.
-    /// </summary>
-    /// <param name="buffer">The buffer to write data from.</param>
-    /// <param name="offset">The zero-based byte offset in buffer from which to begin copying bytes to the stream.</param>
-    /// <param name="count">The maximum number of bytes to write.</param>
-    /// <returns>A task that represents the asynchronous write operation.</returns>
-    /// <exception cref="System.ArgumentNullException">The buffer parameter is null.</exception>
-    /// <exception cref="System.ArgumentOutOfRangeException">The offset parameter is less than 0.-or- The offset parameter is greater than the length of buffer.-or- The size parameter is less than 0.-or- The size parameter is greater than the length of buffer minus the value of the offset parameter.</exception>
-    /// <exception cref="System.ObjectDisposedException">The stream has been disposed.</exception>
-    /// <exception cref="System.IO.IOException">There was a failure while writing to the network. -or-An error occurred when accessing the socket. See the Remarks section for more information.</exception>
-    /// <exception cref="System.ObjectDisposedException">The System.Net.Sockets.NetworkStream is closed.-or- There was a failure reading from the network.</exception>
-    void Write(byte[] buffer, int offset, int count);
-#endif
-
-#if ASYNC
-    /// <summary>
-    /// Asynchronously writes a string to the current stream, advances the current position within this stream by the number of bytes written, and monitors cancellation requests.
-    /// </summary>
-    /// <param name="value">The string to write.</param>
-    /// <param name="cancellationToken">The token to monitor for cancellation requests. The default value is System.Threading.CancellationToken.None.</param>
-    /// <returns>A task that represents the asynchronous write operation.</returns>
-    /// <exception cref="System.ArgumentNullException">buffer is null.</exception>
-    /// <exception cref="System.NotSupportedException">The stream does not support writing.</exception>
-    /// <exception cref="System.ObjectDisposedException">The stream has been disposed.</exception>
-    /// <exception cref="System.InvalidOperationException">The stream is currently in use by a previous write operation.</exception>
-    Task WriteAsync(string value, CancellationToken cancellationToken);
-#else
-    /// <summary>
-    /// Writes a sequence of bytes to the current stream, advances the current position within this stream by the number of bytes written.
-    /// </summary>
-    /// <param name="value">The string to write.</param>
-    /// <returns>A task that represents the asynchronous write operation.</returns>
-    /// <exception cref="System.ArgumentNullException">The buffer parameter is null.</exception>
-    /// <exception cref="System.ObjectDisposedException">The stream has been disposed.</exception>
-    /// <exception cref="System.IO.IOException">There was a failure while writing to the network. -or-An error occurred when accessing the socket. See the Remarks section for more information.</exception>
-    /// <exception cref="System.ObjectDisposedException">The System.Net.Sockets.NetworkStream is closed.-or- There was a failure reading from the network.</exception>
-    void Write(string value);
-#endif
-
     /// <summary>
     /// Gets the amount of data that has been received from the network and is available to be read.
     /// </summary>
@@ -112,5 +41,77 @@
     /// Disposes the instance and requests that the underlying connection be closed.
     /// </summary>
     void Close();
+
+    /// <summary>
+    /// Reads a byte from the stream and advances the position within the stream by one byte, or returns -1 if at the end of the stream.
+    /// </summary>
+    /// <returns>The unsigned byte cast to an integer, or -1 if at the end of the stream.</returns>
+    /// <exception cref="System.NotSupportedException">The stream does not support reading.</exception>
+    /// <exception cref="System.ObjectDisposedException">Methods were called after the stream was closed.</exception>
+    int ReadByte();
+
+    /// <summary>
+    /// Writes a byte to the current position in the stream and advances the position within the stream by one byte.
+    /// </summary>
+    /// <param name="value">The byte to write to the stream.</param>
+    /// <exception cref="System.IO.IOException">An I/O error occurs.</exception>
+    /// <exception cref="System.NotSupportedException">The stream does not support writing, or the stream is already closed.</exception>
+    /// <exception cref="System.ObjectDisposedException">Methods were called after the stream was closed.</exception>
+    void WriteByte(byte value);
+
+#if ASYNC
+    /// <summary>
+    /// Asynchronously writes a sequence of bytes to the current stream, advances the current position within this stream by the number of bytes written, and monitors cancellation requests.
+    /// </summary>
+    /// <param name="buffer">The buffer to write data from.</param>
+    /// <param name="offset">The zero-based byte offset in buffer from which to begin copying bytes to the stream.</param>
+    /// <param name="count">The maximum number of bytes to write.</param>
+    /// <param name="cancellationToken">The token to monitor for cancellation requests. The default value is System.Threading.CancellationToken.None.</param>
+    /// <returns>A task that represents the asynchronous write operation.</returns>
+    /// <exception cref="System.ArgumentNullException">The buffer parameter is null.</exception>
+    /// <exception cref="System.ArgumentOutOfRangeException">The offset or count is negative.</exception>
+    /// <exception cref="System.ArgumentException">The offset parameter is less than 0.-or- The offset parameter is greater than the length of buffer.-or- The size parameter is less than 0.-or- The size parameter is greater than the length of buffer minus the value of the offset parameter.</exception>
+    /// <exception cref="System.NotSupportedException">The stream does not support writing.</exception>
+    /// <exception cref="System.ObjectDisposedException">The stream has been disposed.</exception>
+    /// <exception cref="System.InvalidOperationException">The stream is currently in use by a previous write operation.</exception>
+    Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken);
+#else
+    /// <summary>
+    /// Writes a sequence of bytes to the current stream, advances the current position within this stream by the number of bytes written.
+    /// </summary>
+    /// <param name="buffer">The buffer to write data from.</param>
+    /// <param name="offset">The zero-based byte offset in buffer from which to begin copying bytes to the stream.</param>
+    /// <param name="count">The maximum number of bytes to write.</param>
+    /// <exception cref="System.ArgumentNullException">The buffer parameter is null.</exception>
+    /// <exception cref="System.ArgumentOutOfRangeException">The offset parameter is less than 0.-or- The offset parameter is greater than the length of buffer.-or- The size parameter is less than 0.-or- The size parameter is greater than the length of buffer minus the value of the offset parameter.</exception>
+    /// <exception cref="System.ObjectDisposedException">The stream has been disposed.</exception>
+    /// <exception cref="System.IO.IOException">There was a failure while writing to the network. -or-An error occurred when accessing the socket. See the Remarks section for more information.</exception>
+    /// <exception cref="System.ObjectDisposedException">The System.Net.Sockets.NetworkStream is closed.-or- There was a failure reading from the network.</exception>
+    void Write(byte[] buffer, int offset, int count);
+#endif
+
+#if ASYNC
+    /// <summary>
+    /// Asynchronously writes a string to the current stream, advances the current position within this stream by the number of bytes written, and monitors cancellation requests.
+    /// </summary>
+    /// <param name="value">The string to write.</param>
+    /// <param name="cancellationToken">The token to monitor for cancellation requests. The default value is System.Threading.CancellationToken.None.</param>
+    /// <returns>A task that represents the asynchronous write operation.</returns>
+    /// <exception cref="System.ArgumentNullException">The buffer parameter is null.</exception>
+    /// <exception cref="System.NotSupportedException">The stream does not support writing.</exception>
+    /// <exception cref="System.ObjectDisposedException">The stream has been disposed.</exception>
+    /// <exception cref="System.InvalidOperationException">The stream is currently in use by a previous write operation.</exception>
+    Task WriteAsync(string value, CancellationToken cancellationToken);
+#else
+    /// <summary>
+    /// Writes a sequence of bytes to the current stream, advances the current position within this stream by the number of bytes written.
+    /// </summary>
+    /// <param name="value">The string to write.</param>
+    /// <exception cref="System.ArgumentNullException">The buffer parameter is null.</exception>
+    /// <exception cref="System.ObjectDisposedException">The stream has been disposed.</exception>
+    /// <exception cref="System.IO.IOException">There was a failure while writing to the network. -or-An error occurred when accessing the socket. See the Remarks section for more information.</exception>
+    /// <exception cref="System.ObjectDisposedException">The System.Net.Sockets.NetworkStream is closed.-or- There was a failure reading from the network.</exception>
+    void Write(string value);
+#endif
   }
 }
