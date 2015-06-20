@@ -12,13 +12,18 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>A minimal C# 4.0/4.5 Telnet client library implementation, just enough to send simple text commands from your application, retrieve the response for parsing and react appropriately.</description>
     <releaseNotes>
-    Add Client.ctor overload to accept IByteStream facilitating better testing.
-    Adding tests to cover minor TerminatedReadAsync bug fixed in 0.2.6.
-    Minor bug fix in TerminatedReadAsync's debug output.
-    Add overload on IByteStream.Write to accept a simple string.
+      Add LiteGuard dependency to NuGet specification.
     </releaseNotes>
     <copyright>Copyright (c) 9swampy, Telnet contributors</copyright>
     <tags>Telnet</tags>
+    <dependencies>
+      <group targetFramework=".NETFramework4.0">
+        <dependency id="LiteGuard" version="0.10.0" />
+      </group>
+      <group targetFramework=".NETFramework4.5">
+        <dependency id="LiteGuard" version="0.10.0" />
+      </group>
+    </dependencies>
   </metadata>
   <files>
     <file src="License.txt" target="content" />
