@@ -90,7 +90,7 @@ namespace PrimS.Telnet
     /// Writes the line to the server.
     /// </summary>
     /// <param name="command">The command.</param>
-    public async void WriteLine(string command)
+    public async Task WriteLine(string command)
     {
       await this.Write(string.Format("{0}\n", command));
     }
