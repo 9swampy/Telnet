@@ -8,7 +8,7 @@
   using Microsoft.VisualStudio.TestTools.UnitTesting;
 
   [TestClass]
-  class ByteStreamHandlerTests
+  public class ByteStreamHandlerTests
   {
     [TestMethod]
     public async Task UnconnectedByteStreamShouldReturnEmptyResponse()
