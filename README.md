@@ -1,3 +1,12 @@
+[![][build-img]][build]
+[![][nuget-img]][nuget]
+
+[build]:     https://ci.appveyor.com/project/9swampy/telnet
+[build-img]: https://ci.appveyor.com/api/projects/status/a85v943mb52y0gii?svg=true
+
+[nuget]:     https://badge.fury.io/nu/telnet
+[nuget-img]: https://badge.fury.io/nu/telnet.svg
+
 Telnet
 ======
 
