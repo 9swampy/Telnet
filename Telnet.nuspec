@@ -10,16 +10,13 @@
     <projectUrl>https://github.com/9swampy/Telnet/</projectUrl>
     <iconUrl>https://raw.githubusercontent.com/9swampy/Telnet/master/Ptelnet128x600.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>A minimal C# 4.0/4.5 Telnet client library implementation, just enough to send simple text commands from your application, retrieve the response for parsing and react appropriately.</description>
+    <description>A minimal C# 3.5/4.0/4.5 Telnet client library implementation, just enough to send simple text commands from your application, retrieve the response for parsing and react appropriately.</description>
     <releaseNotes>
-      Add LiteGuard dependency to NuGet specification.
+      Add Net3.5 target.
     </releaseNotes>
     <copyright>Copyright (c) 9swampy, Telnet contributors</copyright>
     <tags>Telnet</tags>
     <dependencies>
-      <group targetFramework=".NETFramework4.0">
-        <dependency id="LiteGuard" version="0.10.0" />
-      </group>
       <group targetFramework=".NETFramework4.5">
         <dependency id="LiteGuard" version="0.10.0" />
       </group>
@@ -31,5 +28,7 @@
     <file src="PrimS.Telnet\Bin\Release\PrimS.Telnet.xml" target="lib\net45" />
     <file src="PrimS.Telnet.40\Bin\Release\PrimS.Telnet.40.dll" target="lib\net40" />
     <file src="PrimS.Telnet.40\Bin\Release\PrimS.Telnet.40.xml" target="lib\net40" />
+    <file src="PrimS.Telnet.35\Bin\Release\PrimS.Telnet.35.dll" target="lib\net35" />
+    <file src="PrimS.Telnet.35\Bin\Release\PrimS.Telnet.35.xml" target="lib\net35" />
   </files>
 </package>

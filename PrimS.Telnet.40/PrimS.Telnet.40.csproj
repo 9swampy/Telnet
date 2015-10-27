@@ -44,8 +44,14 @@
     <Compile Include="..\PrimS.Telnet\BaseClient.cs">
       <Link>BaseClient.cs</Link>
     </Compile>
+    <Compile Include="..\PrimS.Telnet\BaseClientCancellable.cs">
+      <Link>BaseClientCancellable.cs</Link>
+    </Compile>
     <Compile Include="..\PrimS.Telnet\ByteStreamHandler.cs">
       <Link>ByteStreamHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\PrimS.Telnet\ByteStreamHandlerCancellable.cs">
+      <Link>ByteStreamHandlerCancellable.cs</Link>
     </Compile>
     <Compile Include="..\PrimS.Telnet\Commands.cs">
       <Link>Commands.cs</Link>
@@ -63,6 +69,7 @@
       <Link>TcpByteStream.cs</Link>
     </Compile>
     <Compile Include="Client.cs" />
+    <Compile Include="ClientCancellable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

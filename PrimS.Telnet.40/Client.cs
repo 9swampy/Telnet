@@ -8,19 +8,8 @@ namespace PrimS.Telnet
   /// <summary>
   /// Basic Telnet client.
   /// </summary>
-  public class Client : BaseClient
+  public partial class Client : BaseClient
   {
-    /// <summary>
-    /// Initialises a new instance of the <see cref="Client"/> class.
-    /// </summary>
-    /// <param name="hostname">The hostname.</param>
-    /// <param name="port">The port.</param>
-    /// <param name="token">The token.</param>
-    public Client(string hostname, int port, CancellationToken token)
-      : base(new TcpByteStream(hostname, port), token)
-    {
-    }
-
     /// <summary>
     /// Tries to login asynchronously.
     /// </summary>
@@ -66,11 +55,9 @@ namespace PrimS.Telnet
     /// <param name="command">The command.</param>
     public void Write(string command)
     {
-      if (this.ByteStream.Connected && !this.InternalCancellation.Token.IsCancellationRequested)
+      if (this.ByteStream.Connected)
       {
-        this.SendRateLimit.Wait(this.InternalCancellation.Token);
         this.ByteStream.Write(command);
-        this.SendRateLimit.Release();
       }
     }
 
@@ -84,18 +71,7 @@ namespace PrimS.Telnet
     }
 
     /// <summary>
-    /// Reads from the stream.
-    /// </summary>
-    /// <param name="timeout">The timeout.</param>
-    /// <returns>Any text read from the stream.</returns>
-    public string Read(TimeSpan timeout)
-    {
-      ByteStreamHandler handler = new ByteStreamHandler(this.ByteStream, this.InternalCancellation);
-      return handler.Read(timeout);
-    }
-
-    /// <summary>
-    /// Reads asynchronously from the stream, terminating as soon as the <see cref="terminator"/> is located.
+    /// Reads asynchronously from the stream, terminating as soon as the <paramref name="terminator"/> is located.
     /// </summary>
     /// <param name="terminator">The terminator.</param>
     /// <returns>Any text read from the stream.</returns>
@@ -105,7 +81,7 @@ namespace PrimS.Telnet
     }
 
     /// <summary>
-    /// Reads asynchronously from the stream, terminating as soon as the <see cref="terminator"/> is located.
+    /// Reads asynchronously from the stream, terminating as soon as the <paramref name="terminator"/> is located.
     /// </summary>
     /// <param name="terminator">The terminator.</param>
     /// <param name="timeout">The timeout.</param>
@@ -116,7 +92,7 @@ namespace PrimS.Telnet
     }
 
     /// <summary>
-    /// Reads asynchronously from the stream, terminating as soon as the <see cref="terminator"/> is located.
+    /// Reads asynchronously from the stream, terminating as soon as the <paramref name="terminator"/> is located.
     /// </summary>
     /// <param name="terminator">The terminator.</param>
     /// <param name="timeout">The maximum time to wait.</param>

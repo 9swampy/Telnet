@@ -1,12 +1,12 @@
-﻿using System;
-using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using FluentAssertions;
-using System.Threading.Tasks;
-using System.Text.RegularExpressions;
-
-namespace PrimS.Telnet.CiTests
+﻿namespace PrimS.Telnet.CiTests
 {
+  using System;
+  using System.Linq;
+  using Microsoft.VisualStudio.TestTools.UnitTesting;
+  using FluentAssertions;
+  using System.Threading.Tasks;
+  using System.Text.RegularExpressions;
+
   [TestClass]
   public class WithClient
   {
@@ -62,7 +62,7 @@ namespace PrimS.Telnet.CiTests
           client.IsConnected.Should().Be(true);
           string s = await client.TerminatedReadAsync("Account:", TimeSpan.FromMilliseconds(TimeoutMs));
           s.Should().Contain("Account:");
-          client.WriteLine("username");
+          await client.WriteLine("username");
           s = await client.TerminatedReadAsync("Password:", TimeSpan.FromMilliseconds(TimeoutMs));
         }
       }
@@ -77,9 +77,9 @@ namespace PrimS.Telnet.CiTests
         {
           client.IsConnected.Should().Be(true);
           string s = await client.TerminatedReadAsync("Account:", TimeSpan.FromMilliseconds(TimeoutMs));
-          client.WriteLine("username");
+          await client.WriteLine("username");
           s = await client.TerminatedReadAsync("Password:", TimeSpan.FromMilliseconds(TimeoutMs));
-          client.WriteLine("password");
+          await client.WriteLine("password");
           s = await client.TerminatedReadAsync(">", TimeSpan.FromMilliseconds(TimeoutMs));
         }
       }
@@ -94,7 +94,7 @@ namespace PrimS.Telnet.CiTests
         {
           client.IsConnected.Should().Be(true);
           (await client.TryLoginAsync("username", "password", 1500)).Should().Be(true);
-          client.WriteLine("show statistic wan2");
+          await client.WriteLine("show statistic wan2");
           string s = await client.TerminatedReadAsync(">", TimeSpan.FromMilliseconds(TimeoutMs));
           s.Should().Contain(">");
           s.Should().Contain("WAN2");
@@ -124,7 +124,7 @@ namespace PrimS.Telnet.CiTests
         {
           client.IsConnected.Should().Be(true);
           (await client.TryLoginAsync("username", "password", TimeoutMs)).Should().Be(true);
-          client.WriteLine("show statistic wan2");
+          await client.WriteLine("show statistic wan2");
           string s = await client.TerminatedReadAsync(">", TimeSpan.FromMilliseconds(TimeoutMs));
           s.Should().Contain(">");
           s.Should().Contain("WAN2");
