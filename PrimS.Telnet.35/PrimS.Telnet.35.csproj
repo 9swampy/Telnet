@@ -4,59 +4,71 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{36BAFCF1-6905-4A3C-9D58-C2C33A882ABF}</ProjectGuid>
+    <ProjectGuid>{1592C110-381F-4B82-A804-00DC9B2130ED}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>PrimS.Telnet</RootNamespace>
-    <AssemblyName>PrimS.Telnet</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <AssemblyName>PrimS.Telnet.35</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <NuGetPackageImportStamp>ac18f1ae</NuGetPackageImportStamp>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <NuGetPackageImportStamp>d133a254</NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;ASYNC</DefineConstants>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>
-    </DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE;ASYNC</DefineConstants>
+    <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Release\PrimS.Telnet.XML</DocumentationFile>
+    <DocumentationFile>bin\Release\PrimS.Telnet.35.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="LiteGuard">
-      <HintPath>..\packages\LiteGuard.0.10.0\lib\net35\LiteGuard.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BaseClient.cs" />
-    <Compile Include="BaseClientCancellable.cs" />
-    <Compile Include="ByteStreamHandler.cs" />
-    <Compile Include="ByteStreamHandlerCancellable.cs" />
-    <Compile Include="Commands.cs" />
-    <Compile Include="IByteStream.cs" />
-    <Compile Include="IByteStreamHandler.cs" />
-    <Compile Include="Options.cs" />
+    <Compile Include="..\PrimS.Telnet.40\Client.cs">
+      <Link>Client.cs</Link>
+    </Compile>
+    <Compile Include="..\PrimS.Telnet\BaseClient.cs">
+      <Link>BaseClient.cs</Link>
+    </Compile>
+    <Compile Include="..\PrimS.Telnet\ByteStreamHandler.cs">
+      <Link>ByteStreamHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\PrimS.Telnet\Commands.cs">
+      <Link>Commands.cs</Link>
+    </Compile>
+    <Compile Include="..\PrimS.Telnet\IByteStream.cs">
+      <Link>IByteStream.cs</Link>
+    </Compile>
+    <Compile Include="..\PrimS.Telnet\IByteStreamHandler.cs">
+      <Link>IByteStreamHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\PrimS.Telnet\Options.cs">
+      <Link>Options.cs</Link>
+    </Compile>
+    <Compile Include="..\PrimS.Telnet\TcpByteStream.cs">
+      <Link>TcpByteStream.cs</Link>
+    </Compile>
+    <Compile Include="BaseClientUncancellable.cs" />
+    <Compile Include="ByteStreamHandlerUncancellable.cs" />
+    <Compile Include="ClientUncancellable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Client.cs" />
-    <Compile Include="TcpByteStream.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

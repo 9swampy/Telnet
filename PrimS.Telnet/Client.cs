@@ -69,10 +69,10 @@ namespace PrimS.Telnet
       {
         if (await this.IsTerminatedWith(loginTimeOutMs, ":"))
         {
-          this.WriteLine(username);
+          await this.WriteLine(username);
           if (await this.IsTerminatedWith(loginTimeOutMs, ":"))
           {
-            this.WriteLine(password);
+            await this.WriteLine(password);
           }
 
           return await this.IsTerminatedWith(loginTimeOutMs, ">");
@@ -90,6 +90,7 @@ namespace PrimS.Telnet
     /// Writes the line to the server.
     /// </summary>
     /// <param name="command">The command.</param>
+    /// <returns>An awaitable Task.</returns>
     public async Task WriteLine(string command)
     {
       await this.Write(string.Format("{0}\n", command));
@@ -111,7 +112,7 @@ namespace PrimS.Telnet
     }
 
     /// <summary>
-    /// Reads asynchronously from the stream, terminating as soon as the <see cref="terminator"/> is located.
+    /// Reads asynchronously from the stream, terminating as soon as the <paramref name="terminator"/> is located.
     /// </summary>
     /// <param name="terminator">The terminator.</param>
     /// <returns>Any text read from the stream.</returns>
@@ -121,7 +122,7 @@ namespace PrimS.Telnet
     }
 
     /// <summary>
-    /// Reads asynchronously from the stream, terminating as soon as the <see cref="terminator"/> is located.
+    /// Reads asynchronously from the stream, terminating as soon as the <paramref name="terminator"/> is located.
     /// </summary>
     /// <param name="terminator">The terminator.</param>
     /// <param name="timeout">The timeout.</param>
@@ -132,7 +133,7 @@ namespace PrimS.Telnet
     }
 
     /// <summary>
-    /// Reads asynchronously from the stream, terminating as soon as the <see cref="terminator"/> is located.
+    /// Reads asynchronously from the stream, terminating as soon as the <paramref name="terminator"/> is located.
     /// </summary>
     /// <param name="terminator">The terminator.</param>
     /// <param name="timeout">The maximum time to wait.</param>
