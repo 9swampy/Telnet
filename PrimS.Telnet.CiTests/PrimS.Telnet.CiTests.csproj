@@ -63,6 +63,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="ByteStreamHandlerTests.cs" />
+    <Compile Include="TelnetServerTests.cs" />
     <Compile Include="TelnetServer.cs" />
     <Compile Include="WithClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

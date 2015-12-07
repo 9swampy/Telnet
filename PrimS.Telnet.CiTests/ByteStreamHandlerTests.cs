@@ -1,12 +1,14 @@
 ﻿namespace PrimS.Telnet.CiTests
 {
   using System;
+  using System.Diagnostics.CodeAnalysis;
   using System.Threading;
   using System.Threading.Tasks;
   using FakeItEasy;
   using FluentAssertions;
   using Microsoft.VisualStudio.TestTools.UnitTesting;
 
+  [ExcludeFromCodeCoverage]
   [TestClass]
   public class ByteStreamHandlerTests
   {

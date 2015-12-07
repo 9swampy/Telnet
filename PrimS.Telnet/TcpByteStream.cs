@@ -1,7 +1,6 @@
 namespace PrimS.Telnet
 {
   using System;
-  using System.Net.Sockets;
 #if ASYNC
   using System.Threading.Tasks;
 #endif
@@ -9,9 +8,9 @@ namespace PrimS.Telnet
   /// <summary>
   /// A ByteStream acting over a TCP channel.
   /// </summary>
-  public class TcpByteStream : IByteStream
+  public class TcpByteStream : IByteStream, IDisposable
   {
-    private readonly TcpClient tcpSocket;
+    private readonly ISocket tcpSocket;
 
     /// <summary>
     /// Initialises a new instance of the <see cref="TcpByteStream"/> class.
@@ -20,11 +19,25 @@ namespace PrimS.Telnet
     /// <param name="port">The port.</param>
     public TcpByteStream(string hostname, int port)
     {
-      this.tcpSocket = new TcpClient(hostname, port);
+      this.tcpSocket = new PrimS.Telnet.TcpClient(hostname, port);
 #if ASYNC
 #else
       System.Threading.Thread.Sleep(20);
 #endif
+    }
+
+    private void Dispose(bool isDisposing)
+    {
+      if (isDisposing)
+      {
+        this.Close();
+      }
+    }
+
+    public void Dispose()
+    {
+      this.Dispose(true);
+      GC.SuppressFinalize(this);
     }
 
     /// <summary>

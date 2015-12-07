@@ -10,7 +10,8 @@
   {
     private readonly System.Threading.Thread t;
 
-    public TelnetServer() : base(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)
+    public TelnetServer()
+      : base(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)
     {
       this.IsListening = true;
 

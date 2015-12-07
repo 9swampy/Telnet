@@ -6,7 +6,9 @@
   using FluentAssertions;
   using System.Threading.Tasks;
   using System.Text.RegularExpressions;
+  using System.Diagnostics.CodeAnalysis;
 
+  [ExcludeFromCodeCoverage]
   [TestClass]
   public class WithClient
   {
