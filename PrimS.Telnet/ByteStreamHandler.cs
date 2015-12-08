@@ -2,7 +2,6 @@ namespace PrimS.Telnet
 {
   using System;
   using System.Text;
-  using System.Threading;
 #if ASYNC
   using System.Threading.Tasks;
 #endif
@@ -47,7 +46,7 @@ namespace PrimS.Telnet
       return sb.Length == 0 && DateTime.Now < endInitialTimeout;
     }
 
-    private bool ParseResponse(StringBuilder sb)
+    private bool RetrieveAndParseResponse(StringBuilder sb)
     {
       if (this.IsResponsePending)
       {

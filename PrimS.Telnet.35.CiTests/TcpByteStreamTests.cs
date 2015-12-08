@@ -8,16 +8,6 @@
   public class TcpByteStreamTests
   {
     [TestMethod]
-    public void TelnetServerShouldTerminateAndReleaseDebuggingContext()
-    {
-      TelnetServer server;
-      using (server = new TelnetServer())
-      {
-      }
-      server.IsListening.Should().BeFalse();
-    }
-
-    [TestMethod]
     public void TcpByteStreamShouldTerminateAndReleaseDebuggingContext()
     {
       using (TelnetServer server = new TelnetServer())
@@ -41,7 +31,7 @@
         sut.Dispose();
       }
     }
-    
+
     [TestMethod]
     public void ReceiveTimeoutShouldBeDefaultTo0()
     {

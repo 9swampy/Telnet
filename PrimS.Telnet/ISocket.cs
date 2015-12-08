@@ -2,11 +2,10 @@
 {
   using System;
   using System.Linq;
-  using System.Net.Sockets;
 
   public interface ISocket
   {
-    NetworkStream GetStream();
+    INetworkStream GetStream();
 
     bool Connected { get; }
 

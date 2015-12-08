@@ -47,7 +47,7 @@
       DateTime rollingTimeout = ExtendRollingTimeout(timeout);
       do
       {
-        if (this.ParseResponse(sb))
+        if (this.RetrieveAndParseResponse(sb))
         {
           rollingTimeout = ExtendRollingTimeout(timeout);
         }

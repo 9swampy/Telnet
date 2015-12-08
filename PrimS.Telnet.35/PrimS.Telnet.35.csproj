@@ -59,8 +59,14 @@
     <Compile Include="..\PrimS.Telnet\IByteStreamHandler.cs">
       <Link>IByteStreamHandler.cs</Link>
     </Compile>
+    <Compile Include="..\PrimS.Telnet\INetworkStream.cs">
+      <Link>INetworkStream.cs</Link>
+    </Compile>
     <Compile Include="..\PrimS.Telnet\ISocket.cs">
       <Link>ISocket.cs</Link>
+    </Compile>
+    <Compile Include="..\PrimS.Telnet\NetworkStream.cs">
+      <Link>NetworkStream.cs</Link>
     </Compile>
     <Compile Include="..\PrimS.Telnet\Options.cs">
       <Link>Options.cs</Link>

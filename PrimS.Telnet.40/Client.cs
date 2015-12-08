@@ -1,7 +1,6 @@
 namespace PrimS.Telnet
 {
   using System;
-  using System.Threading;
 
   // Referencing https://support.microsoft.com/kb/231866?wa=wsignin1.0 and http://www.codeproject.com/Articles/19071/Quick-tool-A-minimalistic-Telnet-library got me started
 
@@ -11,7 +10,7 @@ namespace PrimS.Telnet
   public partial class Client : BaseClient
   {
     /// <summary>
-    /// Tries to login asynchronously.
+    /// Tries to login.
     /// </summary>
     /// <param name="username">The username.</param>
     /// <param name="password">The password.</param>

@@ -1,11 +1,13 @@
 ﻿namespace PrimS.Telnet.CiTests
 {
   using System;
+  using System.Diagnostics.CodeAnalysis;
   using System.Linq;
   using System.Net;
   using System.Net.Sockets;
   using System.Text;
 
+  [ExcludeFromCodeCoverage]
   public class TelnetServer : System.Net.Sockets.Socket
   {
     private readonly System.Threading.Thread t;

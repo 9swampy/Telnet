@@ -10,7 +10,7 @@ namespace PrimS.Telnet
   /// </summary>
   public class TcpByteStream : IByteStream, IDisposable
   {
-    private readonly ISocket tcpSocket;
+    private readonly ISocket socket;
 
     /// <summary>
     /// Initialises a new instance of the <see cref="TcpByteStream"/> class.
@@ -18,8 +18,17 @@ namespace PrimS.Telnet
     /// <param name="hostname">The hostname.</param>
     /// <param name="port">The port.</param>
     public TcpByteStream(string hostname, int port)
+      :this(new PrimS.Telnet.TcpClient(hostname, port))
     {
-      this.tcpSocket = new PrimS.Telnet.TcpClient(hostname, port);
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="TcpByteStream"/> class.
+    /// </summary>
+    /// <param name="tcpSocket">The TCP socket.</param>
+    internal TcpByteStream(ISocket tcpSocket)
+    {
+      this.socket = tcpSocket;
 #if ASYNC
 #else
       System.Threading.Thread.Sleep(20);
@@ -50,7 +59,7 @@ namespace PrimS.Telnet
     {
       get
       {
-        return this.tcpSocket.Available;
+        return this.socket.Available;
       }
     }
 
@@ -64,7 +73,7 @@ namespace PrimS.Telnet
     {
       get
       {
-        return this.tcpSocket.Connected;
+        return this.socket.Connected;
       }
     }
 
@@ -78,12 +87,12 @@ namespace PrimS.Telnet
     {
       get
       {
-        return this.tcpSocket.ReceiveTimeout;
+        return this.socket.ReceiveTimeout;
       }
 
       set
       {
-        this.tcpSocket.ReceiveTimeout = value;
+        this.socket.ReceiveTimeout = value;
       }
     }
 
@@ -95,7 +104,7 @@ namespace PrimS.Telnet
     /// </returns>
     public int ReadByte()
     {
-      return this.tcpSocket.GetStream().ReadByte();
+      return this.socket.GetStream().ReadByte();
     }
 
     /// <summary>
@@ -104,7 +113,7 @@ namespace PrimS.Telnet
     /// <param name="value">The byte to write to the stream.</param>
     public void WriteByte(byte value)
     {
-      this.tcpSocket.GetStream().WriteByte(value);
+      this.socket.GetStream().WriteByte(value);
     }
 
 #if ASYNC
@@ -120,7 +129,7 @@ namespace PrimS.Telnet
     /// </returns>
     public Task WriteAsync(byte[] buffer, int offset, int count, System.Threading.CancellationToken cancellationToken)
     {
-      return this.tcpSocket.GetStream().WriteAsync(buffer, offset, count, cancellationToken);
+      return this.socket.GetStream().WriteAsync(buffer, offset, count, cancellationToken);
     }
 #else    
     /// <summary>
@@ -131,7 +140,7 @@ namespace PrimS.Telnet
     /// <param name="count">The count.</param>
     public void Write(byte[] buffer, int offset, int count)
     {
-      this.tcpSocket.GetStream().Write(buffer, offset, count);
+      this.socket.GetStream().Write(buffer, offset, count);
     }
 #endif
 
@@ -145,7 +154,7 @@ namespace PrimS.Telnet
     public Task WriteAsync(string command, System.Threading.CancellationToken cancellationToken)
     {
       byte[] buffer = ConvertStringToByteArray(command);
-      return this.tcpSocket.GetStream().WriteAsync(buffer, 0, buffer.Length, cancellationToken);
+      return this.socket.GetStream().WriteAsync(buffer, 0, buffer.Length, cancellationToken);
     }
 #else    
     /// <summary>
@@ -155,7 +164,7 @@ namespace PrimS.Telnet
     public void Write(string command)
     {        
       byte[] buffer = ConvertStringToByteArray(command);
-      this.tcpSocket.GetStream().Write(buffer, 0, buffer.Length);
+      this.socket.GetStream().Write(buffer, 0, buffer.Length);
     }
 #endif
 
@@ -164,7 +173,7 @@ namespace PrimS.Telnet
     /// </summary>
     public void Close()
     {
-      this.tcpSocket.Close();
+      this.socket.Close();
     }
 
     private static byte[] ConvertStringToByteArray(string command)

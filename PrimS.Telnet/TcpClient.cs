@@ -2,7 +2,7 @@
 {
   using System;
   using System.Linq;
-  using System.Net.Sockets;
+  //using System.Net.Sockets;
 
   public class TcpClient : ISocket
   {
@@ -46,9 +46,9 @@
       }
     }
 
-    public NetworkStream GetStream()
+    public INetworkStream GetStream()
     {
-      return this.client.GetStream();
+      return new NetworkStream(this.client.GetStream());
     }
   }
 }

@@ -22,7 +22,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;ASYNC</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -62,7 +62,11 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="..\PrimS.Telnet.35.CiTests\TcpByteStreamTests.cs">
+      <Link>TcpByteStreamTests.cs</Link>
+    </Compile>
     <Compile Include="ByteStreamHandlerTests.cs" />
+    <Compile Include="AsyncTcpByteStreamTests.cs" />
     <Compile Include="TelnetServerTests.cs" />
     <Compile Include="TelnetServer.cs" />
     <Compile Include="WithClient.cs" />

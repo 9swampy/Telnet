@@ -108,7 +108,7 @@
         using (Client client = new Client(server.IPAddress.ToString(), server.Port, new System.Threading.CancellationToken()))
         {
           client.IsConnected.Should().Be(true);
-          (client.TryLogin("username", "password", TimeoutMs)).Should().Be(true);
+          client.TryLogin("username", "password", TimeoutMs).Should().Be(true);
         }
       }
     }
