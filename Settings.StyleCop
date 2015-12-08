@@ -8,6 +8,7 @@
       <Value>bootstrapper</Value>
       <Value>multiselector</Value>
       <Value>proxied</Value>
+      <Value>Tcp</Value>
     </CollectionProperty>
     <StringProperty Name="Culture">en-GB</StringProperty>
   </GlobalSettings>

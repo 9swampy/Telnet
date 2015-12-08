@@ -13,7 +13,7 @@ namespace PrimS.Telnet
     private readonly ISocket socket;
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="TcpByteStream"/> class.
+    /// Initialises a new instance of the <see cref="TcpByteStream" /> class. 
     /// </summary>
     /// <param name="hostname">The hostname.</param>
     /// <param name="port">The port.</param>
@@ -23,7 +23,7 @@ namespace PrimS.Telnet
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="TcpByteStream"/> class.
+    /// Initialises a new instance of the <see cref="TcpByteStream" /> class.
     /// </summary>
     /// <param name="tcpSocket">The TCP socket.</param>
     internal TcpByteStream(ISocket tcpSocket)
@@ -33,20 +33,6 @@ namespace PrimS.Telnet
 #else
       System.Threading.Thread.Sleep(20);
 #endif
-    }
-
-    private void Dispose(bool isDisposing)
-    {
-      if (isDisposing)
-      {
-        this.Close();
-      }
-    }
-
-    public void Dispose()
-    {
-      this.Dispose(true);
-      GC.SuppressFinalize(this);
     }
 
     /// <summary>
@@ -176,10 +162,27 @@ namespace PrimS.Telnet
       this.socket.Close();
     }
 
+    /// <summary>
+    /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+    /// </summary>
+    public void Dispose()
+    {
+      this.Dispose(true);
+      GC.SuppressFinalize(this);
+    }
+
     private static byte[] ConvertStringToByteArray(string command)
     {
       byte[] buffer = System.Text.ASCIIEncoding.ASCII.GetBytes(command.Replace("\0xFF", "\0xFF\0xFF"));
       return buffer;
+    }
+
+    private void Dispose(bool isDisposing)
+    {
+      if (isDisposing)
+      {
+        this.Close();
+      }
     }
   }
 }
