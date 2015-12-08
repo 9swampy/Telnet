@@ -14,4 +14,4 @@ using System.Runtime.InteropServices;
 [assembly: Guid("bd1095df-d41c-491a-b9c2-44568781c2f1")]
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
-[assembly: InternalsVisibleTo("PrimS.Telnet.CiTest")]
+[assembly: InternalsVisibleTo("PrimS.Telnet.CiTests")]

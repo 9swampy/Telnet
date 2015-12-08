@@ -59,11 +59,23 @@
     <Compile Include="..\PrimS.Telnet\IByteStreamHandler.cs">
       <Link>IByteStreamHandler.cs</Link>
     </Compile>
+    <Compile Include="..\PrimS.Telnet\INetworkStream.cs">
+      <Link>INetworkStream.cs</Link>
+    </Compile>
+    <Compile Include="..\PrimS.Telnet\ISocket.cs">
+      <Link>ISocket.cs</Link>
+    </Compile>
+    <Compile Include="..\PrimS.Telnet\NetworkStream.cs">
+      <Link>NetworkStream.cs</Link>
+    </Compile>
     <Compile Include="..\PrimS.Telnet\Options.cs">
       <Link>Options.cs</Link>
     </Compile>
     <Compile Include="..\PrimS.Telnet\TcpByteStream.cs">
       <Link>TcpByteStream.cs</Link>
+    </Compile>
+    <Compile Include="..\PrimS.Telnet\TcpClient.cs">
+      <Link>TcpClient.cs</Link>
     </Compile>
     <Compile Include="BaseClientUncancellable.cs" />
     <Compile Include="ByteStreamHandlerUncancellable.cs" />

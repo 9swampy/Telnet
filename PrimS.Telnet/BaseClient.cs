@@ -1,7 +1,6 @@
 namespace PrimS.Telnet
 {
   using System;
-  using System.Threading;
 
   /// <summary>
   /// The base class for Clients.
