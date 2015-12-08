@@ -5,14 +5,14 @@
 
   public interface ISocket
   {
-    INetworkStream GetStream();
-
     bool Connected { get; }
-
-    void Close();
 
     int Available { get; }
 
     int ReceiveTimeout { get; set; }
+
+    INetworkStream GetStream();
+
+    void Close();
   }
 }

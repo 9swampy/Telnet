@@ -12,20 +12,6 @@
       this.client = new System.Net.Sockets.TcpClient(hostname, port);
     }
 
-    public void Dispose()
-    {
-      this.Dispose(true);
-      GC.SuppressFinalize(this);
-    }
-
-    private void Dispose(bool isDisposing)
-    {
-      if (isDisposing)
-      {
-        this.client.Close();
-      }
-    }
-
     public int ReceiveTimeout
     {
       get
@@ -46,11 +32,6 @@
       }
     }
 
-    public void Close()
-    {
-      this.client.Close();
-    }
-
     public int Available
     {
       get
@@ -59,9 +40,28 @@
       }
     }
 
+    public void Dispose()
+    {
+      this.Dispose(true);
+      GC.SuppressFinalize(this);
+    }
+
+    public void Close()
+    {
+      this.client.Close();
+    }
+
     public INetworkStream GetStream()
     {
       return new NetworkStream(this.client.GetStream());
+    }
+
+    private void Dispose(bool isDisposing)
+    {
+      if (isDisposing)
+      {
+        this.client.Close();
+      }
     }
   }
 }

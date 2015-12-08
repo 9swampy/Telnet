@@ -18,7 +18,7 @@ namespace PrimS.Telnet
     /// <param name="hostname">The hostname.</param>
     /// <param name="port">The port.</param>
     public TcpByteStream(string hostname, int port)
-      :this(new PrimS.Telnet.TcpClient(hostname, port))
+      : this(new PrimS.Telnet.TcpClient(hostname, port))
     {
     }
 
