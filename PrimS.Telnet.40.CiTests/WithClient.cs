@@ -1,9 +1,11 @@
-﻿using FluentAssertions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-
-namespace PrimS.Telnet.CiTests
+﻿namespace PrimS.Telnet.CiTests
 {
+  using FluentAssertions;
+  using Microsoft.VisualStudio.TestTools.UnitTesting;
+  using System;
+  using System.Diagnostics.CodeAnalysis;
+
+  [ExcludeFromCodeCoverage]
   [TestClass]
   public class WithClient
   {
@@ -106,7 +108,7 @@ namespace PrimS.Telnet.CiTests
         using (Client client = new Client(server.IPAddress.ToString(), server.Port, new System.Threading.CancellationToken()))
         {
           client.IsConnected.Should().Be(true);
-          (client.TryLogin("username", "password", TimeoutMs)).Should().Be(true);
+          client.TryLogin("username", "password", TimeoutMs).Should().Be(true);
         }
       }
     }

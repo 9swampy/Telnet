@@ -10,9 +10,9 @@
     <projectUrl>https://github.com/9swampy/Telnet/</projectUrl>
     <iconUrl>https://raw.githubusercontent.com/9swampy/Telnet/master/Ptelnet128x600.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>A minimal C# 3.5/4.0/4.5 Telnet client library implementation, just enough to send simple text commands from your application, retrieve the response for parsing and react appropriately.</description>
+    <description>A minimal C# 3.5/4.0/4.5 Telnet client library implementation; just enough to send simple text commands from your application, retrieve the response for parsing and react appropriately.</description>
     <releaseNotes>
-      Add Net3.5 target.
+      Implement IDisposable to fix TcpByteStream leak.
     </releaseNotes>
     <copyright>Copyright (c) 9swampy, Telnet contributors</copyright>
     <tags>Telnet</tags>

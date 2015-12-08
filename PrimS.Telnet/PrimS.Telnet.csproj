@@ -53,10 +53,14 @@
     <Compile Include="Commands.cs" />
     <Compile Include="IByteStream.cs" />
     <Compile Include="IByteStreamHandler.cs" />
+    <Compile Include="INetworkStream.cs" />
+    <Compile Include="ISocket.cs" />
+    <Compile Include="NetworkStream.cs" />
     <Compile Include="Options.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Client.cs" />
     <Compile Include="TcpByteStream.cs" />
+    <Compile Include="TcpClient.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

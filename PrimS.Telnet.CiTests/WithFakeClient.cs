@@ -1,12 +1,15 @@
 ﻿namespace PrimS.Telnet.CiTests
 {
   using System;
+  using System.Diagnostics;
+  using System.Diagnostics.CodeAnalysis;
   using System.Threading;
   using System.Threading.Tasks;
   using FakeItEasy;
   using FluentAssertions;
   using Microsoft.VisualStudio.TestTools.UnitTesting;
 
+  [ExcludeFromCodeCoverage]
   [TestClass]
   public class WithFakeClient
   {
@@ -40,11 +43,11 @@
     [TestMethod]
     public async Task ShouldWaitRoughlyOneMillisecondSpin()
     {
-      DateTime start = DateTime.Now;
-      int millisecondsTimeout = 50;
-      TimeSpan timeout = TimeSpan.FromMilliseconds(millisecondsTimeout);
-      await sut.TerminatedReadAsync(".", new TimeSpan(0, 0, 0, 0, 1), millisecondsTimeout);
-      DateTime.Now.Subtract(start).Should().BeCloseTo(timeout, 35);
+      Stopwatch stopwatch = new Stopwatch();
+      stopwatch.Start();
+      int millisecondsSpin = 150;
+      await sut.TerminatedReadAsync(".", new TimeSpan(0, 0, 0, 0, 10), millisecondsSpin);
+      stopwatch.Elapsed.Should().BeCloseTo(TimeSpan.FromMilliseconds(millisecondsSpin), 70);
     }
   }
 }
