@@ -2,15 +2,28 @@
 {
   using System;
   using System.Linq;
-  //using System.Net.Sockets;
 
-  public class TcpClient : ISocket
+  public class TcpClient : ISocket, IDisposable
   {
     private readonly System.Net.Sockets.TcpClient client;
 
     public TcpClient(string hostname, int port)
     {
       this.client = new System.Net.Sockets.TcpClient(hostname, port);
+    }
+
+    public void Dispose()
+    {
+      this.Dispose(true);
+      GC.SuppressFinalize(this);
+    }
+
+    private void Dispose(bool isDisposing)
+    {
+      if (isDisposing)
+      {
+        this.client.Close();
+      }
     }
 
     public int ReceiveTimeout
