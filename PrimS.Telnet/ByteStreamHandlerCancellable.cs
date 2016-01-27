@@ -28,14 +28,14 @@
     /// <summary>
     /// Reads asynchronously from the stream.
     /// </summary>
-    /// <param name="timeout">The timeout.</param>
+    /// <param name="timeout">The rolling timeout to wait for no further response from stream.</param>
     /// <returns>Any text read from the stream.</returns>
     public async Task<string> ReadAsync(TimeSpan timeout)
 #else
     /// <summary>
     /// Reads from the stream.
     /// </summary>
-    /// <param name="timeout">The timeout.</param>
+    /// <param name="timeout">The rolling timeout to wait for no further response from stream.</param>
     /// <returns>Any text read from the stream.</returns>
     public string Read(TimeSpan timeout)
 #endif

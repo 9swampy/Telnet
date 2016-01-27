@@ -15,10 +15,12 @@ namespace PrimS.Telnet.CiTests
     public void ShouldTimeoutOnCtor()
     {
       IByteStream byteStream = A.Fake<IByteStream>();
-      Client sut;
+      A.CallTo(() => byteStream.Connected).Returns(false);
+      Client sut = null;
       Action act = () => sut = new Client(byteStream, default(CancellationToken), new TimeSpan(0, 0, 0, 0, 1));
 
       act.ShouldThrow<InvalidOperationException>().WithMessage("Unable to connect to the host.");
+      sut.Should().BeNull();
     }
   }
 }

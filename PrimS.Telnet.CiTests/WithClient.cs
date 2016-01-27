@@ -78,11 +78,11 @@
         using (Client client = new Client(server.IPAddress.ToString(), server.Port, new System.Threading.CancellationToken()))
         {
           client.IsConnected.Should().Be(true);
-          string s = await client.TerminatedReadAsync("Account:", TimeSpan.FromMilliseconds(TimeoutMs));
+          await client.TerminatedReadAsync("Account:", TimeSpan.FromMilliseconds(TimeoutMs));
           await client.WriteLine("username");
-          s = await client.TerminatedReadAsync("Password:", TimeSpan.FromMilliseconds(TimeoutMs));
+          await client.TerminatedReadAsync("Password:", TimeSpan.FromMilliseconds(TimeoutMs));
           await client.WriteLine("password");
-          s = await client.TerminatedReadAsync(">", TimeSpan.FromMilliseconds(TimeoutMs));
+          await client.TerminatedReadAsync(">", TimeSpan.FromMilliseconds(TimeoutMs));
         }
       }
     }
@@ -98,6 +98,23 @@
           (await client.TryLoginAsync("username", "password", 1500)).Should().Be(true);
           await client.WriteLine("show statistic wan2");
           string s = await client.TerminatedReadAsync(">", TimeSpan.FromMilliseconds(TimeoutMs));
+          s.Should().Contain(">");
+          s.Should().Contain("WAN2");
+        }
+      }
+    }
+
+    [TestMethod, Timeout(5000)]
+    public async Task ShouldRespondWithWan2InfoRegexTerminated()
+    {
+      using (TelnetServer server = new TelnetServer())
+      {
+        using (Client client = new Client(server.IPAddress.ToString(), server.Port, new System.Threading.CancellationToken()))
+        {
+          client.IsConnected.Should().Be(true);
+          (await client.TryLoginAsync("username", "password", 1500)).Should().Be(true);
+          await client.WriteLine("show statistic wan2");
+          string s = await client.TerminatedReadAsync(new Regex(".*>$"), TimeSpan.FromMilliseconds(TimeoutMs));
           s.Should().Contain(">");
           s.Should().Contain("WAN2");
         }

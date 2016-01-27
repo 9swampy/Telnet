@@ -1,6 +1,7 @@
 namespace PrimS.Telnet
 {
   using System;
+  using System.Text.RegularExpressions;
 
   /// <summary>
   /// The base class for Clients.
@@ -56,6 +57,17 @@ namespace PrimS.Telnet
     protected static bool IsTerminatorLocated(string terminator, string s)
     {
       return s.TrimEnd().EndsWith(terminator);
+    }
+
+    /// <summary>
+    /// Determines whether the specified Regex has been located.
+    /// </summary>
+    /// <param name="regex">The Regex to search for.</param>
+    /// <param name="s">The content to search for the <paramref name="regex"/>.</param>
+    /// <returns>True if the Regex is matched, otherwise false.</returns>
+    protected static bool IsRegexLocated(Regex regex, string s)
+    {
+      return regex.IsMatch(s);
     }
   }
 }
