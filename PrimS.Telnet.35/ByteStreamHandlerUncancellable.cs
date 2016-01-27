@@ -2,7 +2,6 @@
 {
   using System;
   using System.Text;
-  using System.Threading;
 #if ASYNC
   using System.Threading.Tasks;
 #endif

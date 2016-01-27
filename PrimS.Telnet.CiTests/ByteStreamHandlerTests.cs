@@ -1,9 +1,12 @@
 ﻿namespace PrimS.Telnet.CiTests
 {
   using System;
+  using System.Diagnostics;
   using System.Diagnostics.CodeAnalysis;
   using System.Threading;
+#if ASYNC
   using System.Threading.Tasks;
+#endif
   using FakeItEasy;
   using FluentAssertions;
   using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -347,6 +350,43 @@
       response.Should().BeEmpty();
       A.CallTo(() => networkStream.WriteByte((byte)Commands.InterpretAsCommand)).MustHaveHappened();
       A.CallTo(() => networkStream.WriteByte((byte)Commands.Do)).MustHaveHappened();
+    }
+
+    [TestMethod]
+#if ASYNC
+    public async Task ByteStreamShouldReturnUponCancellation()
+#else
+    public void ByteStreamShouldReturnUponCancellation()
+#endif
+    {
+      ISocket socket = A.Fake<ISocket>();
+      INetworkStream networkStream = A.Fake<INetworkStream>();
+      A.CallTo(() => socket.GetStream()).Returns(networkStream);
+      A.CallTo(() => socket.Connected).Returns(true);
+      A.CallTo(() => socket.Available).Returns(1);
+      TcpByteStream tcpByteStream = new TcpByteStream(socket);
+      A.CallTo(() => networkStream.ReadByte()).Returns(142);
+      tcpByteStream.Connected.Should().BeTrue();
+      CancellationTokenSource cancellationToken = new CancellationTokenSource();
+
+      Stopwatch stopwatch = new Stopwatch();
+      ByteStreamHandler sut = new ByteStreamHandler(tcpByteStream, cancellationToken);
+
+#if ASYNC
+      cancellationToken.CancelAfter(100);
+      await sut.ReadAsync(TimeSpan.FromMilliseconds(1000));
+#else
+      Thread t = new Thread(new ThreadStart(() =>
+      {
+        AutoResetEvent are = new AutoResetEvent(false);
+        are.WaitOne(100);
+        cancellationToken.Cancel();
+      }));
+      t.Start();
+      sut.Read(TimeSpan.FromMilliseconds(1000));
+#endif
+
+      stopwatch.ElapsedMilliseconds.Should().BeLessThan(500);
     }
   }
 }
