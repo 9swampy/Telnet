@@ -1,6 +1,7 @@
 namespace PrimS.Telnet
 {
   using System;
+  using System.Text.RegularExpressions;
   using System.Threading;
   using System.Threading.Tasks;
   using LiteGuard;
@@ -137,6 +138,17 @@ namespace PrimS.Telnet
     /// Reads asynchronously from the stream, terminating as soon as the <paramref name="terminator"/> is located.
     /// </summary>
     /// <param name="terminator">The terminator.</param>
+    /// <param name="timeout">The timeout.</param>
+    /// <returns>Any text read from the stream.</returns>
+    public async Task<string> TerminatedReadAsync(Regex regex, TimeSpan timeout)
+    {
+      return await this.TerminatedReadAsync(regex, timeout, 1);
+    }
+
+    /// <summary>
+    /// Reads asynchronously from the stream, terminating as soon as the <paramref name="terminator"/> is located.
+    /// </summary>
+    /// <param name="terminator">The terminator.</param>
     /// <param name="timeout">The maximum time to wait.</param>
     /// <param name="millisecondSpin">The millisecond spin between each read from the stream.</param>
     /// <returns>Any text read from the stream.</returns>
@@ -152,6 +164,30 @@ namespace PrimS.Telnet
       if (!Client.IsTerminatorLocated(terminator, s))
       {
         System.Diagnostics.Debug.Print("Failed to terminate '{0}' with '{1}'", s, terminator);
+      }
+
+      return s;
+    }
+
+    /// <summary>
+    /// Reads asynchronously from the stream, terminating as soon as the <paramref name="regex"/> is matched.
+    /// </summary>
+    /// <param name="regex">The regex to match.</param>
+    /// <param name="timeout">The maximum time to wait.</param>
+    /// <param name="millisecondSpin">The millisecond spin between each read from the stream.</param>
+    /// <returns>Any text read from the stream.</returns>
+    public async Task<string> TerminatedReadAsync(Regex regex, TimeSpan timeout, int millisecondSpin)
+    {
+      DateTime endTimeout = DateTime.Now.Add(timeout);
+      string s = string.Empty;
+      while (!Client.IsRegexLocated(regex, s) && endTimeout >= DateTime.Now)
+      {
+        s += await this.ReadAsync(TimeSpan.FromMilliseconds(1));
+      }
+
+      if (!Client.IsRegexLocated(regex, s))
+      {
+        System.Diagnostics.Debug.Print(string.Format("Failed to match '{0}' with '{1}'", s, regex.ToString()));
       }
 
       return s;

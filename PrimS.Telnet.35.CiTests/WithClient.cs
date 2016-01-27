@@ -1,8 +1,10 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
-namespace PrimS.Telnet.CiTests
+﻿namespace PrimS.Telnet.CiTests
 {
+  using System;
+  using System.Text.RegularExpressions;
+  using Microsoft.VisualStudio.TestTools.UnitTesting;
+  using FluentAssertions;
+
   [TestClass]
   public class WithClient
   {
@@ -33,6 +35,70 @@ namespace PrimS.Telnet.CiTests
       }
     }
 
+    [TestMethod]
+    public void ShouldRegexMatchColonTerminated()
+    {
+      Regex regex = new Regex(".*(:)$");
+      regex.IsMatch("blah:").Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void ShouldRegexMatchTwoLines()
+    {
+      string content = string.Format("blah:{0}blah", Environment.NewLine);
+      Regex regex = new Regex("^.*$", RegexOptions.Multiline);
+      regex.IsMatch(content).Should().BeTrue();
+      regex.Matches(content).Count.Should().Be(2);
+    }
+
+    [TestMethod]
+    public void ShouldRegexMatchColonTerminatedFirstMultilineSlashRSlashNTerminated()
+    {
+      string content = string.Format("blah:{0}blah", "\r\n");
+      Regex regex = new Regex(".*:\r?$", RegexOptions.Multiline);
+      regex.IsMatch(content).Should().BeTrue();
+      regex.Matches(content).Count.Should().Be(1);
+    }
+
+    [TestMethod]
+    public void ShouldRegexMatchColonTerminatedFirstMultilineNewLineTerminated()
+    {
+      string content = string.Format("blah:{0}blah", Environment.NewLine);
+      Regex regex = new Regex(".*:\r?$", RegexOptions.Multiline);
+      regex.IsMatch(content).Should().BeTrue();
+      regex.Matches(content).Count.Should().Be(1);
+    }
+
+    [TestMethod]
+    public void ShouldRegexMatchColonTerminatedFirstMultilineSlashNTerminated()
+    {
+      string content = string.Format("blah:{0}blah", "\n");
+      Regex regex = new Regex(".*:$", RegexOptions.Multiline);
+      regex.IsMatch(content).Should().BeTrue();
+      regex.Matches(content).Count.Should().Be(1);
+    }
+
+    [TestMethod]
+    public void ShouldRegexMatchColonTerminatedLastMultiline()
+    {
+      Regex regex = new Regex(".*(:)$", RegexOptions.Multiline);
+      regex.IsMatch(string.Format("blah{0}blah:", Environment.NewLine)).Should().BeTrue();
+    }
+
+    [TestMethod, Timeout(2000)]
+    public void ShouldRegexMatchWithAColon()
+    {
+      using (TelnetServer server = new TelnetServer())
+      {
+        using (Client client = new Client(server.IPAddress.ToString(), server.Port))
+        {
+          Assert.AreEqual(client.IsConnected, true);
+          Regex regex = new Regex(".*:\r?$", RegexOptions.Multiline);
+          Assert.IsTrue(client.TerminatedRead(regex, TimeSpan.FromMilliseconds(TimeoutMs)).EndsWith(":"));
+        }
+      }
+    }
+
     [TestMethod, Timeout(2000)]
     public void ShouldBePromptingForAccount()
     {
@@ -42,6 +108,21 @@ namespace PrimS.Telnet.CiTests
         {
           Assert.AreEqual(client.IsConnected, true);
           string s = client.TerminatedRead("Account:", TimeSpan.FromMilliseconds(TimeoutMs));
+          Assert.IsTrue(s.Contains("Account:"));
+        }
+      }
+    }
+
+    [TestMethod, Timeout(2000)]
+    public void ShouldRegexMatchPromptingForAccount()
+    {
+      using (TelnetServer server = new TelnetServer())
+      {
+        using (Client client = new Client(server.IPAddress.ToString(), server.Port))
+        {
+          Assert.AreEqual(client.IsConnected, true);
+          Regex regex = new Regex(".*Account:\r?$", RegexOptions.Multiline);
+          string s = client.TerminatedRead(regex, TimeSpan.FromMilliseconds(TimeoutMs));
           Assert.IsTrue(s.Contains("Account:"));
         }
       }
