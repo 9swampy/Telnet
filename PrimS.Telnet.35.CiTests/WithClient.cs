@@ -71,11 +71,11 @@ namespace PrimS.Telnet.CiTests
         using (Client client = new Client(server.IPAddress.ToString(), server.Port))
         {
           Assert.AreEqual(client.IsConnected, true);
-          string s = client.TerminatedRead("Account:", TimeSpan.FromMilliseconds(TimeoutMs));
+          client.TerminatedRead("Account:", TimeSpan.FromMilliseconds(TimeoutMs));
           client.WriteLine("username");
-          s = client.TerminatedRead("Password:", TimeSpan.FromMilliseconds(TimeoutMs));
+          client.TerminatedRead("Password:", TimeSpan.FromMilliseconds(TimeoutMs));
           client.WriteLine("password");
-          s = client.TerminatedRead(">", TimeSpan.FromMilliseconds(TimeoutMs));
+          client.TerminatedRead(">", TimeSpan.FromMilliseconds(TimeoutMs));
         }
       }
     }

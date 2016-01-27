@@ -78,11 +78,11 @@
         using (Client client = new Client(server.IPAddress.ToString(), server.Port, new System.Threading.CancellationToken()))
         {
           client.IsConnected.Should().Be(true);
-          string s = await client.TerminatedReadAsync("Account:", TimeSpan.FromMilliseconds(TimeoutMs));
+          await client.TerminatedReadAsync("Account:", TimeSpan.FromMilliseconds(TimeoutMs));
           await client.WriteLine("username");
-          s = await client.TerminatedReadAsync("Password:", TimeSpan.FromMilliseconds(TimeoutMs));
+          await client.TerminatedReadAsync("Password:", TimeSpan.FromMilliseconds(TimeoutMs));
           await client.WriteLine("password");
-          s = await client.TerminatedReadAsync(">", TimeSpan.FromMilliseconds(TimeoutMs));
+          await client.TerminatedReadAsync(">", TimeSpan.FromMilliseconds(TimeoutMs));
         }
       }
     }

@@ -45,9 +45,10 @@ namespace PrimS.Telnet
       Guard.AgainstNullArgument("byteStream", byteStream);
 
       DateTime timeoutEnd = DateTime.Now.Add(timeout);
+      AutoResetEvent are = new AutoResetEvent(false);
       while (!this.ByteStream.Connected && timeoutEnd > DateTime.Now)
       {
-        System.Threading.Thread.Sleep(2);
+        are.WaitOne(2);
       }
 
       if (!this.ByteStream.Connected)
