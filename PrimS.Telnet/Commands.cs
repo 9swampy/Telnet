@@ -1,7 +1,8 @@
 ﻿namespace PrimS.Telnet
 {
-  internal enum Commands
+  public enum Commands
   {
+    NoOperation = 241,
     Will = 251,
     Wont = 252,
     Do = 253,

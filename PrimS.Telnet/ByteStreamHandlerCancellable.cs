@@ -61,6 +61,7 @@
                                                                                               await
 #endif
  IsWaitForIncrementalResponse(rollingTimeout)));
+
       if (DateTime.Now >= rollingTimeout)
       {
         System.Diagnostics.Debug.Print("RollingTimeout exceeded {0}", DateTime.Now.ToString("ss:fff"));
