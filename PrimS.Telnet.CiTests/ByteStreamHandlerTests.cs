@@ -275,7 +275,8 @@
 #endif
 
       response.Should().BeEmpty();
-      A.CallTo(() => networkStream.WriteByte(A<byte>.Ignored)).MustNotHaveHappened();
+      A.CallTo(() => networkStream.WriteByte((byte)Commands.NoOperation)).MustHaveHappened(Repeated.Exactly.Twice);
+      A.CallTo(() => networkStream.WriteByte(A<byte>.Ignored)).MustHaveHappened(Repeated.Exactly.Twice);
     }
 
     [TestMethod]

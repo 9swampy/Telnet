@@ -1,8 +1,10 @@
 namespace PrimS.Telnet
 {
   using System;
+  using System.Net.Sockets;
 #if ASYNC
   using System.Threading.Tasks;
+  using System.Net.Sockets;
 #endif
 
   /// <summary>
@@ -59,6 +61,11 @@ namespace PrimS.Telnet
     {
       get
       {
+        try
+        {
+          this.WriteByte((byte)Commands.NoOperation);
+        }
+        catch (SocketException) { return false; }
         return this.socket.Connected;
       }
     }

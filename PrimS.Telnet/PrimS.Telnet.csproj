@@ -51,6 +51,7 @@
     <Compile Include="ByteStreamHandler.cs" />
     <Compile Include="ByteStreamHandlerCancellable.cs" />
     <Compile Include="Commands.cs" />
+    <Compile Include="ConnectionMode.cs" />
     <Compile Include="IByteStream.cs" />
     <Compile Include="IByteStreamHandler.cs" />
     <Compile Include="INetworkStream.cs" />

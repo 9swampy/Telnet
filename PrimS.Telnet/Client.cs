@@ -13,6 +13,12 @@ namespace PrimS.Telnet
   /// </summary>
   public class Client : BaseClient
   {
+    private readonly TimeSpan timeout;
+    private ConnectionMode connectionMode;
+    private IByteStream byteStream;
+    private CancellationToken cancellationToken;
+    private TimeSpan timeSpan;
+
     /// <summary>
     /// Initialises a new instance of the <see cref="Client"/> class.
     /// </summary>
@@ -30,7 +36,7 @@ namespace PrimS.Telnet
     /// <param name="byteStream">The stream served by the host connected to.</param>
     /// <param name="token">The cancellation token.</param>
     public Client(IByteStream byteStream, CancellationToken token)
-      : this(byteStream, token, new TimeSpan(0, 0, 30))
+      : this(byteStream, token, new TimeSpan(0, 0, 30), ConnectionMode.OnInitialise)
     {
     }
 
@@ -40,16 +46,32 @@ namespace PrimS.Telnet
     /// <param name="byteStream">The stream served by the host connected to.</param>
     /// <param name="token">The cancellation token.</param>
     /// <param name="timeout">The timeout to wait for initial successful connection to <cref>byteStream</cref>.</param>
-    public Client(IByteStream byteStream, CancellationToken token, TimeSpan timeout)
+    /// <param name="connectionMode">Mode for creation of the connection.</param>
+    public Client(IByteStream byteStream, CancellationToken token, TimeSpan timeout, ConnectionMode connectionMode)
       : base(byteStream, token)
     {
       Guard.AgainstNullArgument("byteStream", byteStream);
+      this.timeout = timeout;
+      this.connectionMode = connectionMode;
+      if (connectionMode == ConnectionMode.OnInitialise)
+      {
+        this.Connect().Wait();
+      }
+    }
 
-      DateTime timeoutEnd = DateTime.Now.Add(timeout);
+    public Client(IByteStream byteStream, CancellationToken cancellationToken, TimeSpan timeSpan)
+      : this(byteStream, cancellationToken, timeSpan, ConnectionMode.OnInitialise)
+    {
+    }
+
+    private async Task Connect()
+    {
+      DateTime timeoutEnd = DateTime.Now.Add(this.timeout);
       AutoResetEvent are = new AutoResetEvent(false);
       while (!this.ByteStream.Connected && timeoutEnd > DateTime.Now)
       {
-        are.WaitOne(2);
+        await Task.Delay(1);
+        are.WaitOne(1);
       }
 
       if (!this.ByteStream.Connected)
@@ -105,6 +127,10 @@ namespace PrimS.Telnet
     /// <returns>Any text read from the stream.</returns>
     public async Task Write(string command)
     {
+      if (this.connectionMode == ConnectionMode.OnDemand)
+      {
+        await this.Connect();
+      }
       if (this.ByteStream.Connected && !this.InternalCancellation.Token.IsCancellationRequested)
       {
         await this.SendRateLimit.WaitAsync(this.InternalCancellation.Token);
@@ -209,6 +235,10 @@ namespace PrimS.Telnet
     /// <returns>Any text read from the stream.</returns>
     public async Task<string> ReadAsync(TimeSpan timeout)
     {
+      if (this.connectionMode == ConnectionMode.OnDemand)
+      {
+        await this.Connect();
+      }
       ByteStreamHandler handler = new ByteStreamHandler(this.ByteStream, this.InternalCancellation);
       return await handler.ReadAsync(timeout);
     }

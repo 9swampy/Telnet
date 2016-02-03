@@ -117,7 +117,7 @@
 
     private bool IsResponseReceived(string currentResponse, string responseAwaited)
     {
-      if (currentResponse == responseAwaited)
+      if (currentResponse.Replace(Encoding.ASCII.GetString(new byte[] { (byte)Commands.NoOperation }), string.Empty) == responseAwaited)
       {
         System.Diagnostics.Debug.Print("{0} response received", responseAwaited);
         Console.WriteLine("{0} response received", responseAwaited);
