@@ -8,45 +8,13 @@
   using System.Text;
 
   [ExcludeFromCodeCoverage]
-  public class TelnetServer : System.Net.Sockets.Socket
+  public class TelnetServer : BaseTelnetServer
   {
-    private readonly System.Threading.Thread t;
-
     public TelnetServer()
       : base(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)
-    {
-      this.IsListening = true;
-
-      IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
-      this.IPAddress = ipHostInfo.AddressList.First(o => o.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork);
-      this.Port = 11000;
-
-      this.t = new System.Threading.Thread(new System.Threading.ThreadStart(this.SpinListen));
-      this.t.Start();
-    }
-
-    protected override void Dispose(bool disposing)
-    {
-      this.IsListening = false;
-      base.Dispose(disposing);
-      System.Threading.Thread.Sleep(10);
-    }
-
-    public bool IsListening { get; private set; }
-
-    public void StopListening()
-    {
-      this.IsListening = false;
-    }
-
-    private static string data = null;
-    private readonly TimeSpan spinWait = TimeSpan.FromMilliseconds(10);
-
-    public IPAddress IPAddress { get; private set; }
-
-    public int Port { get; private set; }
-
-    private void SpinListen()
+    {}  
+    
+    protected override void SpinListen()
     {
       try
       {
@@ -59,7 +27,7 @@
         {
           Console.WriteLine("Waiting for a connection...");
           Socket handler = this.Accept();
-          data = null;
+          this.Data = null;
 
           Console.WriteLine("Connection made, respond with Account: prompt");
           handler.Send(Encoding.ASCII.GetBytes("Account:"));
@@ -97,24 +65,17 @@
 
     private void WaitFor(Socket handler, string awaitedResponse)
     {
-      data = string.Empty;
+      this.Data = string.Empty;
       while (true)
       {
-        ReceiveResponse(handler);
-        if (this.IsResponseReceived(data, awaitedResponse))
+        this.ReceiveResponse(handler);
+        if (this.IsResponseReceived(Data, awaitedResponse))
         {
           break;
         }
       }
     }
-
-    private static void ReceiveResponse(Socket handler)
-    {
-      byte[] bytes = new byte[1024];
-      int bytesRec = handler.Receive(bytes);
-      data += Encoding.ASCII.GetString(bytes, 0, bytesRec);
-    }
-
+    
     private bool IsResponseReceived(string currentResponse, string responseAwaited)
     {
       if (currentResponse.Replace(Encoding.ASCII.GetString(new byte[] { (byte)Commands.NoOperation }), string.Empty) == responseAwaited)

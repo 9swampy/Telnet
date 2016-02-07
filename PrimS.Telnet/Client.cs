@@ -14,11 +14,8 @@ namespace PrimS.Telnet
   public class Client : BaseClient
   {
     private readonly TimeSpan timeout;
-    private ConnectionMode connectionMode;
-    private IByteStream byteStream;
-    private CancellationToken cancellationToken;
-    private TimeSpan timeSpan;
-
+    private readonly ConnectionMode connectionMode;
+    
     /// <summary>
     /// Initialises a new instance of the <see cref="Client"/> class.
     /// </summary>
@@ -27,6 +24,18 @@ namespace PrimS.Telnet
     /// <param name="token">The cancellation token.</param>
     public Client(string hostname, int port, CancellationToken token)
       : this(new TcpByteStream(hostname, port), token)
+    {
+    }
+
+    /// <summary>
+    /// Initialises a new instance of the <see cref="Client"/> class.
+    /// </summary>
+    /// <param name="hostname">The hostname to connect to.</param>
+    /// <param name="port">The port to connect to.</param>
+    /// <param name="token">The cancellation token.</param>
+    /// <param name="connectionMode">Mode for creation of the connection.</param>
+    public Client(string hostname, int port, CancellationToken token, ConnectionMode connectionMode)
+      : this(new TcpByteStream(hostname, port), token, new TimeSpan(0, 0, 30), connectionMode)
     {
     }
 

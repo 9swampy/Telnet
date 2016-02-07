@@ -49,6 +49,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\PrimS.Telnet.CiTests\BaseTelnetServer.cs">
+      <Link>BaseTelnetServer.cs</Link>
+    </Compile>
     <Compile Include="..\PrimS.Telnet.CiTests\TelnetServer.cs">
       <Link>TelnetServer.cs</Link>
     </Compile>

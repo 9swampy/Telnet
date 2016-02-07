@@ -65,10 +65,13 @@
     <Compile Include="..\PrimS.Telnet.35.CiTests\TcpByteStreamTests.cs">
       <Link>TcpByteStreamTests.cs</Link>
     </Compile>
+    <Compile Include="BaseTelnetServer.cs" />
     <Compile Include="ByteStreamHandlerTests.cs" />
     <Compile Include="AsyncTcpByteStreamTests.cs" />
+    <Compile Include="DelayedConnectionTelnetServer.cs" />
     <Compile Include="TelnetServerTests.cs" />
     <Compile Include="TelnetServer.cs" />
+    <Compile Include="WithDelayedConnectionTelnetServer.cs" />
     <Compile Include="WithClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WithFakeClient.cs" />

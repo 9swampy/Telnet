@@ -67,6 +67,9 @@
     <Compile Include="..\PrimS.Telnet.35.CiTests\TcpByteStreamTests.cs">
       <Link>TcpByteStreamTests.cs</Link>
     </Compile>
+    <Compile Include="..\PrimS.Telnet.CiTests\BaseTelnetServer.cs">
+      <Link>BaseTelnetServer.cs</Link>
+    </Compile>
     <Compile Include="..\PrimS.Telnet.CiTests\ByteStreamHandlerTests.cs">
       <Link>ByteStreamHandlerTests.cs</Link>
     </Compile>

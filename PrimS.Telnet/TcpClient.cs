@@ -8,7 +8,11 @@
   /// </summary>
   public class TcpClient : ISocket, IDisposable
   {
-    private readonly System.Net.Sockets.TcpClient client;
+    private readonly string hostname;
+
+    private readonly int port;
+
+    private System.Net.Sockets.TcpClient client;
 
     /// <summary>
     /// Initialises a new instance of the <see cref="TcpClient"/> class.
@@ -17,8 +21,22 @@
     /// <param name="port">The port.</param>
     public TcpClient(string hostname, int port)
     {
-      this.client = new System.Net.Sockets.TcpClient(hostname, port);
+      this.hostname = hostname;
+      this.port = port;
     }
+
+    private System.Net.Sockets.TcpClient Client
+    {
+      get
+      {
+        if (this.client == null)
+        {
+          this.client = new System.Net.Sockets.TcpClient(hostname, port);
+        }
+        return this.client;
+      }
+    }
+
 
     /// <summary>
     /// Gets or sets the receive timeout.
@@ -30,12 +48,12 @@
     {
       get
       {
-        return this.client.ReceiveTimeout;
+        return this.Client.ReceiveTimeout;
       }
 
       set
       {
-        this.client.ReceiveTimeout = value;
+        this.Client.ReceiveTimeout = value;
       }
     }
 
@@ -49,7 +67,7 @@
     {
       get
       {
-        return this.client.Connected;
+        return this.Client.Connected;
       }
     }
 
@@ -63,7 +81,7 @@
     {
       get
       {
-        return this.client.Available;
+        return this.Client.Available;
       }
     }
 
@@ -81,7 +99,7 @@
     /// </summary>
     public void Close()
     {
-      this.client.Close();
+      this.Client.Close();
     }
 
     /// <summary>
@@ -92,14 +110,14 @@
     /// </returns>
     public INetworkStream GetStream()
     {
-      return new NetworkStream(this.client.GetStream());
+      return new NetworkStream(this.Client.GetStream());
     }
 
     private void Dispose(bool isDisposing)
     {
       if (isDisposing)
       {
-        this.client.Close();
+        this.Client.Close();
       }
     }
   }
