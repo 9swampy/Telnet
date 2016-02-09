@@ -10,7 +10,7 @@
 
   [ExcludeFromCodeCoverage]
   [TestClass]
-  public class WithClient
+  public class WithDefaultOnInitialiseClient
   {
     private const int TimeoutMs = 100;
 
@@ -39,7 +39,7 @@
         }
       }
     }
-
+    
     [TestMethod, Timeout(2000)]
     public async Task ShouldBePromptingForAccount()
     {
@@ -80,7 +80,7 @@
           client.IsConnected.Should().Be(true);
           await client.TerminatedReadAsync("Account:", TimeSpan.FromMilliseconds(TimeoutMs));
           await client.WriteLine("username");
-          await client.TerminatedReadAsync("Password:", TimeSpan.FromMilliseconds(TimeoutMs));
+          await client.TerminatedReadAsync("Password:");
           await client.WriteLine("password");
           await client.TerminatedReadAsync(">", TimeSpan.FromMilliseconds(TimeoutMs));
         }

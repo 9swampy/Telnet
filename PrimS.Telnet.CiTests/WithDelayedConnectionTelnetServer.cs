@@ -13,11 +13,11 @@
       using (DelayedConnectionTelnetServer server = new DelayedConnectionTelnetServer())
       {
         DateTime timeout = DateTime.Now.Add(server.ConnectionDelay);
-        using (new Client(server.IPAddress.ToString(), server.Port, new System.Threading.CancellationToken(), ConnectionMode.OnDemand))
+        using (new Client(server.IPAddress.ToString(), server.Port, new System.Threading.CancellationToken(), TimeSpan.FromMilliseconds(server.ConnectionDelay.TotalMilliseconds * 2), ConnectionMode.OnDemand))
         {
           DateTime.Now.Should().BeBefore(timeout, "construction of the delayed server should not block the thread");
         }
-      }      
+      }
     }
 
     [TestMethod]
@@ -26,7 +26,7 @@
       using (DelayedConnectionTelnetServer server = new DelayedConnectionTelnetServer())
       {
         DateTime timeout = DateTime.Now.Add(server.ConnectionDelay);
-        using (new Client(server.IPAddress.ToString(), server.Port, new System.Threading.CancellationToken(), ConnectionMode.OnInitialise))
+        using (new Client(server.IPAddress.ToString(), server.Port, new System.Threading.CancellationToken(), TimeSpan.FromMilliseconds(server.ConnectionDelay.TotalMilliseconds * 2), ConnectionMode.OnInitialise))
         {
           DateTime.Now.Should().BeAfter(timeout, "construction of the delayed server should block the thread");
         }

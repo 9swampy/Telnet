@@ -54,6 +54,7 @@
     <Compile Include="ConnectionMode.cs" />
     <Compile Include="IByteStream.cs" />
     <Compile Include="IByteStreamHandler.cs" />
+    <Compile Include="IClient.cs" />
     <Compile Include="INetworkStream.cs" />
     <Compile Include="ISocket.cs" />
     <Compile Include="NetworkStream.cs" />

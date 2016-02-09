@@ -71,10 +71,12 @@
     <Compile Include="DelayedConnectionTelnetServer.cs" />
     <Compile Include="TelnetServerTests.cs" />
     <Compile Include="TelnetServer.cs" />
+    <Compile Include="WithInvalidServer.cs" />
     <Compile Include="WithDelayedConnectionTelnetServer.cs" />
-    <Compile Include="WithClient.cs" />
+    <Compile Include="WithDefaultOnInitialiseClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WithFakeClient.cs" />
+    <Compile Include="WithOnDemandClient.cs" />
     <Compile Include="WithUnconnectableClient.cs" />
   </ItemGroup>
   <ItemGroup>

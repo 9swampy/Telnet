@@ -139,7 +139,7 @@
           string s = client.TerminatedRead("Account:", TimeSpan.FromMilliseconds(TimeoutMs));
           Assert.IsTrue(s.Contains("Account:"));
           client.WriteLine("username");
-          s = client.TerminatedRead("Password:", TimeSpan.FromMilliseconds(TimeoutMs));
+          s = client.TerminatedRead("Password:");
         }
       }
     }
@@ -152,7 +152,8 @@
         using (Client client = new Client(server.IPAddress.ToString(), server.Port))
         {
           Assert.AreEqual(client.IsConnected, true);
-          client.TerminatedRead("Account:", TimeSpan.FromMilliseconds(TimeoutMs));
+          Regex regex = new Regex(".*Account:\r?$", RegexOptions.Multiline);
+          client.TerminatedRead(regex);
           client.WriteLine("username");
           client.TerminatedRead("Password:", TimeSpan.FromMilliseconds(TimeoutMs));
           client.WriteLine("password");

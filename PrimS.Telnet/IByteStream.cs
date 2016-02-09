@@ -28,7 +28,7 @@
     ///   <c>True</c> if connected; otherwise, <c>false</c>.
     /// </value>
     bool Connected { get; }
-    
+
     /// <summary>
     /// Gets or sets the amount of time this <see cref="IByteStream"/> will wait to receive data once a read operation is initiated.
     /// </summary>
@@ -41,6 +41,11 @@
     /// Disposes the instance and requests that the underlying connection be closed.
     /// </summary>
     void Close();
+
+    /// <summary>
+    /// Initialises the instance so it will attempt to connect when the Connected property is checked. By default the instance will only connect upon demand during a read or write operation.
+    /// </summary>
+    void Initialise();
 
     /// <summary>
     /// Reads a byte from the stream and advances the position within the stream by one byte, or returns -1 if at the end of the stream.

@@ -266,6 +266,7 @@
       TcpByteStream tcpByteStream = new TcpByteStream(socket);
       A.CallTo(() => networkStream.ReadByte()).ReturnsNextFromSequence(new int[] { (int)Commands.InterpretAsCommand, 2 });
       tcpByteStream.Connected.Should().BeTrue();
+      A.CallTo(() => networkStream.WriteByte((byte)Commands.NoOperation)).MustHaveHappened(Repeated.Exactly.Once);
       ByteStreamHandler sut = new ByteStreamHandler(tcpByteStream, new CancellationTokenSource());
 
 #if ASYNC

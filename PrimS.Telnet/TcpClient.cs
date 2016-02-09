@@ -31,7 +31,7 @@
       {
         if (this.client == null)
         {
-          this.client = new System.Net.Sockets.TcpClient(hostname, port);
+          this.client = new System.Net.Sockets.TcpClient();
         }
         return this.client;
       }
@@ -69,6 +69,14 @@
       {
         return this.Client.Connected;
       }
+    }
+
+    /// <summary>
+    /// Connects this instance to the specified port on the specified host.
+    /// </summary>
+    public void Connect()
+    {
+      this.Client.Connect(this.hostname, this.port);
     }
 
     /// <summary>
@@ -110,6 +118,11 @@
     /// </returns>
     public INetworkStream GetStream()
     {
+      if (!this.Client.Connected)
+      {
+        this.Connect();
+      }
+
       return new NetworkStream(this.Client.GetStream());
     }
 
