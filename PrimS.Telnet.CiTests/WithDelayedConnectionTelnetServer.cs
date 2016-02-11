@@ -7,6 +7,7 @@
   [TestClass]
   public class WithDelayedConnectionTelnetServer
   {
+    [Ignore]
     [TestMethod]
     public void ShouldNotDelayClientConstruction()
     {
@@ -20,6 +21,7 @@
       }
     }
 
+    [Ignore]
     [TestMethod]
     public void ShouldDelayClientConstruction()
     {
