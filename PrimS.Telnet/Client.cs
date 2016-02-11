@@ -76,7 +76,7 @@ namespace PrimS.Telnet
       this.connectionMode = connectionMode;
       if (connectionMode == ConnectionMode.OnInitialise)
       {
-        this.Connect().Wait();
+        this.ConnectAsync().Wait();
       }
     }
 
@@ -134,7 +134,7 @@ namespace PrimS.Telnet
     {
       if (this.connectionMode == ConnectionMode.OnDemand)
       {
-        await this.Connect();
+        await this.ConnectAsync();
       }
       if (this.ByteStream.Connected && !this.InternalCancellation.Token.IsCancellationRequested)
       {
@@ -242,7 +242,7 @@ namespace PrimS.Telnet
     {
       if (this.connectionMode == ConnectionMode.OnDemand)
       {
-        await this.Connect();
+        await this.ConnectAsync();
       }
       var handler = new ByteStreamHandler(this.ByteStream, this.InternalCancellation);
       return await handler.ReadAsync(timeout);
@@ -253,7 +253,7 @@ namespace PrimS.Telnet
     /// </summary>
     /// <returns>An awaitable task.</returns>
     /// <exception cref="System.InvalidOperationException">Unable to connect to the host.</exception>
-    public async Task Connect()
+    public async Task ConnectAsync()
     {
       DateTime timeoutEnd = DateTime.Now.Add(this.timeout);
       var are = new AutoResetEvent(false);

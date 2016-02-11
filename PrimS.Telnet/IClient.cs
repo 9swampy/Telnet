@@ -11,7 +11,7 @@
     /// </summary>
     /// <returns>An awaitable task.</returns>
     /// <exception cref="System.InvalidOperationException">Unable to connect to the host.</exception>
-    Task Connect();
+    Task ConnectAsync();
 
     /// <summary>
     /// Reads asynchronously from the stream.

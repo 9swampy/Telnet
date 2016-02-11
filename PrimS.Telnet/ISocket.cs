@@ -2,6 +2,9 @@
 {
   using System;
   using System.Linq;
+#if ASYNC
+  using System.Threading.Tasks;
+#endif 
 
   /// <summary>
   /// A socket to connect to.

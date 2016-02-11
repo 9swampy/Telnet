@@ -2,6 +2,9 @@
 {
   using System;
   using System.Linq;
+#if ASYNC
+  using System.Threading.Tasks;
+#endif
 
   /// <summary>
   /// A TcpClient to connect to the specified socket.
@@ -71,17 +74,23 @@
       }
     }
 
+#if ASYNC
+    /// <summary>
+    /// Connects this instance to the specified port on the specified host.
+    /// </summary>
+    public async Task ConnectAsync()
+    {
+      await this.Client.ConnectAsync(this.hostname, this.port);
+    }
+#else
     /// <summary>
     /// Connects this instance to the specified port on the specified host.
     /// </summary>
     public void Connect()
     {
-#if ASYNC
-      this.Client.ConnectAsync(this.hostname, this.port).Wait();
-#else
       this.Client.Connect(this.hostname, this.port);
-#endif
     }
+#endif
 
     /// <summary>
     /// Gets the available bytes to be read.
@@ -124,7 +133,11 @@
     {
       if (!this.Client.Connected)
       {
+#if ASYNC
+        this.ConnectAsync().Wait();
+#else
         this.Connect();
+#endif
       }
 
       return new NetworkStream(this.Client.GetStream());
