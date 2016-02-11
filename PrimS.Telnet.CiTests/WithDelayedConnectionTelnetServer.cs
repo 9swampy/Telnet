@@ -20,7 +20,6 @@
       }
     }
 
-    [Ignore]
     [TestMethod]
     public void ShouldDelayClientConstruction()
     {

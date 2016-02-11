@@ -40,7 +40,7 @@ namespace PrimS.Telnet.CiTests
 
     protected override void Dispose(bool disposing)
     {
-      this.IsListening = false;
+      this.StopListening();
       base.Dispose(disposing);
       System.Threading.Thread.Sleep(10);
     }

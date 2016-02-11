@@ -66,7 +66,7 @@
     private void WaitFor(Socket handler, string awaitedResponse)
     {
       this.Data = string.Empty;
-      while (true)
+      while (this.IsListening)
       {
         this.ReceiveResponse(handler);
         if (this.IsResponseReceived(Data, awaitedResponse))

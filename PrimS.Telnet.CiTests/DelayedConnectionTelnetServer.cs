@@ -26,28 +26,36 @@
 
       while (this.IsListening)
       {
-        Console.WriteLine("Waiting for a connection...");
-        Socket handler = this.Accept();
-        Data = null;
-
-        this.WaitForAnyInput(handler);
-
-        Console.WriteLine("Connection made");
-        handler.Send(Encoding.ASCII.GetBytes(DelayedConnectionTelnetServer.StillSpinningResponse));
-
-        while (this.IsListening)
+        try
         {
-          System.Threading.Thread.Sleep(100);
+          Console.WriteLine("Waiting for a connection...");
+          Socket handler = this.Accept();
+          Data = null;
+
+          this.WaitForAnyInput(handler);
+
+          Console.WriteLine("Connection made");
+          handler.Send(Encoding.ASCII.GetBytes(DelayedConnectionTelnetServer.StillSpinningResponse));
+
+          while (this.IsListening)
+          {
+            System.Threading.Thread.Sleep(100);
+          }
+
+          handler.Shutdown(SocketShutdown.Both);
+          handler.Close();
         }
-        handler.Shutdown(SocketShutdown.Both);
-        handler.Close();
+        catch (Exception ex)
+        {
+          Console.WriteLine(ex.Message);
+        }
       }
     }
 
     private void WaitForAnyInput(Socket handler)
     {
       this.Data = string.Empty;
-      while (true)
+      while (this.IsListening)
       {
         this.ReceiveResponse(handler);
         if (this.IsAnyResponseReceived(this.Data))
