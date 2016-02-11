@@ -76,7 +76,11 @@
     /// </summary>
     public void Connect()
     {
+#if ASYNC
+      this.Client.ConnectAsync(this.hostname, this.port).Wait();
+#else
       this.Client.Connect(this.hostname, this.port);
+#endif
     }
 
     /// <summary>
