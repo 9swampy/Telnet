@@ -12,7 +12,13 @@ namespace PrimS.Telnet
   public partial class ByteStreamHandler : IByteStreamHandler
   {
     private readonly IByteStream byteStream;
-    
+
+    /// <summary>
+    /// Gets a value indicating whether this instance has unhandled streamed content.
+    /// </summary>
+    /// <value>
+    /// <c>true</c> if this instance is response pending; otherwise, <c>false</c>.
+    /// </value>
     private bool IsResponsePending
     {
       get
@@ -41,6 +47,12 @@ namespace PrimS.Telnet
       return result;
     }
 
+    /// <summary>
+    /// Determines if we're still waiting for an initial response to be received.
+    /// </summary>
+    /// <param name="endInitialTimeout">The initial timeout.</param>
+    /// <param name="sb">The stringBuilder collecting the stream.</param>
+    /// <returns>True if no response has been received, otherwise false if any response received or we timed out waiting for a response.</returns>
     private static bool IsWaitForInitialResponse(DateTime endInitialTimeout, StringBuilder sb)
     {
       return sb.Length == 0 && DateTime.Now < endInitialTimeout;
@@ -67,7 +79,7 @@ namespace PrimS.Telnet
             {
               case (int)Commands.InterpretAsCommand:
                 // literal IAC = 255 escaped, so append char 255 to string
-                sb.Append(inputVerb);
+                AppendChar(sb, inputVerb);
                 break;
               case (int)Commands.Do:
               case (int)Commands.Dont:
@@ -80,8 +92,10 @@ namespace PrimS.Telnet
             }
 
             break;
+          case (int)Commands.NoOperation:
+            break;
           default:
-            sb.Append((char)input);
+            AppendChar(sb, input);
             break;
         }
 
@@ -89,6 +103,12 @@ namespace PrimS.Telnet
       }
 
       return false;
+    }
+
+    private static void AppendChar(StringBuilder sb, int inputVerb)
+    {
+      char c = (char)inputVerb;
+      sb.Append(c);
     }
 
     private void ReplyToCommand(int inputVerb)

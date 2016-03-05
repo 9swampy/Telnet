@@ -131,7 +131,7 @@
 #else
       string response = sut.Read(TimeSpan.FromMilliseconds(10));
 #endif
-      response.Should().Be("255");
+      response.Should().Be(((char)Commands.InterpretAsCommand).ToString());
     }
 
     [TestMethod]
