@@ -16,7 +16,7 @@ namespace PrimS.Telnet
     /// <summary>
     /// The byte stream.
     /// </summary>
-    protected readonly IByteStream ByteStream;
+    private readonly IByteStream byteStream;
     
     /// <summary>
     /// Gets a value indicating whether this instance is connected.
@@ -28,7 +28,18 @@ namespace PrimS.Telnet
     {
       get
       {
-        return this.ByteStream.Connected;
+        return this.byteStream.Connected;
+      }
+    }
+
+    /// <summary>
+    /// Gets the byte stream.
+    /// </summary>
+    protected IByteStream ByteStream
+    {
+      get
+      {
+        return this.byteStream;
       }
     }
 

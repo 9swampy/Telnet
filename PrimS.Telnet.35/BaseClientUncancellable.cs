@@ -13,7 +13,7 @@
     /// <param name="byteStream">The byte stream.</param>
     protected BaseClient(IByteStream byteStream)
     {
-      this.ByteStream = byteStream;
+      this.byteStream = byteStream;
     }
 
     /// <summary>
@@ -27,7 +27,8 @@
         this.ByteStream.Close();
       }
 
-      System.Threading.Thread.Sleep(100);
+      System.Threading.AutoResetEvent are = new System.Threading.AutoResetEvent(false);
+      are.WaitOne(100);
     }
   }
 }

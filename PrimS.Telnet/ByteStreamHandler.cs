@@ -12,7 +12,7 @@ namespace PrimS.Telnet
   public partial class ByteStreamHandler : IByteStreamHandler
   {
     private readonly IByteStream byteStream;
-    
+
     private bool IsResponsePending
     {
       get
@@ -46,6 +46,16 @@ namespace PrimS.Telnet
       return !isInitialResponseReceived && DateTime.Now < endInitialTimeout;
     }
 
+    private static bool IsRollingTimeoutExpired(DateTime rollingTimeout)
+    {
+      return DateTime.Now >= rollingTimeout;
+    }
+
+    private static bool IsInitialResponseReceived(StringBuilder sb)
+    {
+      return sb.Length > 0;
+    }
+   
     private bool RetrieveAndParseResponse(StringBuilder sb)
     {
       if (this.IsResponsePending)
@@ -111,27 +121,17 @@ namespace PrimS.Telnet
       }
     }
 
-    private static bool IsInitialResponseReceived(StringBuilder sb)
-    {
-      return sb.Length > 0;
-    }
-
 #if ASYNC
     private async Task<bool> IsResponseAnticipated(bool isInitialResponseReceived, DateTime endInitialTimeout, DateTime rollingTimeout)
 #else
     private bool IsResponseAnticipated(bool isInitialResponseReceived, DateTime endInitialTimeout, DateTime rollingTimeout)
 #endif
     {
-      return (this.IsResponsePending || IsWaitForInitialResponse(endInitialTimeout, isInitialResponseReceived) ||
+      return this.IsResponsePending || IsWaitForInitialResponse(endInitialTimeout, isInitialResponseReceived) ||
 #if ASYNC
  await
 #endif
- IsWaitForIncrementalResponse(rollingTimeout));
-    }
-
-    private static bool IsRollingTimeoutExpired(DateTime rollingTimeout)
-    {
-      return DateTime.Now >= rollingTimeout;
+ IsWaitForIncrementalResponse(rollingTimeout);
     }
   }
 }

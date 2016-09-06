@@ -11,12 +11,12 @@
     /// <summary>
     /// The send rate limit.
     /// </summary>
-    protected readonly SemaphoreSlim SendRateLimit;
+    private readonly SemaphoreSlim sendRateLimit;
 
     /// <summary>
     /// The internal cancellation token.
     /// </summary>
-    protected readonly CancellationTokenSource InternalCancellation;
+    private readonly CancellationTokenSource internalCancellation;
 
     /// <summary>
     /// Initialises a new instance of the <see cref="BaseClient"/> class.
@@ -25,10 +25,32 @@
     /// <param name="token">The token.</param>
     protected BaseClient(IByteStream byteStream, CancellationToken token)
     {
-      this.ByteStream = byteStream;
-      this.SendRateLimit = new SemaphoreSlim(1);
-      this.InternalCancellation = new CancellationTokenSource();
-      token.Register(() => this.InternalCancellation.Cancel());
+      this.byteStream = byteStream;
+      this.sendRateLimit = new SemaphoreSlim(1);
+      this.internalCancellation = new CancellationTokenSource();
+      token.Register(() => this.internalCancellation.Cancel());
+    }
+
+    /// <summary>
+    /// Gets the send rate limit.
+    /// </summary>
+    protected SemaphoreSlim SendRateLimit
+    {
+      get
+      {
+        return this.sendRateLimit;
+      }
+    }
+
+    /// <summary>
+    /// Gets the internal cancellation token.
+    /// </summary>
+    protected CancellationTokenSource InternalCancellation
+    {
+      get
+      {
+        return this.internalCancellation;
+      }
     }
 
     /// <summary>
@@ -40,8 +62,8 @@
       if (disposing)
       {
         this.ByteStream.Close();
-        this.SendRateLimit.Dispose();
-        this.InternalCancellation.Dispose();
+        this.sendRateLimit.Dispose();
+        this.internalCancellation.Dispose();
       }
 
       System.Threading.AutoResetEvent are = new System.Threading.AutoResetEvent(false);
