@@ -56,17 +56,25 @@
           rollingTimeout = ExtendRollingTimeout(timeout);
         }
       }
-      while (!this.internalCancellation.Token.IsCancellationRequested && (this.IsResponsePending || IsWaitForInitialResponse(endInitialTimeout, sb) ||
+      while (!IsCancellationRequested &&
 #if ASYNC
-                                                                                              await
+ await
 #endif
- IsWaitForIncrementalResponse(rollingTimeout)));
-      if (DateTime.Now >= rollingTimeout)
+ IsResponseAnticipated(IsInitialResponseReceived(sb), endInitialTimeout, rollingTimeout));
+      if (IsRollingTimeoutExpired(rollingTimeout))
       {
         System.Diagnostics.Debug.Print("RollingTimeout exceeded {0}", DateTime.Now.ToString("ss:fff"));
       }
 
       return sb.ToString();
+    }
+
+    private bool IsCancellationRequested
+    {
+      get
+      {
+        return this.internalCancellation.Token.IsCancellationRequested;
+      }
     }
   }
 }

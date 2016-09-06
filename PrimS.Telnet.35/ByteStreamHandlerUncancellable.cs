@@ -51,12 +51,12 @@
           rollingTimeout = ExtendRollingTimeout(timeout);
         }
       }
-      while (this.IsResponsePending || IsWaitForInitialResponse(endInitialTimeout, sb) ||
+      while (
 #if ASYNC
-                                                                                              await
+ await
 #endif
- IsWaitForIncrementalResponse(rollingTimeout));
-      if (DateTime.Now >= rollingTimeout)
+IsResponseAnticipated(IsInitialResponseReceived(sb), endInitialTimeout, rollingTimeout));
+      if (IsRollingTimeoutExpired(rollingTimeout))
       {
         System.Diagnostics.Debug.Print("RollingTimeout exceeded {0}", DateTime.Now.ToString("ss:fff"));
       }

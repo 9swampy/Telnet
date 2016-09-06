@@ -72,10 +72,7 @@ namespace PrimS.Telnet
         if (await this.IsTerminatedWith(loginTimeOutMs, ":"))
         {
           await this.WriteLine(username);
-          if (await this.IsTerminatedWith(loginTimeOutMs, ":"))
-          {
-            await this.WriteLine(password);
-          }
+          await SendPassword(password, loginTimeOutMs);
 
           return await this.IsTerminatedWith(loginTimeOutMs, ">");
         }
@@ -86,6 +83,14 @@ namespace PrimS.Telnet
       }
 
       return false;
+    }
+
+    private async Task SendPassword(string password, int loginTimeOutMs)
+    {
+      if (await this.IsTerminatedWith(loginTimeOutMs, ":"))
+      {
+        await this.WriteLine(password);
+      }
     }
 
     /// <summary>
@@ -154,14 +159,9 @@ namespace PrimS.Telnet
     /// <returns>Any text read from the stream.</returns>
     public async Task<string> TerminatedReadAsync(string terminator, TimeSpan timeout, int millisecondSpin)
     {
-      DateTime endTimeout = DateTime.Now.Add(timeout);
-      string s = string.Empty;
-      while (!Client.IsTerminatorLocated(terminator, s) && endTimeout >= DateTime.Now)
-      {
-        s += await this.ReadAsync(TimeSpan.FromMilliseconds(millisecondSpin));
-      }
-
-      if (!Client.IsTerminatorLocated(terminator, s))
+      Func<string, bool> isTerminated = (x) => Client.IsTerminatorLocated(terminator, x);
+      string s = await TerminatedReadAsync(isTerminated, timeout, millisecondSpin);
+      if (!isTerminated(s))
       {
         System.Diagnostics.Debug.Print("Failed to terminate '{0}' with '{1}'", s, terminator);
       }
@@ -178,18 +178,24 @@ namespace PrimS.Telnet
     /// <returns>Any text read from the stream.</returns>
     public async Task<string> TerminatedReadAsync(Regex regex, TimeSpan timeout, int millisecondSpin)
     {
-      DateTime endTimeout = DateTime.Now.Add(timeout);
-      string s = string.Empty;
-      while (!Client.IsRegexLocated(regex, s) && endTimeout >= DateTime.Now)
-      {
-        s += await this.ReadAsync(TimeSpan.FromMilliseconds(1));
-      }
-
-      if (!Client.IsRegexLocated(regex, s))
+      Func<string, bool> isTerminated = (x) => Client.IsRegexLocated(regex, x);
+      string s = await TerminatedReadAsync(isTerminated, timeout, millisecondSpin);
+      if (!isTerminated(s))
       {
         System.Diagnostics.Debug.Print(string.Format("Failed to match '{0}' with '{1}'", s, regex.ToString()));
       }
 
+      return s;
+    }
+
+    private async Task<string> TerminatedReadAsync(Func<string, bool> isTerminated, TimeSpan timeout, int millisecondSpin)
+    {
+      DateTime endTimeout = DateTime.Now.Add(timeout);
+      string s = string.Empty;
+      while (!isTerminated(s) && endTimeout >= DateTime.Now)
+      {
+        s += await this.ReadAsync(TimeSpan.FromMilliseconds(millisecondSpin));
+      }
       return s;
     }
 
