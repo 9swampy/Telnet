@@ -69,11 +69,9 @@ namespace PrimS.Telnet
     {
       try
       {
-        if (await this.IsTerminatedWith(loginTimeOutMs, ":"))
+        if (await TrySendUserName(username, loginTimeOutMs))
         {
-          await this.WriteLine(username);
           await SendPassword(password, loginTimeOutMs);
-
           return await this.IsTerminatedWith(loginTimeOutMs, ">");
         }
       }
@@ -82,6 +80,16 @@ namespace PrimS.Telnet
         // NOP
       }
 
+      return false;
+    }
+
+    private async Task<bool> TrySendUserName(string username, int loginTimeOutMs)
+    {
+      if (await this.IsTerminatedWith(loginTimeOutMs, ":"))
+      {
+        await this.WriteLine(username);
+        return true;
+      }
       return false;
     }
 
