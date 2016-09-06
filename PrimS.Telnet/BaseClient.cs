@@ -11,7 +11,7 @@ namespace PrimS.Telnet
     /// <summary>
     /// The default time out ms.
     /// </summary>
-    protected const int DefaultTimeOutMs = 100;
+    protected const int DefaultTimeoutMs = 100;
 
     /// <summary>
     /// The byte stream.
@@ -56,7 +56,7 @@ namespace PrimS.Telnet
     /// <returns>True if the terminator is located, otherwise false.</returns>
     protected static bool IsTerminatorLocated(string terminator, string s)
     {
-      return s.TrimEnd().EndsWith(terminator);
+      return s.TrimEnd().EndsWith(terminator, StringComparison.OrdinalIgnoreCase);
     }
 
     /// <summary>

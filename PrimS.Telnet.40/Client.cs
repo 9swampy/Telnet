@@ -67,7 +67,7 @@ namespace PrimS.Telnet
     /// <returns>Any text read from the stream.</returns>
     public string Read()
     {
-      return this.Read(TimeSpan.FromMilliseconds(Client.DefaultTimeOutMs));
+      return this.Read(TimeSpan.FromMilliseconds(Client.DefaultTimeoutMs));
     }
 
     /// <summary>
@@ -77,7 +77,7 @@ namespace PrimS.Telnet
     /// <returns>Any text read from the stream.</returns>
     public string TerminatedRead(string terminator)
     {
-      return this.TerminatedRead(terminator, TimeSpan.FromMilliseconds(Client.DefaultTimeOutMs));
+      return this.TerminatedRead(terminator, TimeSpan.FromMilliseconds(Client.DefaultTimeoutMs));
     }
 
     /// <summary>
@@ -87,7 +87,7 @@ namespace PrimS.Telnet
     /// <returns>Any text read from the stream.</returns>
     public string TerminatedRead(Regex regex)
     {
-      return this.TerminatedRead(regex, TimeSpan.FromMilliseconds(Client.DefaultTimeOutMs));
+      return this.TerminatedRead(regex, TimeSpan.FromMilliseconds(Client.DefaultTimeoutMs));
     }
 
     /// <summary>

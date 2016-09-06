@@ -15,10 +15,10 @@ namespace PrimS.Telnet
     /// <summary>
     /// Initialises a new instance of the <see cref="TcpByteStream" /> class. 
     /// </summary>
-    /// <param name="hostname">The hostname.</param>
+    /// <param name="hostName">The host name.</param>
     /// <param name="port">The port.</param>
-    public TcpByteStream(string hostname, int port)
-      : this(new PrimS.Telnet.TcpClient(hostname, port))
+    public TcpByteStream(string hostName, int port)
+      : this(new PrimS.Telnet.TcpClient(hostName, port))
     {
     }
 
