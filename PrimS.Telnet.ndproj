@@ -4193,7 +4193,7 @@ let canTypeBeConsideredAsDeadProc = new Func<IType, bool>(
 
          // If you don't want to link NDepend.API.dll, you can use your own IsNotDeadCodeAttribute 
          // and adapt the source code of this rule.
-        !t.HasAttribute("NDepend.Attributes.IsNotDeadCodeAttribute".AllowNoMatch()) &&
+        !t.HasAttribute("PrimS.Telnet.IsNotDeadCodeAttribute".AllowNoMatch()) &&
 
          // Exclude static types that define only const fields
          // because they cannot be seen as used in IL code.

@@ -67,38 +67,23 @@ namespace PrimS.Telnet
     /// <returns>True if successful.</returns>
     public async Task<bool> TryLoginAsync(string username, string password, int loginTimeOutMs)
     {
-      try
-      {
-        if (await TrySendUserName(username, loginTimeOutMs))
-        {
-          await SendPassword(password, loginTimeOutMs);
-          return await this.IsTerminatedWith(loginTimeOutMs, ">");
-        }
-      }
-      catch (Exception)
-      {
-        // NOP
-      }
-
-      return false;
+      bool result = await TrySendUsernameAndPassword(username, password, loginTimeOutMs);
+      if (result) result = await this.IsTerminatedWith(loginTimeOutMs, ">");
+      return result;
     }
 
-    private async Task<bool> TrySendUserName(string username, int loginTimeOutMs)
+    private async Task<bool> TrySendUsernameAndPassword(string username, string password, int loginTimeOutMs)
     {
-      if (await this.IsTerminatedWith(loginTimeOutMs, ":"))
-      {
-        await this.WriteLine(username);
-        return true;
-      }
-      return false;
+      bool result = await TryAwaitTerminatorThenSend(username, loginTimeOutMs);
+      if (result) result = await TryAwaitTerminatorThenSend(password, loginTimeOutMs);
+      return result;
     }
 
-    private async Task SendPassword(string password, int loginTimeOutMs)
+    private async Task<bool> TryAwaitTerminatorThenSend(string value, int loginTimeOutMs)
     {
-      if (await this.IsTerminatedWith(loginTimeOutMs, ":"))
-      {
-        await this.WriteLine(password);
-      }
+      bool isTerminated = await this.IsTerminatedWith(loginTimeOutMs, ":");
+      if (isTerminated) await this.WriteLine(value);
+      return isTerminated;
     }
 
     /// <summary>
