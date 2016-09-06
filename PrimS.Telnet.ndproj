@@ -5688,7 +5688,8 @@ let groups = JustMyCode.Types.Union(ThirdParty.Types)
                  // Discard nested types, whose name is 
                  // prefixed with the parent type name.
                  .Where(t => !t.IsNested)
-                 
+                 .Where(t => t.FullName != "PrimS.Telnet.TcpClient") // because I wrapped System.Net.Sockets.TcpClient
+                 .Where(t => t.FullName != "PrimS.Telnet.NetworkStream") // because I wrapped System.Net.Sockets.NetworkStream
                  // Group types by name.
                  .GroupBy(t => t.Name)
 
