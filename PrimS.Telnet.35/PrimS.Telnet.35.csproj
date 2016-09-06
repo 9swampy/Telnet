@@ -62,6 +62,9 @@
     <Compile Include="..\PrimS.Telnet\INetworkStream.cs">
       <Link>INetworkStream.cs</Link>
     </Compile>
+    <Compile Include="..\PrimS.Telnet\IsNotDeadCodeAttribute.cs">
+      <Link>IsNotDeadCodeAttribute.cs</Link>
+    </Compile>
     <Compile Include="..\PrimS.Telnet\ISocket.cs">
       <Link>ISocket.cs</Link>
     </Compile>

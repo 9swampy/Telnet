@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>Telnet</id>
-    <version>0.6.0</version>
+    <version>0.7.0</version>
     <title>Telnet</title>
     <authors>Telnet contributors</authors>
     <owners>9swampy</owners>
@@ -12,7 +12,7 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>A minimal C# 3.5/4.0/4.5 Telnet client library implementation; just enough to send simple text commands from your application, retrieve the response for parsing and react appropriately.</description>
     <releaseNotes>
-      Implement a Regex.IsMatch TerminatedRead in addition to the existing string terminated.
+      Add NDepend, refactor to tidy and fix another missed millisecondSpin.
     </releaseNotes>
     <copyright>Copyright (c) 9swampy, Telnet contributors</copyright>
     <tags>Telnet</tags>

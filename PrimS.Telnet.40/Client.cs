@@ -13,17 +13,17 @@ namespace PrimS.Telnet
     /// <summary>
     /// Tries to login.
     /// </summary>
-    /// <param name="username">The username.</param>
+    /// <param name="userName">The user name.</param>
     /// <param name="password">The password.</param>
     /// <param name="loginTimeOutMs">The login time out ms.</param>
     /// <returns>True if successful.</returns>
-    public bool TryLogin(string username, string password, int loginTimeOutMs)
+    public bool TryLogin(string userName, string password, int loginTimeOutMs)
     {
       try
       {
         if (this.IsTerminatedWith(loginTimeOutMs, ":"))
         {
-          this.WriteLine(username);
+          this.WriteLine(userName);
           if (this.IsTerminatedWith(loginTimeOutMs, ":"))
           {
             this.WriteLine(password);
@@ -67,7 +67,7 @@ namespace PrimS.Telnet
     /// <returns>Any text read from the stream.</returns>
     public string Read()
     {
-      return this.Read(TimeSpan.FromMilliseconds(Client.DefaultTimeOutMs));
+      return this.Read(TimeSpan.FromMilliseconds(Client.DefaultTimeoutMs));
     }
 
     /// <summary>
@@ -77,17 +77,17 @@ namespace PrimS.Telnet
     /// <returns>Any text read from the stream.</returns>
     public string TerminatedRead(string terminator)
     {
-      return this.TerminatedRead(terminator, TimeSpan.FromMilliseconds(Client.DefaultTimeOutMs));
+      return this.TerminatedRead(terminator, TimeSpan.FromMilliseconds(Client.DefaultTimeoutMs));
     }
 
     /// <summary>
     /// Reads asynchronously from the stream, terminating as soon as the <paramref name="regex"/> is matched.
     /// </summary>
-    /// <param name="terminator">The regex to match.</param>
+    /// <param name="regex">The regex to match.</param>
     /// <returns>Any text read from the stream.</returns>
     public string TerminatedRead(Regex regex)
     {
-      return this.TerminatedRead(regex, TimeSpan.FromMilliseconds(Client.DefaultTimeOutMs));
+      return this.TerminatedRead(regex, TimeSpan.FromMilliseconds(Client.DefaultTimeoutMs));
     }
 
     /// <summary>
@@ -104,7 +104,7 @@ namespace PrimS.Telnet
     /// <summary>
     /// Reads synchronously from the stream, terminating as soon as the <paramref name="terminator"/> is located.
     /// </summary>
-    /// <param name="terminator">The terminator.</param>
+    /// <param name="regex">The terminator.</param>
     /// <param name="timeout">The timeout.</param>
     /// <returns>Any text read from the stream.</returns>
     public string TerminatedRead(Regex regex, TimeSpan timeout)

@@ -13,11 +13,11 @@
     /// <summary>
     /// Initialises a new instance of the <see cref="TcpClient"/> class.
     /// </summary>
-    /// <param name="hostname">The hostname.</param>
+    /// <param name="hostName">The host name.</param>
     /// <param name="port">The port.</param>
-    public TcpClient(string hostname, int port)
+    public TcpClient(string hostName, int port)
     {
-      this.client = new System.Net.Sockets.TcpClient(hostname, port);
+      this.client = new System.Net.Sockets.TcpClient(hostName, port);
     }
 
     /// <summary>
