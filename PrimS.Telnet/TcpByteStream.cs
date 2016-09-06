@@ -31,7 +31,8 @@ namespace PrimS.Telnet
       this.socket = tcpSocket;
 #if ASYNC
 #else
-      System.Threading.Thread.Sleep(20);
+      System.Threading.AutoResetEvent are = new System.Threading.AutoResetEvent(false);
+      are.WaitOne(20);
 #endif
     }
 

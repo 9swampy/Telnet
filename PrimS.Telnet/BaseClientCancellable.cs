@@ -44,7 +44,8 @@
         this.InternalCancellation.Dispose();
       }
 
-      System.Threading.Thread.Sleep(100);
+      System.Threading.AutoResetEvent are = new System.Threading.AutoResetEvent(false);
+      are.WaitOne(100);
     }
   }
 }
