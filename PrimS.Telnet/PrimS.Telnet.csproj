@@ -50,6 +50,7 @@
     <Compile Include="BaseClientCancellable.cs" />
     <Compile Include="ByteStreamHandler.cs" />
     <Compile Include="ByteStreamHandlerCancellable.cs" />
+    <Compile Include="IsNotDeadCodeAttribute.cs" />
     <Compile Include="Commands.cs" />
     <Compile Include="IByteStream.cs" />
     <Compile Include="IByteStreamHandler.cs" />

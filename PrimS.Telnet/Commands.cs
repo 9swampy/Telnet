@@ -1,5 +1,6 @@
 ﻿namespace PrimS.Telnet
 {
+  [IsNotDeadCodeAttribute]
   internal enum Commands
   {
     Will = 251,

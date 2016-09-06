@@ -16,11 +16,11 @@ namespace PrimS.Telnet
     /// <summary>
     /// Initialises a new instance of the <see cref="Client"/> class.
     /// </summary>
-    /// <param name="hostname">The hostname to connect to.</param>
+    /// <param name="hostName">The hostname to connect to.</param>
     /// <param name="port">The port to connect to.</param>
     /// <param name="token">The cancellation token.</param>
-    public Client(string hostname, int port, CancellationToken token)
-      : this(new TcpByteStream(hostname, port), token)
+    public Client(string hostName, int port, CancellationToken token)
+      : this(new TcpByteStream(hostName, port), token)
     {
     }
 
@@ -63,29 +63,17 @@ namespace PrimS.Telnet
     /// </summary>
     /// <param name="username">The username.</param>
     /// <param name="password">The password.</param>
-    /// <param name="loginTimeOutMs">The login time out ms.</param>
+    /// <param name="loginTimeoutMs">The login time out ms.</param>
     /// <returns>True if successful.</returns>
-    public async Task<bool> TryLoginAsync(string username, string password, int loginTimeOutMs)
+    public async Task<bool> TryLoginAsync(string username, string password, int loginTimeoutMs)
     {
-      try
+      bool result = await this.TrySendUsernameAndPassword(username, password, loginTimeoutMs);
+      if (result)
       {
-        if (await this.IsTerminatedWith(loginTimeOutMs, ":"))
-        {
-          await this.WriteLine(username);
-          if (await this.IsTerminatedWith(loginTimeOutMs, ":"))
-          {
-            await this.WriteLine(password);
-          }
-
-          return await this.IsTerminatedWith(loginTimeOutMs, ">");
-        }
-      }
-      catch (Exception)
-      {
-        // NOP
+        result = await this.IsTerminatedWith(loginTimeoutMs, ">");
       }
 
-      return false;
+      return result;
     }
 
     /// <summary>
@@ -120,7 +108,7 @@ namespace PrimS.Telnet
     /// <returns>Any text read from the stream.</returns>
     public async Task<string> TerminatedReadAsync(string terminator)
     {
-      return await this.TerminatedReadAsync(terminator, TimeSpan.FromMilliseconds(Client.DefaultTimeOutMs));
+      return await this.TerminatedReadAsync(terminator, TimeSpan.FromMilliseconds(Client.DefaultTimeoutMs));
     }
 
     /// <summary>
@@ -137,7 +125,7 @@ namespace PrimS.Telnet
     /// <summary>
     /// Reads asynchronously from the stream, terminating as soon as the <paramref name="terminator"/> is located.
     /// </summary>
-    /// <param name="terminator">The terminator.</param>
+    /// <param name="regex">The terminator.</param>
     /// <param name="timeout">The timeout.</param>
     /// <returns>Any text read from the stream.</returns>
     public async Task<string> TerminatedReadAsync(Regex regex, TimeSpan timeout)
@@ -154,14 +142,9 @@ namespace PrimS.Telnet
     /// <returns>Any text read from the stream.</returns>
     public async Task<string> TerminatedReadAsync(string terminator, TimeSpan timeout, int millisecondSpin)
     {
-      DateTime endTimeout = DateTime.Now.Add(timeout);
-      string s = string.Empty;
-      while (!Client.IsTerminatorLocated(terminator, s) && endTimeout >= DateTime.Now)
-      {
-        s += await this.ReadAsync(TimeSpan.FromMilliseconds(millisecondSpin));
-      }
-
-      if (!Client.IsTerminatorLocated(terminator, s))
+      Func<string, bool> isTerminated = (x) => Client.IsTerminatorLocated(terminator, x);
+      string s = await this.TerminatedReadAsync(isTerminated, timeout, millisecondSpin);
+      if (!isTerminated(s))
       {
         System.Diagnostics.Debug.Print("Failed to terminate '{0}' with '{1}'", s, terminator);
       }
@@ -178,14 +161,9 @@ namespace PrimS.Telnet
     /// <returns>Any text read from the stream.</returns>
     public async Task<string> TerminatedReadAsync(Regex regex, TimeSpan timeout, int millisecondSpin)
     {
-      DateTime endTimeout = DateTime.Now.Add(timeout);
-      string s = string.Empty;
-      while (!Client.IsRegexLocated(regex, s) && endTimeout >= DateTime.Now)
-      {
-        s += await this.ReadAsync(TimeSpan.FromMilliseconds(1));
-      }
-
-      if (!Client.IsRegexLocated(regex, s))
+      Func<string, bool> isTerminated = (x) => Client.IsRegexLocated(regex, x);
+      string s = await this.TerminatedReadAsync(isTerminated, timeout, millisecondSpin);
+      if (!isTerminated(s))
       {
         System.Diagnostics.Debug.Print(string.Format("Failed to match '{0}' with '{1}'", s, regex.ToString()));
       }
@@ -199,7 +177,7 @@ namespace PrimS.Telnet
     /// <returns>Any text read from the stream.</returns>
     public async Task<string> ReadAsync()
     {
-      return await this.ReadAsync(TimeSpan.FromMilliseconds(Client.DefaultTimeOutMs));
+      return await this.ReadAsync(TimeSpan.FromMilliseconds(Client.DefaultTimeoutMs));
     }
 
     /// <summary>
@@ -213,9 +191,43 @@ namespace PrimS.Telnet
       return await handler.ReadAsync(timeout);
     }
 
-    private async Task<bool> IsTerminatedWith(int loginTimeOutMs, string terminator)
+    private async Task<bool> TrySendUsernameAndPassword(string username, string password, int loginTimeoutMs)
     {
-      return (await this.TerminatedReadAsync(terminator, TimeSpan.FromMilliseconds(loginTimeOutMs), 1)).TrimEnd().EndsWith(terminator);
+      bool result = await this.TryAwaitTerminatorThenSend(username, loginTimeoutMs);
+      if (result)
+      {
+        result = await this.TryAwaitTerminatorThenSend(password, loginTimeoutMs);
+      }
+
+      return result;
+    }
+
+    private async Task<bool> TryAwaitTerminatorThenSend(string value, int loginTimeoutMs)
+    {
+      bool isTerminated = await this.IsTerminatedWith(loginTimeoutMs, ":");
+      if (isTerminated)
+      {
+        await this.WriteLine(value);
+      }
+
+      return isTerminated;
+    }
+
+    private async Task<string> TerminatedReadAsync(Func<string, bool> isTerminated, TimeSpan timeout, int millisecondSpin)
+    {
+      DateTime endTimeout = DateTime.Now.Add(timeout);
+      string s = string.Empty;
+      while (!isTerminated(s) && endTimeout >= DateTime.Now)
+      {
+        s += await this.ReadAsync(TimeSpan.FromMilliseconds(millisecondSpin));
+      }
+
+      return s;
+    }
+
+    private async Task<bool> IsTerminatedWith(int loginTimeoutMs, string terminator)
+    {
+      return (await this.TerminatedReadAsync(terminator, TimeSpan.FromMilliseconds(loginTimeoutMs), 1)).TrimEnd().EndsWith(terminator);
     }
   }
 }

@@ -24,6 +24,15 @@
       this.byteStream = byteStream;
       this.internalCancellation = internalCancellation;
     }
+
+    private bool IsCancellationRequested
+    {
+      get
+      {
+        return this.internalCancellation.Token.IsCancellationRequested;
+      }
+    }
+
 #if ASYNC
     /// <summary>
     /// Reads asynchronously from the stream.
@@ -56,12 +65,12 @@
           rollingTimeout = ExtendRollingTimeout(timeout);
         }
       }
-      while (!this.internalCancellation.Token.IsCancellationRequested && (this.IsResponsePending || IsWaitForInitialResponse(endInitialTimeout, sb) ||
+      while (!this.IsCancellationRequested &&
 #if ASYNC
-                                                                                              await
+ await
 #endif
- IsWaitForIncrementalResponse(rollingTimeout)));
-      if (DateTime.Now >= rollingTimeout)
+ this.IsResponseAnticipated(IsInitialResponseReceived(sb), endInitialTimeout, rollingTimeout));
+      if (IsRollingTimeoutExpired(rollingTimeout))
       {
         System.Diagnostics.Debug.Print("RollingTimeout exceeded {0}", DateTime.Now.ToString("ss:fff"));
       }
