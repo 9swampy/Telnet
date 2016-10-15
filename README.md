@@ -12,11 +12,11 @@ Telnet
 
 
 
-I needed to issue simple commands to, and monitor, a router remotely and that's what I've been able to achieve with this 
+I needed to issue simple commands to (and monitor) a router remotely and that's what I've been able to achieve with this 
 little library. It's usage is simple, it doesn't do anything particularly fancy but if all you're wanting to do is interact
-with a telnet server, issuing commands, parsing text responses and respond accordingly then hopefully having taken the time to wrap this up in a simple NuGet package will make your life easier!
+with a telnet server by issuing commands, parsing text responses and having the opportunity to respond in code accordingly then hopefully having taken the time to wrap this up in a simple NuGet package will make your life easier!
 
-
+FWIW I'm happy to take merge requests and if I can help out with bugs or feature requests I'll do what I can, outside my day job ofc!
 
 Usage:
 ```C#
