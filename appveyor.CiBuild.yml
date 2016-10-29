@@ -3,6 +3,7 @@ configuration: Debug
 before_build:
 - cmd: >-
     gitversion /output buildserver
+
     nuget restore
 build:
   project: PrimS.Telnet.sln
