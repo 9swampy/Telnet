@@ -1,7 +1,9 @@
 version: 1.0.{build}
 configuration: Debug
 before_build:
-- cmd: nuget restore
+- cmd: >-
+    gitversion /output buildserver
+    nuget restore
 build:
   project: PrimS.Telnet.sln
   verbosity: minimal
