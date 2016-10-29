@@ -38,31 +38,33 @@
 #endif
     {
       ISocket socket = A.Fake<ISocket>();
-      INetworkStream networkStream = A.Fake<INetworkStream>();
-      A.CallTo(() => socket.GetStream()).Returns(networkStream);
-      A.CallTo(() => socket.Connected).Returns(true);
-      bool isFirst = true;
-      A.CallTo(() => socket.Available).ReturnsLazily(() =>
+      using (INetworkStream networkStream = A.Fake<INetworkStream>())
       {
-        if (isFirst)
+        A.CallTo(() => socket.GetStream()).Returns(networkStream);
+        A.CallTo(() => socket.Connected).Returns(true);
+        bool isFirst = true;
+        A.CallTo(() => socket.Available).ReturnsLazily(() =>
         {
-          isFirst = false;
-          return 1;
-        }
-        return 0;
-      });
-      TcpByteStream tcpByteStream = new TcpByteStream(socket);
-      A.CallTo(() => networkStream.ReadByte()).ReturnsNextFromSequence(-1);
-      tcpByteStream.Connected.Should().BeTrue();
-      ByteStreamHandler sut = new ByteStreamHandler(tcpByteStream, new CancellationTokenSource());
+          if (isFirst)
+          {
+            isFirst = false;
+            return 1;
+          }
+          return 0;
+        });
+        TcpByteStream tcpByteStream = new TcpByteStream(socket);
+        A.CallTo(() => networkStream.ReadByte()).ReturnsNextFromSequence(-1);
+        tcpByteStream.Connected.Should().BeTrue();
+        ByteStreamHandler sut = new ByteStreamHandler(tcpByteStream, new CancellationTokenSource());
 
 #if ASYNC
       string response = await sut.ReadAsync(TimeSpan.FromMilliseconds(10));
 #else
-      string response = sut.Read(TimeSpan.FromMilliseconds(10));
+        string response = sut.Read(TimeSpan.FromMilliseconds(10));
 #endif
 
-      response.Should().BeEmpty();
+        response.Should().BeEmpty();
+      }
     }
 
     [TestMethod]
@@ -73,31 +75,33 @@
 #endif
     {
       ISocket socket = A.Fake<ISocket>();
-      INetworkStream networkStream = A.Fake<INetworkStream>();
-      A.CallTo(() => socket.GetStream()).Returns(networkStream);
-      A.CallTo(() => socket.Connected).Returns(true);
-      bool isFirst = true;
-      A.CallTo(() => socket.Available).ReturnsLazily(() =>
+      using (INetworkStream networkStream = A.Fake<INetworkStream>())
       {
-        if (isFirst)
+        A.CallTo(() => socket.GetStream()).Returns(networkStream);
+        A.CallTo(() => socket.Connected).Returns(true);
+        bool isFirst = true;
+        A.CallTo(() => socket.Available).ReturnsLazily(() =>
         {
-          isFirst = false;
-          return 1;
-        }
-        return 0;
-      });
-      TcpByteStream tcpByteStream = new TcpByteStream(socket);
-      A.CallTo(() => networkStream.ReadByte()).ReturnsNextFromSequence(65);
-      tcpByteStream.Connected.Should().BeTrue();
-      ByteStreamHandler sut = new ByteStreamHandler(tcpByteStream, new CancellationTokenSource());
+          if (isFirst)
+          {
+            isFirst = false;
+            return 1;
+          }
+          return 0;
+        });
+        TcpByteStream tcpByteStream = new TcpByteStream(socket);
+        A.CallTo(() => networkStream.ReadByte()).ReturnsNextFromSequence(65);
+        tcpByteStream.Connected.Should().BeTrue();
+        ByteStreamHandler sut = new ByteStreamHandler(tcpByteStream, new CancellationTokenSource());
 
 #if ASYNC
       string response = await sut.ReadAsync(TimeSpan.FromMilliseconds(10));
 #else
-      string response = sut.Read(TimeSpan.FromMilliseconds(10));
+        string response = sut.Read(TimeSpan.FromMilliseconds(10));
 #endif
 
-      response.Should().Be("A");
+        response.Should().Be("A");
+      }
     }
 
     [TestMethod]
@@ -108,30 +112,32 @@
 #endif
     {
       ISocket socket = A.Fake<ISocket>();
-      INetworkStream networkStream = A.Fake<INetworkStream>();
-      A.CallTo(() => socket.GetStream()).Returns(networkStream);
-      A.CallTo(() => socket.Connected).Returns(true);
-      bool isFirst = true;
-      A.CallTo(() => socket.Available).ReturnsLazily(() =>
+      using (INetworkStream networkStream = A.Fake<INetworkStream>())
       {
-        if (isFirst)
+        A.CallTo(() => socket.GetStream()).Returns(networkStream);
+        A.CallTo(() => socket.Connected).Returns(true);
+        bool isFirst = true;
+        A.CallTo(() => socket.Available).ReturnsLazily(() =>
         {
-          isFirst = false;
-          return 1;
-        }
-        return 0;
-      });
-      TcpByteStream tcpByteStream = new TcpByteStream(socket);
-      A.CallTo(() => networkStream.ReadByte()).ReturnsNextFromSequence(new int[] { (int)Commands.InterpretAsCommand, (int)Commands.InterpretAsCommand });
-      tcpByteStream.Connected.Should().BeTrue();
-      ByteStreamHandler sut = new ByteStreamHandler(tcpByteStream, new CancellationTokenSource());
+          if (isFirst)
+          {
+            isFirst = false;
+            return 1;
+          }
+          return 0;
+        });
+        TcpByteStream tcpByteStream = new TcpByteStream(socket);
+        A.CallTo(() => networkStream.ReadByte()).ReturnsNextFromSequence(new int[] { (int)Commands.InterpretAsCommand, (int)Commands.InterpretAsCommand });
+        tcpByteStream.Connected.Should().BeTrue();
+        ByteStreamHandler sut = new ByteStreamHandler(tcpByteStream, new CancellationTokenSource());
 
 #if ASYNC
       string response = await sut.ReadAsync(TimeSpan.FromMilliseconds(10));
 #else
-      string response = sut.Read(TimeSpan.FromMilliseconds(10));
+        string response = sut.Read(TimeSpan.FromMilliseconds(10));
 #endif
-      response.Should().Be("255");
+        response.Should().Be("255");
+      }
     }
 
     [TestMethod]
@@ -142,31 +148,33 @@
 #endif
     {
       ISocket socket = A.Fake<ISocket>();
-      INetworkStream networkStream = A.Fake<INetworkStream>();
-      A.CallTo(() => socket.GetStream()).Returns(networkStream);
-      A.CallTo(() => socket.Connected).Returns(true);
-      bool isFirst = true;
-      A.CallTo(() => socket.Available).ReturnsLazily(() =>
+      using (INetworkStream networkStream = A.Fake<INetworkStream>())
       {
-        if (isFirst)
+        A.CallTo(() => socket.GetStream()).Returns(networkStream);
+        A.CallTo(() => socket.Connected).Returns(true);
+        bool isFirst = true;
+        A.CallTo(() => socket.Available).ReturnsLazily(() =>
         {
-          isFirst = false;
-          return 1;
-        }
-        return 0;
-      });
-      TcpByteStream tcpByteStream = new TcpByteStream(socket);
-      A.CallTo(() => networkStream.ReadByte()).ReturnsNextFromSequence(new int[] { (int)Commands.InterpretAsCommand, -1 });
-      tcpByteStream.Connected.Should().BeTrue();
-      ByteStreamHandler sut = new ByteStreamHandler(tcpByteStream, new CancellationTokenSource());
+          if (isFirst)
+          {
+            isFirst = false;
+            return 1;
+          }
+          return 0;
+        });
+        TcpByteStream tcpByteStream = new TcpByteStream(socket);
+        A.CallTo(() => networkStream.ReadByte()).ReturnsNextFromSequence(new int[] { (int)Commands.InterpretAsCommand, -1 });
+        tcpByteStream.Connected.Should().BeTrue();
+        ByteStreamHandler sut = new ByteStreamHandler(tcpByteStream, new CancellationTokenSource());
 
 #if ASYNC
       string response = await sut.ReadAsync(TimeSpan.FromMilliseconds(10));
 #else
-      string response = sut.Read(TimeSpan.FromMilliseconds(10));
+        string response = sut.Read(TimeSpan.FromMilliseconds(10));
 #endif
 
-      response.Should().BeEmpty();
+        response.Should().BeEmpty();
+      }
     }
 
     [TestMethod]
@@ -177,32 +185,34 @@
 #endif
     {
       ISocket socket = A.Fake<ISocket>();
-      INetworkStream networkStream = A.Fake<INetworkStream>();
-      A.CallTo(() => socket.GetStream()).Returns(networkStream);
-      A.CallTo(() => socket.Connected).Returns(true);
-      bool isFirst = true;
-      A.CallTo(() => socket.Available).ReturnsLazily(() =>
+      using (INetworkStream networkStream = A.Fake<INetworkStream>())
       {
-        if (isFirst)
+        A.CallTo(() => socket.GetStream()).Returns(networkStream);
+        A.CallTo(() => socket.Connected).Returns(true);
+        bool isFirst = true;
+        A.CallTo(() => socket.Available).ReturnsLazily(() =>
         {
-          isFirst = false;
-          return 1;
-        }
-        return 0;
-      });
-      TcpByteStream tcpByteStream = new TcpByteStream(socket);
-      A.CallTo(() => networkStream.ReadByte()).ReturnsNextFromSequence(new int[] { (int)Commands.InterpretAsCommand, (int)Commands.Do, (int)Options.SuppressGoAhead });
-      tcpByteStream.Connected.Should().BeTrue();
-      ByteStreamHandler sut = new ByteStreamHandler(tcpByteStream, new CancellationTokenSource());
+          if (isFirst)
+          {
+            isFirst = false;
+            return 1;
+          }
+          return 0;
+        });
+        TcpByteStream tcpByteStream = new TcpByteStream(socket);
+        A.CallTo(() => networkStream.ReadByte()).ReturnsNextFromSequence(new int[] { (int)Commands.InterpretAsCommand, (int)Commands.Do, (int)Options.SuppressGoAhead });
+        tcpByteStream.Connected.Should().BeTrue();
+        ByteStreamHandler sut = new ByteStreamHandler(tcpByteStream, new CancellationTokenSource());
 
 #if ASYNC
       string response = await sut.ReadAsync(TimeSpan.FromMilliseconds(10));
 #else
-      string response = sut.Read(TimeSpan.FromMilliseconds(10));
+        string response = sut.Read(TimeSpan.FromMilliseconds(10));
 #endif
-      response.Should().BeEmpty();
-      A.CallTo(() => networkStream.WriteByte((byte)Commands.InterpretAsCommand)).MustHaveHappened();
-      A.CallTo(() => networkStream.WriteByte((byte)Commands.Will)).MustHaveHappened();
+        response.Should().BeEmpty();
+        A.CallTo(() => networkStream.WriteByte((byte)Commands.InterpretAsCommand)).MustHaveHappened();
+        A.CallTo(() => networkStream.WriteByte((byte)Commands.Will)).MustHaveHappened();
+      }
     }
 
     [TestMethod]
@@ -213,33 +223,38 @@
 #endif
     {
       ISocket socket = A.Fake<ISocket>();
-      INetworkStream networkStream = A.Fake<INetworkStream>();
-      A.CallTo(() => socket.GetStream()).Returns(networkStream);
-      A.CallTo(() => socket.Connected).Returns(true);
-      bool isFirst = true;
-      A.CallTo(() => socket.Available).ReturnsLazily(() =>
+      using (INetworkStream networkStream = A.Fake<INetworkStream>())
       {
-        if (isFirst)
+        A.CallTo(() => socket.GetStream()).Returns(networkStream);
+        A.CallTo(() => socket.Connected).Returns(true);
+        bool isFirst = true;
+        A.CallTo(() => socket.Available).ReturnsLazily(() =>
         {
-          isFirst = false;
-          return 1;
-        }
-        return 0;
-      });
-      TcpByteStream tcpByteStream = new TcpByteStream(socket);
-      A.CallTo(() => networkStream.ReadByte()).ReturnsNextFromSequence(new int[] { (int)Commands.InterpretAsCommand, (int)Commands.Do, 1 });
-      tcpByteStream.Connected.Should().BeTrue();
-      ByteStreamHandler sut = new ByteStreamHandler(tcpByteStream, new CancellationTokenSource());
-
+          if (isFirst)
+          {
+            isFirst = false;
+            return 1;
+          }
+          return 0;
+        });
+        using (TcpByteStream tcpByteStream = new TcpByteStream(socket))
+        {
+          A.CallTo(() => networkStream.ReadByte()).ReturnsNextFromSequence(new int[] { (int)Commands.InterpretAsCommand, (int)Commands.Do, 1 });
+          tcpByteStream.Connected.Should().BeTrue();
+          using (ByteStreamHandler sut = new ByteStreamHandler(tcpByteStream, new CancellationTokenSource()))
+          {
 #if ASYNC
       string response = await sut.ReadAsync(TimeSpan.FromMilliseconds(10));
 #else
-      string response = sut.Read(TimeSpan.FromMilliseconds(10));
+            string response = sut.Read(TimeSpan.FromMilliseconds(10));
 #endif
 
-      response.Should().BeEmpty();
-      A.CallTo(() => networkStream.WriteByte((byte)Commands.InterpretAsCommand)).MustHaveHappened();
-      A.CallTo(() => networkStream.WriteByte((byte)Commands.Wont)).MustHaveHappened();
+            response.Should().BeEmpty();
+            A.CallTo(() => networkStream.WriteByte((byte)Commands.InterpretAsCommand)).MustHaveHappened();
+            A.CallTo(() => networkStream.WriteByte((byte)Commands.Wont)).MustHaveHappened();
+          }
+        }
+      }
     }
 
     [TestMethod]
@@ -250,32 +265,37 @@
 #endif
     {
       ISocket socket = A.Fake<ISocket>();
-      INetworkStream networkStream = A.Fake<INetworkStream>();
-      A.CallTo(() => socket.GetStream()).Returns(networkStream);
-      A.CallTo(() => socket.Connected).Returns(true);
-      bool isFirst = true;
-      A.CallTo(() => socket.Available).ReturnsLazily(() =>
+      using (INetworkStream networkStream = A.Fake<INetworkStream>())
       {
-        if (isFirst)
+        A.CallTo(() => socket.GetStream()).Returns(networkStream);
+        A.CallTo(() => socket.Connected).Returns(true);
+        bool isFirst = true;
+        A.CallTo(() => socket.Available).ReturnsLazily(() =>
         {
-          isFirst = false;
-          return 1;
-        }
-        return 0;
-      });
-      TcpByteStream tcpByteStream = new TcpByteStream(socket);
-      A.CallTo(() => networkStream.ReadByte()).ReturnsNextFromSequence(new int[] { (int)Commands.InterpretAsCommand, 2 });
-      tcpByteStream.Connected.Should().BeTrue();
-      ByteStreamHandler sut = new ByteStreamHandler(tcpByteStream, new CancellationTokenSource());
-
+          if (isFirst)
+          {
+            isFirst = false;
+            return 1;
+          }
+          return 0;
+        });
+        using (TcpByteStream tcpByteStream = new TcpByteStream(socket))
+        {
+          A.CallTo(() => networkStream.ReadByte()).ReturnsNextFromSequence(new int[] { (int)Commands.InterpretAsCommand, 2 });
+          tcpByteStream.Connected.Should().BeTrue();
+          using (ByteStreamHandler sut = new ByteStreamHandler(tcpByteStream, new CancellationTokenSource()))
+          {
 #if ASYNC
       string response = await sut.ReadAsync(TimeSpan.FromMilliseconds(10));
 #else
-      string response = sut.Read(TimeSpan.FromMilliseconds(10));
+            string response = sut.Read(TimeSpan.FromMilliseconds(10));
 #endif
 
-      response.Should().BeEmpty();
-      A.CallTo(() => networkStream.WriteByte(A<byte>.Ignored)).MustNotHaveHappened();
+            response.Should().BeEmpty();
+            A.CallTo(() => networkStream.WriteByte(A<byte>.Ignored)).MustNotHaveHappened();
+          }
+        }
+      }
     }
 
     [TestMethod]
@@ -286,33 +306,38 @@
 #endif
     {
       ISocket socket = A.Fake<ISocket>();
-      INetworkStream networkStream = A.Fake<INetworkStream>();
-      A.CallTo(() => socket.GetStream()).Returns(networkStream);
-      A.CallTo(() => socket.Connected).Returns(true);
-      bool isFirst = true;
-      A.CallTo(() => socket.Available).ReturnsLazily(() =>
+      using (INetworkStream networkStream = A.Fake<INetworkStream>())
       {
-        if (isFirst)
+        A.CallTo(() => socket.GetStream()).Returns(networkStream);
+        A.CallTo(() => socket.Connected).Returns(true);
+        bool isFirst = true;
+        A.CallTo(() => socket.Available).ReturnsLazily(() =>
         {
-          isFirst = false;
-          return 1;
-        }
-        return 0;
-      });
-      TcpByteStream tcpByteStream = new TcpByteStream(socket);
-      A.CallTo(() => networkStream.ReadByte()).ReturnsNextFromSequence(new int[] { (int)Commands.InterpretAsCommand, (int)Commands.Dont, 1 });
-      tcpByteStream.Connected.Should().BeTrue();
-      ByteStreamHandler sut = new ByteStreamHandler(tcpByteStream, new CancellationTokenSource());
-
+          if (isFirst)
+          {
+            isFirst = false;
+            return 1;
+          }
+          return 0;
+        });
+        using (TcpByteStream tcpByteStream = new TcpByteStream(socket))
+        {
+          A.CallTo(() => networkStream.ReadByte()).ReturnsNextFromSequence(new int[] { (int)Commands.InterpretAsCommand, (int)Commands.Dont, 1 });
+          tcpByteStream.Connected.Should().BeTrue();
+          using (ByteStreamHandler sut = new ByteStreamHandler(tcpByteStream, new CancellationTokenSource()))
+          {
 #if ASYNC
       string response = await sut.ReadAsync(TimeSpan.FromMilliseconds(10));
 #else
-      string response = sut.Read(TimeSpan.FromMilliseconds(10));
+            string response = sut.Read(TimeSpan.FromMilliseconds(10));
 #endif
 
-      response.Should().BeEmpty();
-      A.CallTo(() => networkStream.WriteByte((byte)Commands.InterpretAsCommand)).MustHaveHappened();
-      A.CallTo(() => networkStream.WriteByte((byte)Commands.Dont)).MustHaveHappened();
+            response.Should().BeEmpty();
+            A.CallTo(() => networkStream.WriteByte((byte)Commands.InterpretAsCommand)).MustHaveHappened();
+            A.CallTo(() => networkStream.WriteByte((byte)Commands.Dont)).MustHaveHappened();
+          }
+        }
+      }
     }
 
     [TestMethod]
@@ -323,33 +348,38 @@
 #endif
     {
       ISocket socket = A.Fake<ISocket>();
-      INetworkStream networkStream = A.Fake<INetworkStream>();
-      A.CallTo(() => socket.GetStream()).Returns(networkStream);
-      A.CallTo(() => socket.Connected).Returns(true);
-      bool isFirst = true;
-      A.CallTo(() => socket.Available).ReturnsLazily(() =>
+      using (INetworkStream networkStream = A.Fake<INetworkStream>())
       {
-        if (isFirst)
+        A.CallTo(() => socket.GetStream()).Returns(networkStream);
+        A.CallTo(() => socket.Connected).Returns(true);
+        bool isFirst = true;
+        A.CallTo(() => socket.Available).ReturnsLazily(() =>
         {
-          isFirst = false;
-          return 1;
-        }
-        return 0;
-      });
-      TcpByteStream tcpByteStream = new TcpByteStream(socket);
-      A.CallTo(() => networkStream.ReadByte()).ReturnsNextFromSequence(new int[] { (int)Commands.InterpretAsCommand, (int)Commands.Dont, (int)Options.SuppressGoAhead });
-      tcpByteStream.Connected.Should().BeTrue();
-      ByteStreamHandler sut = new ByteStreamHandler(tcpByteStream, new CancellationTokenSource());
-
+          if (isFirst)
+          {
+            isFirst = false;
+            return 1;
+          }
+          return 0;
+        });
+        using (TcpByteStream tcpByteStream = new TcpByteStream(socket))
+        {
+          A.CallTo(() => networkStream.ReadByte()).ReturnsNextFromSequence(new int[] { (int)Commands.InterpretAsCommand, (int)Commands.Dont, (int)Options.SuppressGoAhead });
+          tcpByteStream.Connected.Should().BeTrue();
+          using (ByteStreamHandler sut = new ByteStreamHandler(tcpByteStream, new CancellationTokenSource()))
+          {
 #if ASYNC
       string response = await sut.ReadAsync(TimeSpan.FromMilliseconds(10));
 #else
-      string response = sut.Read(TimeSpan.FromMilliseconds(10));
+            string response = sut.Read(TimeSpan.FromMilliseconds(10));
 #endif
 
-      response.Should().BeEmpty();
-      A.CallTo(() => networkStream.WriteByte((byte)Commands.InterpretAsCommand)).MustHaveHappened();
-      A.CallTo(() => networkStream.WriteByte((byte)Commands.Do)).MustHaveHappened();
+            response.Should().BeEmpty();
+            A.CallTo(() => networkStream.WriteByte((byte)Commands.InterpretAsCommand)).MustHaveHappened();
+            A.CallTo(() => networkStream.WriteByte((byte)Commands.Do)).MustHaveHappened();
+          }
+        }
+      }
     }
 
     [TestMethod]
@@ -360,33 +390,39 @@
 #endif
     {
       ISocket socket = A.Fake<ISocket>();
-      INetworkStream networkStream = A.Fake<INetworkStream>();
-      A.CallTo(() => socket.GetStream()).Returns(networkStream);
-      A.CallTo(() => socket.Connected).Returns(true);
-      A.CallTo(() => socket.Available).Returns(1);
-      TcpByteStream tcpByteStream = new TcpByteStream(socket);
-      A.CallTo(() => networkStream.ReadByte()).Returns(142);
-      tcpByteStream.Connected.Should().BeTrue();
-      CancellationTokenSource cancellationToken = new CancellationTokenSource();
+      using (INetworkStream networkStream = A.Fake<INetworkStream>())
+      {
+        A.CallTo(() => socket.GetStream()).Returns(networkStream);
+        A.CallTo(() => socket.Connected).Returns(true);
+        A.CallTo(() => socket.Available).Returns(1);
+        using (TcpByteStream tcpByteStream = new TcpByteStream(socket))
+        {
+          A.CallTo(() => networkStream.ReadByte()).Returns(142);
+          tcpByteStream.Connected.Should().BeTrue();
+          CancellationTokenSource cancellationToken = new CancellationTokenSource();
 
-      Stopwatch stopwatch = new Stopwatch();
-      ByteStreamHandler sut = new ByteStreamHandler(tcpByteStream, cancellationToken);
+          Stopwatch stopwatch = new Stopwatch();
+          using (ByteStreamHandler sut = new ByteStreamHandler(tcpByteStream, cancellationToken))
+          {
 
 #if ASYNC
       cancellationToken.CancelAfter(100);
       await sut.ReadAsync(TimeSpan.FromMilliseconds(1000));
 #else
-      Thread t = new Thread(new ThreadStart(() =>
-      {
-        AutoResetEvent are = new AutoResetEvent(false);
-        are.WaitOne(100);
-        cancellationToken.Cancel();
-      }));
-      t.Start();
-      sut.Read(TimeSpan.FromMilliseconds(1000));
+            Thread t = new Thread(new ThreadStart(() =>
+            {
+              AutoResetEvent are = new AutoResetEvent(false);
+              are.WaitOne(100);
+              cancellationToken.Cancel();
+            }));
+            t.Start();
+            sut.Read(TimeSpan.FromMilliseconds(1000));
 #endif
 
-      stopwatch.ElapsedMilliseconds.Should().BeLessThan(500);
+            stopwatch.ElapsedMilliseconds.Should().BeLessThan(500);
+          }
+        }
+      }
     }
   }
 }

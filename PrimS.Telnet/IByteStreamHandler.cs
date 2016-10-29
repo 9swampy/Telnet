@@ -8,7 +8,7 @@ namespace PrimS.Telnet
   /// <summary>
   /// Contract of core functionality required to interact with a ByteStream.
   /// </summary>
-  public interface IByteStreamHandler
+  public interface IByteStreamHandler : IDisposable
   {
 #if ASYNC
     /// <summary>

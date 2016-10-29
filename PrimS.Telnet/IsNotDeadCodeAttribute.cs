@@ -2,8 +2,11 @@
 {
   using System;
 
+  /// <summary>
+  /// Suppress IsDeadCode warning.
+  /// </summary>
   [AttributeUsage(AttributeTargets.Enum)]
-  public class IsNotDeadCodeAttribute : Attribute
+  public sealed class IsNotDeadCodeAttribute : Attribute
   {
   }
 }
