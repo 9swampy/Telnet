@@ -1,8 +1,8 @@
 namespace PrimS.Telnet
 {
-  [IsNotDeadCodeAttribute]
-  internal enum Options
-  {
-    SuppressGoAhead = 3
-  }
+    [IsNotDeadCodeAttribute]
+    internal enum Options
+    {
+        SuppressGoAhead = 3
+    }
 }
