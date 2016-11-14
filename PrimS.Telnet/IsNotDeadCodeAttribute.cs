@@ -1,9 +1,9 @@
 ﻿namespace PrimS.Telnet
 {
-  using System;
+    using System;
 
-  [AttributeUsage(AttributeTargets.Enum)]
-  public class IsNotDeadCodeAttribute : Attribute
-  {
-  }
+    [AttributeUsage(AttributeTargets.Enum)]
+    public class IsNotDeadCodeAttribute : Attribute
+    {
+    }
 }
