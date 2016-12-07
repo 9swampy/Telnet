@@ -20,5 +20,7 @@
 /PrimS.Telnet.35.CiTests/bin
 /PrimS.Telnet.35.CiTests/obj
 /NDependOut
-PrimS.Telnet.solution-user.settings.xml*.suo
+PrimS.Telnet.solution-user.settings.xml
+*.suo
 *.dg
+/PrimS.Telnet.NetStandard/project.lock.json
