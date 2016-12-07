@@ -18,7 +18,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;NET451</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -26,7 +26,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>TRACE;NET451</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Release\PrimS.Telnet.40.xml</DocumentationFile>
@@ -41,46 +41,46 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\PrimS.Telnet\BaseClient.cs">
+    <Compile Include="..\PrimS.Telnet.NetStandard\BaseClient.cs">
       <Link>BaseClient.cs</Link>
     </Compile>
-    <Compile Include="..\PrimS.Telnet\BaseClientCancellable.cs">
+    <Compile Include="..\PrimS.Telnet.NetStandard\BaseClientCancellable.cs">
       <Link>BaseClientCancellable.cs</Link>
     </Compile>
-    <Compile Include="..\PrimS.Telnet\ByteStreamHandler.cs">
+    <Compile Include="..\PrimS.Telnet.NetStandard\ByteStreamHandler.cs">
       <Link>ByteStreamHandler.cs</Link>
     </Compile>
-    <Compile Include="..\PrimS.Telnet\ByteStreamHandlerCancellable.cs">
+    <Compile Include="..\PrimS.Telnet.NetStandard\ByteStreamHandlerCancellable.cs">
       <Link>ByteStreamHandlerCancellable.cs</Link>
     </Compile>
-    <Compile Include="..\PrimS.Telnet\Commands.cs">
+    <Compile Include="..\PrimS.Telnet.NetStandard\Commands.cs">
       <Link>Commands.cs</Link>
     </Compile>
-    <Compile Include="..\PrimS.Telnet\IByteStream.cs">
+    <Compile Include="..\PrimS.Telnet.NetStandard\IByteStream.cs">
       <Link>IByteStream.cs</Link>
     </Compile>
-    <Compile Include="..\PrimS.Telnet\IByteStreamHandler.cs">
+    <Compile Include="..\PrimS.Telnet.NetStandard\IByteStreamHandler.cs">
       <Link>IByteStreamHandler.cs</Link>
     </Compile>
-    <Compile Include="..\PrimS.Telnet\INetworkStream.cs">
+    <Compile Include="..\PrimS.Telnet.NetStandard\INetworkStream.cs">
       <Link>INetworkStream.cs</Link>
     </Compile>
-    <Compile Include="..\PrimS.Telnet\IsNotDeadCodeAttribute.cs">
+    <Compile Include="..\PrimS.Telnet.NetStandard\IsNotDeadCodeAttribute.cs">
       <Link>IsNotDeadCodeAttribute.cs</Link>
     </Compile>
-    <Compile Include="..\PrimS.Telnet\ISocket.cs">
+    <Compile Include="..\PrimS.Telnet.NetStandard\ISocket.cs">
       <Link>ISocket.cs</Link>
     </Compile>
-    <Compile Include="..\PrimS.Telnet\NetworkStream.cs">
+    <Compile Include="..\PrimS.Telnet.NetStandard\NetworkStream.cs">
       <Link>NetworkStream.cs</Link>
     </Compile>
-    <Compile Include="..\PrimS.Telnet\Options.cs">
+    <Compile Include="..\PrimS.Telnet.NetStandard\Options.cs">
       <Link>Options.cs</Link>
     </Compile>
-    <Compile Include="..\PrimS.Telnet\TcpByteStream.cs">
+    <Compile Include="..\PrimS.Telnet.NetStandard\TcpByteStream.cs">
       <Link>TcpByteStream.cs</Link>
     </Compile>
-    <Compile Include="..\PrimS.Telnet\TcpClient.cs">
+    <Compile Include="..\PrimS.Telnet.NetStandard\TcpClient.cs">
       <Link>TcpClient.cs</Link>
     </Compile>
     <Compile Include="Client.cs" />
