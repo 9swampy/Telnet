@@ -10,7 +10,7 @@ namespace PrimS.Telnet
   /// <summary>
   /// A network stream that can be read and written to.
   /// </summary>
-  public interface INetworkStream
+  public interface INetworkStream : IDisposable
   {
     /// <summary>
     /// Reads the next byte.

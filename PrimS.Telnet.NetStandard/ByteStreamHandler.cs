@@ -12,12 +12,33 @@ namespace PrimS.Telnet
   public partial class ByteStreamHandler : IByteStreamHandler
   {
     private readonly IByteStream byteStream;
-
+    
     private bool IsResponsePending
     {
       get
       {
         return this.byteStream.Available > 0;
+      }
+    }
+
+    /// <summary>
+    /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+    /// </summary>
+    public void Dispose()
+    {
+      this.Dispose(true);
+      GC.SuppressFinalize(this);
+    }
+
+    /// <summary>
+    /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+    /// </summary>
+    /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+    protected virtual void Dispose(bool disposing)
+    {
+      if (disposing)
+      {
+        this.byteStream.Dispose();
       }
     }
 
@@ -55,7 +76,7 @@ namespace PrimS.Telnet
     {
       return sb.Length > 0;
     }
-   
+
     private bool RetrieveAndParseResponse(StringBuilder sb)
     {
       if (this.IsResponsePending)
