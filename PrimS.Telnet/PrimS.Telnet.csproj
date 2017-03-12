@@ -18,7 +18,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;ASYNC</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;ASYNC;NET451</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>
@@ -28,14 +28,14 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE;ASYNC</DefineConstants>
+    <DefineConstants>TRACE;ASYNC;NET451</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Release\PrimS.Telnet.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="LiteGuard">
-      <HintPath>..\packages\LiteGuard.0.10.0\lib\net35\LiteGuard.dll</HintPath>
+    <Reference Include="LiteGuard, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\LiteGuard.1.1.0\lib\net35\LiteGuard.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -46,22 +46,52 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BaseClient.cs" />
-    <Compile Include="BaseClientCancellable.cs" />
-    <Compile Include="ByteStreamHandler.cs" />
-    <Compile Include="ByteStreamHandlerCancellable.cs" />
-    <Compile Include="IsNotDeadCodeAttribute.cs" />
-    <Compile Include="Commands.cs" />
-    <Compile Include="IByteStream.cs" />
-    <Compile Include="IByteStreamHandler.cs" />
-    <Compile Include="INetworkStream.cs" />
-    <Compile Include="ISocket.cs" />
-    <Compile Include="NetworkStream.cs" />
-    <Compile Include="Options.cs" />
+    <Compile Include="..\PrimS.Telnet.NetStandard\BaseClient.cs">
+      <Link>BaseClient.cs</Link>
+    </Compile>
+    <Compile Include="..\PrimS.Telnet.NetStandard\BaseClientCancellable.cs">
+      <Link>BaseClientCancellable.cs</Link>
+    </Compile>
+    <Compile Include="..\PrimS.Telnet.NetStandard\ByteStreamHandler.cs">
+      <Link>ByteStreamHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\PrimS.Telnet.NetStandard\ByteStreamHandlerCancellable.cs">
+      <Link>ByteStreamHandlerCancellable.cs</Link>
+    </Compile>
+    <Compile Include="..\PrimS.Telnet.NetStandard\Client.cs">
+      <Link>Client.cs</Link>
+    </Compile>
+    <Compile Include="..\PrimS.Telnet.NetStandard\Commands.cs">
+      <Link>Commands.cs</Link>
+    </Compile>
+    <Compile Include="..\PrimS.Telnet.NetStandard\IByteStream.cs">
+      <Link>IByteStream.cs</Link>
+    </Compile>
+    <Compile Include="..\PrimS.Telnet.NetStandard\IByteStreamHandler.cs">
+      <Link>IByteStreamHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\PrimS.Telnet.NetStandard\INetworkStream.cs">
+      <Link>INetworkStream.cs</Link>
+    </Compile>
+    <Compile Include="..\PrimS.Telnet.NetStandard\IsNotDeadCodeAttribute.cs">
+      <Link>IsNotDeadCodeAttribute.cs</Link>
+    </Compile>
+    <Compile Include="..\PrimS.Telnet.NetStandard\ISocket.cs">
+      <Link>ISocket.cs</Link>
+    </Compile>
+    <Compile Include="..\PrimS.Telnet.NetStandard\NetworkStream.cs">
+      <Link>NetworkStream.cs</Link>
+    </Compile>
+    <Compile Include="..\PrimS.Telnet.NetStandard\Options.cs">
+      <Link>Options.cs</Link>
+    </Compile>
+    <Compile Include="..\PrimS.Telnet.NetStandard\TcpByteStream.cs">
+      <Link>TcpByteStream.cs</Link>
+    </Compile>
+    <Compile Include="..\PrimS.Telnet.NetStandard\TcpClient.cs">
+      <Link>TcpClient.cs</Link>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Client.cs" />
-    <Compile Include="TcpByteStream.cs" />
-    <Compile Include="TcpClient.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

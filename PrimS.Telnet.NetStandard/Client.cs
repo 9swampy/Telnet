@@ -146,7 +146,7 @@ namespace PrimS.Telnet
       string s = await this.TerminatedReadAsync(isTerminated, timeout, millisecondSpin);
       if (!isTerminated(s))
       {
-        System.Diagnostics.Debug.Print("Failed to terminate '{0}' with '{1}'", s, terminator);
+        System.Diagnostics.Debug.WriteLine("Failed to terminate '{0}' with '{1}'", s, terminator);
       }
 
       return s;
@@ -165,7 +165,7 @@ namespace PrimS.Telnet
       string s = await this.TerminatedReadAsync(isTerminated, timeout, millisecondSpin);
       if (!isTerminated(s))
       {
-        System.Diagnostics.Debug.Print(string.Format("Failed to match '{0}' with '{1}'", s, regex.ToString()));
+        System.Diagnostics.Debug.WriteLine(string.Format("Failed to match '{0}' with '{1}'", s, regex.ToString()));
       }
 
       return s;

@@ -8,7 +8,7 @@ namespace PrimS.Telnet
   /// <summary>
   /// A ByteStream acting over a TCP channel.
   /// </summary>
-  public class TcpByteStream : IByteStream, IDisposable
+  public class TcpByteStream : IByteStream
   {
     private readonly ISocket socket;
 
@@ -172,18 +172,22 @@ namespace PrimS.Telnet
       GC.SuppressFinalize(this);
     }
 
-    private static byte[] ConvertStringToByteArray(string command)
-    {
-      byte[] buffer = System.Text.ASCIIEncoding.ASCII.GetBytes(command.Replace("\0xFF", "\0xFF\0xFF"));
-      return buffer;
-    }
-
-    private void Dispose(bool isDisposing)
+    /// <summary>
+    /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+    /// </summary>
+    /// <param name="isDisposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+    protected virtual void Dispose(bool isDisposing)
     {
       if (isDisposing)
       {
         this.Close();
       }
+    }
+
+    private static byte[] ConvertStringToByteArray(string command)
+    {
+      byte[] buffer = System.Text.ASCIIEncoding.ASCII.GetBytes(command.Replace("\0xFF", "\0xFF\0xFF"));
+      return buffer;
     }
   }
 }

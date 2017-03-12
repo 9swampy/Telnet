@@ -54,7 +54,7 @@
         return string.Empty;
       }
 
-      StringBuilder sb = new StringBuilder();
+      var sb = new StringBuilder();
       this.byteStream.ReceiveTimeout = (int)timeout.TotalMilliseconds;
       DateTime endInitialTimeout = DateTime.Now.Add(timeout);
       DateTime rollingTimeout = ExtendRollingTimeout(timeout);
@@ -70,12 +70,16 @@
  await
 #endif
  this.IsResponseAnticipated(IsInitialResponseReceived(sb), endInitialTimeout, rollingTimeout));
-      if (IsRollingTimeoutExpired(rollingTimeout))
-      {
-        System.Diagnostics.Debug.Print("RollingTimeout exceeded {0}", DateTime.Now.ToString("ss:fff"));
-      }
-
+      this.LogIfTimeoutExpired(rollingTimeout);
       return sb.ToString();
     }
-  }
+
+    private void LogIfTimeoutExpired(DateTime rollingTimeout)
+    {
+      if (IsRollingTimeoutExpired(rollingTimeout))
+      {
+        System.Diagnostics.Debug.WriteLine("RollingTimeout exceeded {0}", DateTime.Now.ToString("ss:fff"));
+      }
+    }
+}
 }

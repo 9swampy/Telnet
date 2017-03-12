@@ -9,7 +9,7 @@
   /// <summary>
   /// Contract of core functionality provided by a ByteStream.
   /// </summary>
-  public interface IByteStream
+  public interface IByteStream : IDisposable
   {
     /// <summary>
     /// Gets the amount of data that has been received from the network and is available to be read.
@@ -20,7 +20,7 @@
     /// <exception cref="System.Net.Sockets.SocketException">An error occurred when attempting to access the socket. See the Remarks section for more information.</exception>
     /// <exception cref="System.ObjectDisposedException">The System.Net.Sockets.Socket has been closed.</exception>
     int Available { get; }
-    
+
     /// <summary>
     /// Gets a value indicating whether this <see cref="IByteStream"/> is connected.
     /// </summary>
@@ -28,7 +28,7 @@
     ///   <c>True</c> if connected; otherwise, <c>false</c>.
     /// </value>
     bool Connected { get; }
-    
+
     /// <summary>
     /// Gets or sets the amount of time this <see cref="IByteStream"/> will wait to receive data once a read operation is initiated.
     /// </summary>

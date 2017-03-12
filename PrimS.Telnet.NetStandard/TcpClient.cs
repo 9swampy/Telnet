@@ -17,7 +17,20 @@
     /// <param name="port">The port.</param>
     public TcpClient(string hostName, int port)
     {
+#if NET451
       this.client = new System.Net.Sockets.TcpClient(hostName, port);
+#else
+      this.client = new System.Net.Sockets.TcpClient();
+      // .NetStandard does not include a synchronous constructor or Connect method.
+      // This will normally not be connected by the time the constructor returns,
+      // it is the responsibility of the caller to ensure that they wait for the
+      // connection to complete or fail, using this.Connected.
+      // The PrimS.Telnet.Client constructor does this.
+      // Adding something awaitable on this class to connect or wait for connection
+      // would break backward compatibility and require a lot of refactoring.
+      // This will do for now.
+      var nowait = client.ConnectAsync(hostName, port);
+#endif
     }
 
     /// <summary>
@@ -81,7 +94,11 @@
     /// </summary>
     public void Close()
     {
+#if NET451
       this.client.Close();
+#else
+      this.client.Dispose();
+#endif
     }
 
     /// <summary>
@@ -99,7 +116,11 @@
     {
       if (isDisposing)
       {
+#if NET451
         this.client.Close();
+#else
+        this.client.Dispose();
+#endif
       }
     }
   }
