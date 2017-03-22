@@ -128,17 +128,23 @@ namespace PrimS.Telnet
       int inputOption = this.byteStream.ReadByte();
       if (inputOption != -1)
       {
-        this.byteStream.WriteByte((byte)Commands.InterpretAsCommand);
+        var reply = new byte[3];
+        reply[0] = (byte)Commands.InterpretAsCommand;
         if (inputOption == (int)Options.SuppressGoAhead)
         {
-          this.byteStream.WriteByte(inputVerb == (int)Commands.Do ? (byte)Commands.Will : (byte)Commands.Do);
+          reply[1] = inputVerb == (int)Commands.Do ? (byte)Commands.Will : (byte)Commands.Do;
         }
         else
         {
-          this.byteStream.WriteByte(inputVerb == (int)Commands.Do ? (byte)Commands.Wont : (byte)Commands.Dont);
+          reply[1] = inputVerb == (int)Commands.Do ? (byte)Commands.Wont : (byte)Commands.Dont;
         }
+        reply[2] = (byte)inputOption;
 
-        this.byteStream.WriteByte((byte)inputOption);
+#if ASYNC
+        // TODO WriteAsync() ???
+#else
+        this.byteStream.Write(reply, 0, reply.Length);
+#endif
       }
     }
 
