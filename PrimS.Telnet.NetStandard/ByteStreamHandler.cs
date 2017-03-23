@@ -1,6 +1,7 @@
 namespace PrimS.Telnet
 {
   using System;
+  using System.Collections.Generic;
   using System.Text;
 #if ASYNC
   using System.Threading.Tasks;
@@ -21,10 +22,12 @@ namespace PrimS.Telnet
       }
     }
 
+    private readonly HashSet<Options> acknowledgingOptions;
+
     /// <summary>
     /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
     /// </summary>
-    public void Dispose()
+        public void Dispose()
     {
       this.Dispose(true);
       GC.SuppressFinalize(this);
@@ -130,7 +133,7 @@ namespace PrimS.Telnet
       {
         var reply = new byte[3];
         reply[0] = (byte)Commands.InterpretAsCommand;
-        if (inputOption == (int)Options.SuppressGoAhead)
+        if (this.acknowledgingOptions.Contains((Options)inputOption))
         {
           reply[1] = inputVerb == (int)Commands.Do ? (byte)Commands.Will : (byte)Commands.Do;
         }
