@@ -1,6 +1,7 @@
 namespace PrimS.Telnet
 {
   using System;
+  using System.Collections.Generic;
   using System.Text;
 #if ASYNC
   using System.Threading.Tasks;
@@ -21,10 +22,12 @@ namespace PrimS.Telnet
       }
     }
 
+    private readonly HashSet<Options> acknowledgingOptions;
+
     /// <summary>
     /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
     /// </summary>
-    public void Dispose()
+        public void Dispose()
     {
       this.Dispose(true);
       GC.SuppressFinalize(this);
@@ -128,17 +131,23 @@ namespace PrimS.Telnet
       int inputOption = this.byteStream.ReadByte();
       if (inputOption != -1)
       {
-        this.byteStream.WriteByte((byte)Commands.InterpretAsCommand);
-        if (inputOption == (int)Options.SuppressGoAhead)
+        var reply = new byte[3];
+        reply[0] = (byte)Commands.InterpretAsCommand;
+        if (this.acknowledgingOptions.Contains((Options)inputOption))
         {
-          this.byteStream.WriteByte(inputVerb == (int)Commands.Do ? (byte)Commands.Will : (byte)Commands.Do);
+          reply[1] = inputVerb == (int)Commands.Do ? (byte)Commands.Will : (byte)Commands.Do;
         }
         else
         {
-          this.byteStream.WriteByte(inputVerb == (int)Commands.Do ? (byte)Commands.Wont : (byte)Commands.Dont);
+          reply[1] = inputVerb == (int)Commands.Do ? (byte)Commands.Wont : (byte)Commands.Dont;
         }
+        reply[2] = (byte)inputOption;
 
-        this.byteStream.WriteByte((byte)inputOption);
+#if ASYNC
+        // TODO WriteAsync() ???
+#else
+        this.byteStream.Write(reply, 0, reply.Length);
+#endif
       }
     }
 

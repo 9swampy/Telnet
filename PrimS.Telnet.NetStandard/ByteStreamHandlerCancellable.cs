@@ -1,6 +1,7 @@
 ﻿namespace PrimS.Telnet
 {
   using System;
+  using System.Collections.Generic;
   using System.Text;
   using System.Threading;
 #if ASYNC
@@ -19,10 +20,19 @@
     /// </summary>
     /// <param name="byteStream">The byteStream to handle.</param>
     /// <param name="internalCancellation">A cancellation token.</param>
-    public ByteStreamHandler(IByteStream byteStream, CancellationTokenSource internalCancellation)
+    public ByteStreamHandler(IByteStream byteStream, CancellationTokenSource internalCancellation, HashSet<Options> acknowledgingOptions = null)
     {
       this.byteStream = byteStream;
       this.internalCancellation = internalCancellation;
+      if (acknowledgingOptions == null)
+      {
+        this.acknowledgingOptions = new HashSet<Options>();
+        this.acknowledgingOptions.Add(Options.SuppressGoAhead);
+      }
+      else
+      {
+        this.acknowledgingOptions = acknowledgingOptions;
+      }
     }
 
     private bool IsCancellationRequested
