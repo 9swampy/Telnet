@@ -1,3 +1,5 @@
+using System.Reflection;
+
 namespace PrimS.Telnet
 {
   using System;
@@ -13,13 +15,14 @@ namespace PrimS.Telnet
   /// </summary>
   public class Client : BaseClient
   {
-    /// <summary>
-    /// Initialises a new instance of the <see cref="Client"/> class.
-    /// </summary>
-    /// <param name="hostName">The hostname to connect to.</param>
-    /// <param name="port">The port to connect to.</param>
-    /// <param name="token">The cancellation token.</param>
-    public Client(string hostName, int port, CancellationToken token)
+
+        /// <summary>
+        /// Initialises a new instance of the <see cref="Client"/> class.
+        /// </summary>
+        /// <param name="hostName">The hostname to connect to.</param>
+        /// <param name="port">The port to connect to.</param>
+        /// <param name="token">The cancellation token.</param>
+        public Client(string hostName, int port, CancellationToken token)
       : this(new TcpByteStream(hostName, port), token)
     {
     }
@@ -57,6 +60,11 @@ namespace PrimS.Telnet
         throw new InvalidOperationException("Unable to connect to the host.");
       }
     }
+    
+    /// <summary>
+    /// Expose the internally used line terminator character.
+    /// </summary>
+    public string LineTerminator { get; set; } = ">";
 
     /// <summary>
     /// Tries to login asynchronously.
@@ -70,7 +78,7 @@ namespace PrimS.Telnet
       bool result = await this.TrySendUsernameAndPassword(username, password, loginTimeoutMs);
       if (result)
       {
-        result = await this.IsTerminatedWith(loginTimeoutMs, ">");
+        result = await this.IsTerminatedWith(loginTimeoutMs, LineTerminator);
       }
 
       return result;
