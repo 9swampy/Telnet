@@ -78,7 +78,7 @@
           client.WriteLine("username");
           client.TerminatedRead("Password:", TimeSpan.FromMilliseconds(TimeoutMs));
           client.WriteLine("password");
-          client.TerminatedRead(">", TimeSpan.FromMilliseconds(TimeoutMs));
+          client.TerminatedRead(client.LineTerminator, TimeSpan.FromMilliseconds(TimeoutMs));
         }
       }
     }
@@ -93,8 +93,8 @@
           client.IsConnected.Should().Be(true);
           (client.TryLogin("username", "password", TimeoutMs)).Should().Be(true);
           client.WriteLine("show statistic wan2");
-          string s = client.TerminatedRead(">", TimeSpan.FromMilliseconds(TimeoutMs));
-          s.Should().Contain(">");
+          string s = client.TerminatedRead(client.LineTerminator, TimeSpan.FromMilliseconds(TimeoutMs));
+          s.Should().Contain(client.LineTerminator);
           s.Should().Contain("WAN2");
         }
       }

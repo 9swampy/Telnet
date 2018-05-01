@@ -156,7 +156,7 @@
           client.WriteLine("username");
           client.TerminatedRead("Password:", TimeSpan.FromMilliseconds(TimeoutMs));
           client.WriteLine("password");
-          client.TerminatedRead(">", TimeSpan.FromMilliseconds(TimeoutMs));
+          client.TerminatedRead(client.LineTerminator, TimeSpan.FromMilliseconds(TimeoutMs));
         }
       }
     }
@@ -171,8 +171,8 @@
           Assert.AreEqual(client.IsConnected, true);
           Assert.AreEqual(client.TryLogin("username", "password", TimeoutMs), true);
           client.WriteLine("show statistic wan2");
-          string s = client.TerminatedRead(">", TimeSpan.FromMilliseconds(TimeoutMs));
-          Assert.IsTrue(s.Contains(">"));
+          string s = client.TerminatedRead(client.LineTerminator, TimeSpan.FromMilliseconds(TimeoutMs));
+          Assert.IsTrue(s.Contains(client.LineTerminator));
           Assert.IsTrue(s.Contains("WAN2"));
         }
       }

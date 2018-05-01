@@ -1,14 +1,13 @@
 ﻿namespace PrimS.Telnet.CiTests
 {
-  using System;
-  using System.Linq;
-  using Microsoft.VisualStudio.TestTools.UnitTesting;
-  using FluentAssertions;
-  using System.Threading.Tasks;
-  using System.Text.RegularExpressions;
-  using System.Diagnostics.CodeAnalysis;
+    using System;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using FluentAssertions;
+    using System.Threading.Tasks;
+    using System.Text.RegularExpressions;
+    using System.Diagnostics.CodeAnalysis;
 
-  [ExcludeFromCodeCoverage]
+    [ExcludeFromCodeCoverage]
   [TestClass]
   public class WithClient
   {
@@ -82,7 +81,7 @@
           await client.WriteLine("username");
           await client.TerminatedReadAsync("Password:", TimeSpan.FromMilliseconds(TimeoutMs));
           await client.WriteLine("password");
-          await client.TerminatedReadAsync(">", TimeSpan.FromMilliseconds(TimeoutMs));
+          await client.TerminatedReadAsync(client.LineTerminator, TimeSpan.FromMilliseconds(TimeoutMs));
         }
       }
     }
@@ -97,8 +96,8 @@
           client.IsConnected.Should().Be(true);
           (await client.TryLoginAsync("username", "password", 1500)).Should().Be(true);
           await client.WriteLine("show statistic wan2");
-          string s = await client.TerminatedReadAsync(">", TimeSpan.FromMilliseconds(TimeoutMs));
-          s.Should().Contain(">");
+          string s = await client.TerminatedReadAsync(client.LineTerminator, TimeSpan.FromMilliseconds(TimeoutMs));
+          s.Should().Contain(client.LineTerminator);
           s.Should().Contain("WAN2");
         }
       }
@@ -115,7 +114,7 @@
           (await client.TryLoginAsync("username", "password", 1500)).Should().Be(true);
           await client.WriteLine("show statistic wan2");
           string s = await client.TerminatedReadAsync(new Regex(".*>$"), TimeSpan.FromMilliseconds(TimeoutMs));
-          s.Should().Contain(">");
+          s.Should().Contain(client.LineTerminator);
           s.Should().Contain("WAN2");
         }
       }
@@ -144,8 +143,8 @@
           client.IsConnected.Should().Be(true);
           (await client.TryLoginAsync("username", "password", TimeoutMs)).Should().Be(true);
           await client.WriteLine("show statistic wan2");
-          string s = await client.TerminatedReadAsync(">", TimeSpan.FromMilliseconds(TimeoutMs));
-          s.Should().Contain(">");
+          string s = await client.TerminatedReadAsync(client.LineTerminator, TimeSpan.FromMilliseconds(TimeoutMs));
+          s.Should().Contain(client.LineTerminator);
           s.Should().Contain("WAN2");
           System.Text.RegularExpressions.Regex regEx = new System.Text.RegularExpressions.Regex("(?!WAN2 total TX: )([0-9.]*)(?! GB ,RX: )([0-9.]*)(?= GB)");
           regEx.IsMatch(s).Should().Be(true);
