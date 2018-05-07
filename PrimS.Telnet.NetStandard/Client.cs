@@ -1,3 +1,5 @@
+using System.Runtime.InteropServices;
+
 namespace PrimS.Telnet
 {
   using System;
@@ -64,13 +66,14 @@ namespace PrimS.Telnet
     /// <param name="username">The username.</param>
     /// <param name="password">The password.</param>
     /// <param name="loginTimeoutMs">The login time out ms.</param>
+    /// <param name="terminator">The terminator.</param>
     /// <returns>True if successful.</returns>
-    public async Task<bool> TryLoginAsync(string username, string password, int loginTimeoutMs)
+    public async Task<bool> TryLoginAsync(string username, string password, int loginTimeoutMs, string terminator = ">")
     {
       bool result = await this.TrySendUsernameAndPassword(username, password, loginTimeoutMs);
       if (result)
       {
-        result = await this.IsTerminatedWith(loginTimeoutMs, ">");
+        result = await this.IsTerminatedWith(loginTimeoutMs, terminator);
       }
 
       return result;
