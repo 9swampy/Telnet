@@ -5,19 +5,21 @@ namespace PrimS.Telnet
 
   // Referencing https://support.microsoft.com/kb/231866?wa=wsignin1.0 and http://www.codeproject.com/Articles/19071/Quick-tool-A-minimalistic-Telnet-library got me started
 
+  /// <inheritdoc />
   /// <summary>
   /// Basic Telnet client.
   /// </summary>
   public partial class Client : BaseClient
-  {
+  {   
     /// <summary>
     /// Tries to login.
     /// </summary>
     /// <param name="userName">The user name.</param>
     /// <param name="password">The password.</param>
     /// <param name="loginTimeOutMs">The login time out ms.</param>
+    /// <param name="terminator">The terminator.</param>
     /// <returns>True if successful.</returns>
-    public bool TryLogin(string userName, string password, int loginTimeOutMs)
+    public bool TryLogin(string userName, string password, int loginTimeOutMs, string terminator = ">")
     {
       try
       {
@@ -29,7 +31,7 @@ namespace PrimS.Telnet
             this.WriteLine(password);
           }
 
-          return this.IsTerminatedWith(loginTimeOutMs, ">");
+          return this.IsTerminatedWith(loginTimeOutMs, terminator);
         }
       }
       catch (Exception)
