@@ -24,4 +24,3 @@ PrimS.Telnet.solution-user.settings.xml
 *.suo
 *.dg
 /PrimS.Telnet.NetStandard/project.lock.json
-/.vs/PrimS.Telnet/v15/Server/sqlite3

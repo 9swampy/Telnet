@@ -11,11 +11,6 @@ namespace PrimS.Telnet
   public partial class Client : BaseClient
   {
     /// <summary>
-    /// Expose the internally used line terminator character.
-    /// </summary>
-    public string LineTerminator { get; set; } = ">";
-
-    /// <summary>
     /// Tries to login.
     /// </summary>
     /// <param name="userName">The user name.</param>
@@ -34,7 +29,7 @@ namespace PrimS.Telnet
             this.WriteLine(password);
           }
 
-          return this.IsTerminatedWith(loginTimeOutMs, LineTerminator);
+          return this.IsTerminatedWith(loginTimeOutMs, ">");
         }
       }
       catch (Exception)
