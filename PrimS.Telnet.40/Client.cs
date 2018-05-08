@@ -1,4 +1,4 @@
-namespace PrimS.Telnet
+﻿namespace PrimS.Telnet
 {
   using System;
   using System.Text.RegularExpressions;
@@ -34,7 +34,9 @@ namespace PrimS.Telnet
           return this.IsTerminatedWith(loginTimeOutMs, terminator);
         }
       }
+#pragma warning disable RCS1075 // Avoid empty catch clause that catches System.Exception.
       catch (Exception)
+#pragma warning restore RCS1075 // Avoid empty catch clause that catches System.Exception.
       {
         // NOP
       }

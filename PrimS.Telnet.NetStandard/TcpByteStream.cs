@@ -1,4 +1,4 @@
-namespace PrimS.Telnet
+﻿namespace PrimS.Telnet
 {
   using System;
 #if ASYNC
@@ -133,24 +133,24 @@ namespace PrimS.Telnet
 
 #if ASYNC
     /// <summary>
-    /// Asynchronously writes the specified command to the stream.
+    /// Asynchronously writes the specified value to the stream.
     /// </summary>
-    /// <param name="command">The command.</param> 
+    /// <param name="value">The value.</param> 
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>A task representing the asynchronous action.</returns>
-    public Task WriteAsync(string command, System.Threading.CancellationToken cancellationToken)
+    public Task WriteAsync(string value, System.Threading.CancellationToken cancellationToken)
     {
-      byte[] buffer = ConvertStringToByteArray(command);
+      byte[] buffer = ConvertStringToByteArray(value);
       return this.socket.GetStream().WriteAsync(buffer, 0, buffer.Length, cancellationToken);
     }
 #else    
     /// <summary>
     /// Writes the specified command to the stream.
     /// </summary>
-    /// <param name="command">The command.</param>
-    public void Write(string command)
+    /// <param name="value">The command.</param>
+    public void Write(string value)
     {        
-      byte[] buffer = ConvertStringToByteArray(command);
+      byte[] buffer = ConvertStringToByteArray(value);
       this.socket.GetStream().Write(buffer, 0, buffer.Length);
     }
 #endif
