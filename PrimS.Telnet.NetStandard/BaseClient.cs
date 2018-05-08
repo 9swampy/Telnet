@@ -1,4 +1,4 @@
-namespace PrimS.Telnet
+﻿namespace PrimS.Telnet
 {
   using System;
   using System.Text.RegularExpressions;
@@ -17,7 +17,7 @@ namespace PrimS.Telnet
     /// The byte stream.
     /// </summary>
     private readonly IByteStream byteStream;
-    
+
     /// <summary>
     /// Gets a value indicating whether this instance is connected.
     /// </summary>
@@ -53,7 +53,9 @@ namespace PrimS.Telnet
         this.Dispose(true);
         GC.SuppressFinalize(this);
       }
+#pragma warning disable RCS1075 // Avoid empty catch clause that catches System.Exception.
       catch (Exception)
+#pragma warning restore RCS1075 // Avoid empty catch clause that catches System.Exception.
       {
         // NOP
       }
@@ -67,6 +69,11 @@ namespace PrimS.Telnet
     /// <returns>True if the terminator is located, otherwise false.</returns>
     protected static bool IsTerminatorLocated(string terminator, string s)
     {
+      if (string.IsNullOrEmpty(s))
+      {
+        return false;
+      }
+
       return s.TrimEnd().EndsWith(terminator, StringComparison.OrdinalIgnoreCase);
     }
 
@@ -78,6 +85,11 @@ namespace PrimS.Telnet
     /// <returns>True if the Regex is matched, otherwise false.</returns>
     protected static bool IsRegexLocated(Regex regex, string s)
     {
+      if (string.IsNullOrEmpty(s) || regex == null)
+      {
+        return false;
+      }
+
       return regex.IsMatch(s);
     }
   }
