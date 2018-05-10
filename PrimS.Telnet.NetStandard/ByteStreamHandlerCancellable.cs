@@ -81,5 +81,23 @@
         System.Diagnostics.Debug.WriteLine("RollingTimeout exceeded {0}", DateTime.Now.ToString("ss:fff"));
       }
     }
-}
+
+    /// <summary>
+    /// Add null check to cancel commands. Fail gracefully.
+    /// </summary>
+    public void SendCanel()
+    {
+      try
+      {
+        if (this.internalCancellation != null)
+        {
+          this.internalCancellation.Cancel();
+        }
+      }
+      catch (Exception ex)
+      {
+        System.Diagnostics.Debug.WriteLine(ex.Message);
+      }    
+    }
+  }
 }
