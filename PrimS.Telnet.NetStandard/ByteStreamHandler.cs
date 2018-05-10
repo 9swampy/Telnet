@@ -82,7 +82,6 @@
       if (this.IsResponsePending)
       {
         int input = this.byteStream.ReadByte();
-        System.Diagnostics.Debug.WriteLine(input);
         switch (input)
         {
           case -1:
@@ -127,23 +126,13 @@
 
     private void InterpretNextAsCommand(int inputVerb)
     {
-      System.Diagnostics.Debug.WriteLine(inputVerb);
+      System.Diagnostics.Debug.WriteLine(Enum.GetName(typeof(Commands), inputVerb));
       switch (inputVerb)
       {
         case (int)Commands.InterruptProcess:
           System.Diagnostics.Debug.WriteLine("Interrupt Process (IP) recieved.");
 #if ASYNC
-          try
-          {
-            if (this.internalCancellation != null)
-            {
-              this.internalCancellation.Cancel();
-            }
-          }
-          catch (Exception ex)
-          {
-            System.Diagnostics.Debug.WriteLine(ex.Message);
-          }            
+          this.SendCanel();        
 #endif
           break;
         case (int)Commands.Dont:
@@ -212,7 +201,7 @@
       int inputOption = this.byteStream.ReadByte();
       if (inputOption != -1)
       {
-        System.Diagnostics.Debug.WriteLine(inputOption);
+        System.Diagnostics.Debug.WriteLine(Enum.GetName(typeof(Options),inputOption));
         this.byteStream.WriteByte((byte)Commands.InterpretAsCommand);
         if (inputOption == (int)Options.SuppressGoAhead)
         {
