@@ -153,7 +153,7 @@
     /// <returns>Any text read from the stream.</returns>
     public async Task<string> TerminatedReadAsync(string terminator, TimeSpan timeout)
     {
-      return await this.TerminatedReadAsync(terminator, timeout, 11).ConfigureAwait(false);
+      return await this.TerminatedReadAsync(terminator, timeout, 1).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -164,7 +164,7 @@
     /// <returns>Any text read from the stream.</returns>
     public async Task<string> TerminatedReadAsync(Regex regex, TimeSpan timeout)
     {
-      return await this.TerminatedReadAsync(regex, timeout, 11).ConfigureAwait(false);
+      return await this.TerminatedReadAsync(regex, timeout, 1).ConfigureAwait(false);
     }
 
     /// <summary>
