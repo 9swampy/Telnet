@@ -73,15 +73,7 @@
       this.LogIfTimeoutExpired(rollingTimeout);
       return sb.ToString();
     }
-
-    private void LogIfTimeoutExpired(DateTime rollingTimeout)
-    {
-      if (IsRollingTimeoutExpired(rollingTimeout))
-      {
-        System.Diagnostics.Debug.WriteLine("RollingTimeout exceeded {0}", DateTime.Now.ToString("ss:fff"));
-      }
-    }
-
+    
     /// <summary>
     /// Add null check to cancel commands. Fail gracefully.
     /// </summary>
@@ -98,6 +90,14 @@
       {
         System.Diagnostics.Debug.WriteLine(ex.Message);
       }    
+    }
+
+    private void LogIfTimeoutExpired(DateTime rollingTimeout)
+    {
+      if (IsRollingTimeoutExpired(rollingTimeout))
+      {
+        System.Diagnostics.Debug.WriteLine("RollingTimeout exceeded {0}", DateTime.Now.ToString("ss:fff"));
+      }
     }
   }
 }
