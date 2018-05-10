@@ -101,6 +101,7 @@
     public void WriteByte(byte value)
     {
       this.socket.GetStream().WriteByte(value);
+      System.Diagnostics.Debug.WriteLine("SENT: " + (char)value);
     }
 
 #if ASYNC
