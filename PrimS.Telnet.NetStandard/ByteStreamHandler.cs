@@ -1,4 +1,4 @@
-namespace PrimS.Telnet
+﻿namespace PrimS.Telnet
 {
   using System;
   using System.Text;
@@ -82,34 +82,37 @@ namespace PrimS.Telnet
       if (this.IsResponsePending)
       {
         int input = this.byteStream.ReadByte();
+        System.Diagnostics.Debug.WriteLine(input);
         switch (input)
         {
           case -1:
             break;
           case (int)Commands.InterpretAsCommand:
-            // interpret as command
             int inputVerb = this.byteStream.ReadByte();
             if (inputVerb == -1)
             {
-              break;
+              // do nothing
             }
-
-            switch (inputVerb)
+            else if (inputVerb == 255)
             {
-              case (int)Commands.InterpretAsCommand:
-                // literal IAC = 255 escaped, so append char 255 to string
-                sb.Append(inputVerb);
-                break;
-              case (int)Commands.Do:
-              case (int)Commands.Dont:
-              case (int)Commands.Will:
-              case (int)Commands.Wont:
-                this.ReplyToCommand(inputVerb);
-                break;
-              default:
-                break;
+              // literal IAC = 255 escaped, so append char 255 to string
+              sb.Append(inputVerb);
+            }
+            else
+            {
+              this.InterpretNextAsCommand(inputVerb);
             }
 
+            break;
+          case 7: // Bell character
+            Console.Beep();
+            break;
+          case 8: // Backspace
+            // We could delete a character from sb, or just swallow the char here.
+            break;
+          case 11: // Vertical TAB
+          case 12: // Form Feed
+            sb.Append(Environment.NewLine);
             break;
           default:
             sb.Append((char)input);
@@ -122,14 +125,100 @@ namespace PrimS.Telnet
       return false;
     }
 
+    private void InterpretNextAsCommand(int inputVerb)
+    {
+      System.Diagnostics.Debug.WriteLine(inputVerb);
+      switch (inputVerb)
+      {
+        case (int)Commands.InterruptProcess:
+          System.Diagnostics.Debug.WriteLine("Interrupt Process (IP) recieved.");
+#if ASYNC
+          try
+          {
+            if (this.internalCancellation != null)
+            {
+              this.internalCancellation.Cancel();
+            }
+          }
+          catch (Exception ex)
+          {
+            System.Diagnostics.Debug.WriteLine(ex.Message);
+          }            
+#endif
+          break;
+        case (int)Commands.Dont:
+        case (int)Commands.Wont:
+          // We should ignore Don't\Won't because that is the default state.
+          // Only reply on state change. This helps avoid loops.
+          // See RFC1143: https://tools.ietf.org/html/rfc1143
+          break;
+        case (int)Commands.Do:
+        case (int)Commands.Will: 
+          this.ReplyToCommand(inputVerb);
+          break;
+        case (int)Commands.Subnegotiation:
+          this.PerformNegotiation();
+          break;
+        default:
+          break;
+      }
+    }
+
+    private void PerformNegotiation()
+    {
+      int inputOption = this.byteStream.ReadByte();
+      int subCommand = this.byteStream.ReadByte();
+
+      // ISSUE: We should loop here until IAC-SE but what is the exit condition if that never comes?
+      int shouldIAC = this.byteStream.ReadByte();
+      int shouldSE = this.byteStream.ReadByte();
+      if (inputOption == (int)Options.TerminalType)
+      {
+        if (subCommand == 1 && // Sub-negotiation SEND command.
+            shouldIAC == (int)Commands.InterpretAsCommand && 
+            shouldSE == (int)Commands.SubnegotiationEnd)
+        {
+          this.byteStream.WriteByte((byte)Commands.InterpretAsCommand);
+          this.byteStream.WriteByte((byte)Commands.Subnegotiation);
+          this.byteStream.WriteByte((byte)Options.TerminalType);
+          this.byteStream.WriteByte(0);  // Sub-negotiation IS command.
+          byte[] myTerminalType = Encoding.ASCII.GetBytes("VT100"); // This could be a variable we keep somewhere...
+          foreach (byte msgPart in myTerminalType)
+          {
+            this.byteStream.WriteByte(msgPart);
+          }
+
+          this.byteStream.WriteByte((byte)Commands.InterpretAsCommand);
+          this.byteStream.WriteByte((byte)Commands.SubnegotiationEnd);
+        }
+        else
+        {
+          // If we get lost just send WONT to end the negotiation
+          this.byteStream.WriteByte((byte)Commands.InterpretAsCommand);
+          this.byteStream.WriteByte((byte)Commands.Wont);
+          this.byteStream.WriteByte((byte)inputOption);
+        }
+      }
+      else
+      {
+        // We don't handle other subnegotiation options yet.
+        System.Diagnostics.Debug.WriteLine("Request to negotiate: " + Enum.GetName(typeof(Options), inputOption));
+      }
+    }
+
     private void ReplyToCommand(int inputVerb)
     {
-      // reply to all commands with "WONT", unless it is SGA (suppress go ahead)
+      // reply to all commands with "WONT", unless it is SGA (suppress go ahead) or Terminal Type
       int inputOption = this.byteStream.ReadByte();
       if (inputOption != -1)
       {
+        System.Diagnostics.Debug.WriteLine(inputOption);
         this.byteStream.WriteByte((byte)Commands.InterpretAsCommand);
         if (inputOption == (int)Options.SuppressGoAhead)
+        {
+          this.byteStream.WriteByte(inputVerb == (int)Commands.Do ? (byte)Commands.Will : (byte)Commands.Do);
+        }
+        else if (inputOption == (int)Options.TerminalType)
         {
           this.byteStream.WriteByte(inputVerb == (int)Commands.Do ? (byte)Commands.Will : (byte)Commands.Do);
         }
