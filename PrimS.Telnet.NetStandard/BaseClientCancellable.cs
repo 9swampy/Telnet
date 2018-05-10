@@ -28,27 +28,8 @@
       this.byteStream = byteStream;
       this.sendRateLimit = new SemaphoreSlim(1);
       this.internalCancellation = new CancellationTokenSource();
-      token.Register(() => SendCanel());
+      token.Register(() => this.SendCanel());
     }
-
-    /// <summary>
-    /// Add null check to cancel commands. Fail gracefully.
-    /// </summary>
-    protected void SendCanel()
-    {
-      try
-      {
-        if (this.internalCancellation != null)
-        {
-          this.internalCancellation.Cancel();
-        }
-      }
-      catch (Exception ex)
-      {
-        System.Diagnostics.Debug.WriteLine(ex.Message);
-      }    
-    }
-
 
     /// <summary>
     /// Gets the send rate limit.

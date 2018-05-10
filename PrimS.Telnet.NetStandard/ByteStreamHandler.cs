@@ -12,7 +12,7 @@
   public partial class ByteStreamHandler : IByteStreamHandler
   {
     private readonly IByteStream byteStream;
-
+    
     private bool IsResponsePending
     {
       get
@@ -168,13 +168,17 @@
       return false;
     }
 
+    /// <summary>
+    /// We received a TELNET command. Handle it.
+    /// </summary>
+    /// <param name="inputVerb">The command we received.</param>
     private void InterpretNextAsCommand(int inputVerb)
     {
       System.Diagnostics.Debug.WriteLine(Enum.GetName(typeof(Commands), inputVerb));
       switch (inputVerb)
       {
         case (int)Commands.InterruptProcess:
-          System.Diagnostics.Debug.WriteLine("Interrupt Process (IP) recieved.");
+          System.Diagnostics.Debug.WriteLine("Interrupt Process (IP) received.");
 #if ASYNC
           this.SendCanel();        
 #endif
@@ -197,6 +201,9 @@
       }
     }
 
+    /// <summary>
+    /// We received a request to perform sub negotiation on a TELNET option.
+    /// </summary>
     private void PerformNegotiation()
     {
       int inputOption = this.byteStream.ReadByte();
@@ -205,38 +212,55 @@
       // ISSUE: We should loop here until IAC-SE but what is the exit condition if that never comes?
       int shouldIAC = this.byteStream.ReadByte();
       int shouldSE = this.byteStream.ReadByte();
-      if (inputOption == (int)Options.TerminalType)
+      if (subCommand == 1 && // Sub-negotiation SEND command.
+          shouldIAC == (int)Commands.InterpretAsCommand &&
+          shouldSE == (int)Commands.SubnegotiationEnd)
       {
-        if (subCommand == 1 && // Sub-negotiation SEND command.
-            shouldIAC == (int)Commands.InterpretAsCommand && 
-            shouldSE == (int)Commands.SubnegotiationEnd)
+        switch (inputOption)
         {
-          this.byteStream.WriteByte((byte)Commands.InterpretAsCommand);
-          this.byteStream.WriteByte((byte)Commands.Subnegotiation);
-          this.byteStream.WriteByte((byte)Options.TerminalType);
-          this.byteStream.WriteByte(0);  // Sub-negotiation IS command.
-          byte[] myTerminalType = Encoding.ASCII.GetBytes("VT100"); // This could be a variable we keep somewhere...
-          foreach (byte msgPart in myTerminalType)
-          {
-            this.byteStream.WriteByte(msgPart);
-          }
-
-          this.byteStream.WriteByte((byte)Commands.InterpretAsCommand);
-          this.byteStream.WriteByte((byte)Commands.SubnegotiationEnd);
-        }
-        else
-        {
-          // If we get lost just send WONT to end the negotiation
-          this.byteStream.WriteByte((byte)Commands.InterpretAsCommand);
-          this.byteStream.WriteByte((byte)Commands.Wont);
-          this.byteStream.WriteByte((byte)inputOption);
+          case (int)Options.TerminalType:
+            string clientTerminalType = "VT100"; // This could be an environment variable in the client.
+            this.SendNegotiation(inputOption, clientTerminalType);
+            break;
+          case (int)Options.TerminalSpeed:
+            string clientTerminalSpeed = "38400,38400";
+            this.SendNegotiation(inputOption, clientTerminalSpeed);
+            break;
+          default:
+            // We don't handle other sub negotiation options yet.
+            System.Diagnostics.Debug.WriteLine("Request to negotiate: " + Enum.GetName(typeof(Options), inputOption));
+            break;
         }
       }
       else
       {
-        // We don't handle other subnegotiation options yet.
-        System.Diagnostics.Debug.WriteLine("Request to negotiate: " + Enum.GetName(typeof(Options), inputOption));
+        // If we get lost just send WONT to end the negotiation
+        this.byteStream.WriteByte((byte)Commands.InterpretAsCommand);
+        this.byteStream.WriteByte((byte)Commands.Wont);
+        this.byteStream.WriteByte((byte)inputOption);
       }
+    }
+
+    /// <summary>
+    /// Send the sub negotiation response to the server.
+    /// </summary>
+    /// <param name="inputOption">The option we are negotiating.</param>
+    /// <param name="optionMessage">The setting for that option.</param>
+    private void SendNegotiation(int inputOption, string optionMessage)
+    {    
+        System.Diagnostics.Debug.WriteLine("Sending: " + Enum.GetName(typeof(Options), inputOption) + " Setting: " + optionMessage);
+        this.byteStream.WriteByte((byte)Commands.InterpretAsCommand);
+        this.byteStream.WriteByte((byte)Commands.Subnegotiation);
+        this.byteStream.WriteByte((byte)inputOption);
+        this.byteStream.WriteByte(0);  // Sub-negotiation IS command.
+        byte[] myTerminalType = Encoding.ASCII.GetBytes(optionMessage); 
+        foreach (byte msgPart in myTerminalType)
+        {
+          this.byteStream.WriteByte(msgPart);
+        }
+
+        this.byteStream.WriteByte((byte)Commands.InterpretAsCommand);
+        this.byteStream.WriteByte((byte)Commands.SubnegotiationEnd);
     }
 
     /// <summary>
@@ -249,7 +273,7 @@
       var inputOption = this.byteStream.ReadByte();
       if (inputOption != -1)
       {
-        System.Diagnostics.Debug.WriteLine(Enum.GetName(typeof(Options),inputOption));
+        System.Diagnostics.Debug.WriteLine(Enum.GetName(typeof(Options), inputOption));
         this.byteStream.WriteByte((byte)Commands.InterpretAsCommand);
         if (inputOption == (int)Options.SuppressGoAhead)
         {
