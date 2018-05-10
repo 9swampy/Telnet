@@ -134,7 +134,7 @@ namespace PrimS.Telnet
     /// <returns>Any text read from the stream.</returns>
     public async Task<string> TerminatedReadAsync(string terminator, TimeSpan timeout)
     {
-      return await this.TerminatedReadAsync(terminator, timeout, 1);
+      return await this.TerminatedReadAsync(terminator, timeout, 3);
     }
 
     /// <summary>
@@ -145,7 +145,7 @@ namespace PrimS.Telnet
     /// <returns>Any text read from the stream.</returns>
     public async Task<string> TerminatedReadAsync(Regex regex, TimeSpan timeout)
     {
-      return await this.TerminatedReadAsync(regex, timeout, 1);
+      return await this.TerminatedReadAsync(regex, timeout, 3);
     }
 
     /// <summary>
