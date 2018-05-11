@@ -28,7 +28,7 @@
       this.byteStream = byteStream;
       this.sendRateLimit = new SemaphoreSlim(1);
       this.internalCancellation = new CancellationTokenSource();
-      token.Register(() => this.SendCanel());
+      token.Register(() => this.SendCancel());
     }
 
     /// <summary>
@@ -56,7 +56,7 @@
     /// <summary>
     /// Add null check to cancel commands. Fail gracefully.
     /// </summary>
-    protected void SendCanel()
+    protected void SendCancel()
     {
       try
       {
