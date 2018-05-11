@@ -106,7 +106,7 @@
     }
 
     /// <summary>
-    /// Reads synchronously from the stream, terminating as soon as the <paramref name="terminator"/> is located.
+    /// Reads synchronously from the stream, terminating as soon as the <paramref name="regex"/> is located.
     /// </summary>
     /// <param name="regex">The terminator.</param>
     /// <param name="timeout">The timeout.</param>
