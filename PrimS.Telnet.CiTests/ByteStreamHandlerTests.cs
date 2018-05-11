@@ -298,6 +298,88 @@
       }
     }
 
+        [TestMethod]
+#if ASYNC
+    public async Task WhenIacDont1ByteStreamShouldReturnEmptyAndNotReply()
+#else
+    public void WhenIacDont1ByteStreamShouldReturnEmptyAndNotReply()
+#endif
+    {
+      ISocket socket = A.Fake<ISocket>();
+      using (INetworkStream networkStream = A.Fake<INetworkStream>())
+      {
+        A.CallTo(() => socket.GetStream()).Returns(networkStream);
+        A.CallTo(() => socket.Connected).Returns(true);
+        bool isFirst = true;
+        A.CallTo(() => socket.Available).ReturnsLazily(() =>
+        {
+          if (isFirst)
+          {
+            isFirst = false;
+            return 1;
+          }
+          return 0;
+        });
+        using (TcpByteStream tcpByteStream = new TcpByteStream(socket))
+        {
+          A.CallTo(() => networkStream.ReadByte()).ReturnsNextFromSequence(new int[] { (int)Commands.InterpretAsCommand, (int)Commands.Dont, 1 });
+          tcpByteStream.Connected.Should().BeTrue();
+          using (ByteStreamHandler sut = new ByteStreamHandler(tcpByteStream, new CancellationTokenSource()))
+          {
+#if ASYNC
+      string response = await sut.ReadAsync(TimeSpan.FromMilliseconds(10));
+#else
+            string response = sut.Read(TimeSpan.FromMilliseconds(10));
+#endif
+
+            response.Should().BeEmpty();
+            A.CallTo(() => networkStream.WriteByte(A<byte>.Ignored)).MustNotHaveHappened();
+          }
+        }
+      }
+    }
+
+    [TestMethod]
+#if ASYNC
+    public async Task WhenIacDontSgaByteStreamShouldReturnEmptyAndNotReply()
+#else
+    public void WhenIacDontSgaByteStreamShouldReturnEmptyAndNotReply()
+#endif
+    {
+      ISocket socket = A.Fake<ISocket>();
+      using (INetworkStream networkStream = A.Fake<INetworkStream>())
+      {
+        A.CallTo(() => socket.GetStream()).Returns(networkStream);
+        A.CallTo(() => socket.Connected).Returns(true);
+        bool isFirst = true;
+        A.CallTo(() => socket.Available).ReturnsLazily(() =>
+        {
+          if (isFirst)
+          {
+            isFirst = false;
+            return 1;
+          }
+          return 0;
+        });
+        using (TcpByteStream tcpByteStream = new TcpByteStream(socket))
+        {
+          A.CallTo(() => networkStream.ReadByte()).ReturnsNextFromSequence(new int[] { (int)Commands.InterpretAsCommand, (int)Commands.Dont, (int)Options.SuppressGoAhead });
+          tcpByteStream.Connected.Should().BeTrue();
+          using (ByteStreamHandler sut = new ByteStreamHandler(tcpByteStream, new CancellationTokenSource()))
+          {
+#if ASYNC
+      string response = await sut.ReadAsync(TimeSpan.FromMilliseconds(10));
+#else
+            string response = sut.Read(TimeSpan.FromMilliseconds(10));
+#endif
+
+            response.Should().BeEmpty();
+            A.CallTo(() => networkStream.WriteByte(A<byte>.Ignored)).MustNotHaveHappened();
+          }
+        }
+      }
+    }
+
     [TestMethod]
 #if ASYNC
     public async Task ByteStreamShouldReturnUponCancellation()
