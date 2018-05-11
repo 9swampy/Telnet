@@ -135,7 +135,7 @@
     /// <param name="inputVerb">The command we received.</param>
     private void InterpretNextAsCommand(int inputVerb)
     {
-      System.Diagnostics.Debug.WriteLine(Enum.GetName(typeof(Commands), inputVerb));
+      System.Diagnostics.Debug.Write(Enum.GetName(typeof(Commands), inputVerb));
       switch (inputVerb)
       {
         case (int)Commands.InterruptProcess:
@@ -230,23 +230,26 @@
     /// <param name="inputVerb">The TELNET command we received.</param>
     private void ReplyToCommand(int inputVerb)
     {
-      // reply to all commands with "WONT", unless it is SGA (suppress go ahead) or Terminal Type
+      // reply to all commands with "WONT\DONT", unless it is SGA (suppress go ahead), Terminal Type, or Terminal Speed
       int inputOption = this.byteStream.ReadByte();
       if (inputOption != -1)
       {
         System.Diagnostics.Debug.WriteLine(Enum.GetName(typeof(Options), inputOption));
         this.byteStream.WriteByte((byte)Commands.InterpretAsCommand);
-        if (inputOption == (int)Options.SuppressGoAhead)
+        switch (inputOption)
         {
-          this.byteStream.WriteByte(inputVerb == (int)Commands.Do ? (byte)Commands.Will : (byte)Commands.Do);
-        }
-        else if (inputOption == (int)Options.TerminalType)
-        {
-          this.byteStream.WriteByte(inputVerb == (int)Commands.Do ? (byte)Commands.Will : (byte)Commands.Do);
-        }
-        else
-        {
-          this.byteStream.WriteByte(inputVerb == (int)Commands.Do ? (byte)Commands.Wont : (byte)Commands.Dont);
+          case (int)Options.SuppressGoAhead:
+            this.byteStream.WriteByte(inputVerb == (int)Commands.Do ? (byte)Commands.Will : (byte)Commands.Do);
+            break;
+          case (int)Options.TerminalType:
+            this.byteStream.WriteByte(inputVerb == (int)Commands.Do ? (byte)Commands.Will : (byte)Commands.Do);
+            break;
+          case (int)Options.TerminalSpeed:
+            this.byteStream.WriteByte(inputVerb == (int)Commands.Do ? (byte)Commands.Will : (byte)Commands.Do);
+            break;
+          default:
+            this.byteStream.WriteByte(inputVerb == (int)Commands.Do ? (byte)Commands.Wont : (byte)Commands.Dont);
+            break;
         }
 
         this.byteStream.WriteByte((byte)inputOption);
