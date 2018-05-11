@@ -180,7 +180,7 @@
         case (int)Commands.InterruptProcess:
           System.Diagnostics.Debug.WriteLine("Interrupt Process (IP) received.");
 #if ASYNC
-          this.SendCanel();        
+          this.SendCancel();        
 #endif
           break;
         case (int)Commands.Dont:
