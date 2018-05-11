@@ -77,7 +77,7 @@
     /// <summary>
     /// Add null check to cancel commands. Fail gracefully.
     /// </summary>
-    public void SendCanel()
+    protected void SendCancel()
     {
       try
       {
