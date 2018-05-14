@@ -1,4 +1,6 @@
-﻿namespace PrimS.Telnet
+﻿using System.Runtime.CompilerServices;
+
+namespace PrimS.Telnet
 {
   using System;
   using System.Text;
@@ -47,21 +49,6 @@
       return DateTime.Now.Add(TimeSpan.FromMilliseconds(timeout.TotalMilliseconds / 100));
     }
 
-#if ASYNC
-    private static async Task<bool> IsWaitForIncrementalResponse(DateTime rollingTimeout)
-#else
-    private static bool IsWaitForIncrementalResponse(DateTime rollingTimeout)
-#endif
-    {
-      bool result = DateTime.Now < rollingTimeout;
-#if ASYNC
-      await Task.Delay(1);
-#else
-      System.Threading.Thread.Sleep(1);
-#endif
-      return result;
-    }
-
     private static bool IsWaitForInitialResponse(DateTime endInitialTimeout, bool isInitialResponseReceived)
     {
       return !isInitialResponseReceived && DateTime.Now < endInitialTimeout;
@@ -75,6 +62,21 @@
     private static bool IsInitialResponseReceived(StringBuilder sb)
     {
       return sb.Length > 0;
+    }
+
+#if ASYNC
+    private async Task<bool> IsWaitForIncrementalResponse(DateTime rollingTimeout)
+#else
+    private bool IsWaitForIncrementalResponse(DateTime rollingTimeout)
+#endif
+    {
+      bool result = DateTime.Now < rollingTimeout;
+#if ASYNC
+      await Task.Delay(10, this.internalCancellation.Token);
+#else
+      System.Threading.Thread.Sleep(10);
+#endif
+      return result;
     }
 
     /// <summary>
@@ -108,6 +110,25 @@
             }
 
             break;
+          case 1: // Start of Heading
+            sb.Append("\n \n");
+            break;
+          case 2: // Start of Text
+            sb.Append("\t");
+            break;
+          case 3: // End of Text or "break" CTRL+C
+            sb.Append("^C");
+            System.Diagnostics.Debug.WriteLine("^C");
+            break;
+          case 4: // End of Transmission
+            // Often used on Unix to indicate end-of-file on a terminal.
+            break;
+          case 5: // Enquiry
+            this.byteStream.WriteByte((byte)6); // Send ACK
+            break;
+          case 6: // Acknowledge
+            // We got an ACK
+            break;
           case 7: // Bell character
             Console.Beep();
             break;
@@ -117,6 +138,13 @@
           case 11: // Vertical TAB
           case 12: // Form Feed
             sb.Append(Environment.NewLine);
+            break;
+          case 21:
+            sb.Append("NAK: Retransmit last message.");
+            System.Diagnostics.Debug.WriteLine("ERROR NAK: Retransmit last message.");
+            break;
+          case 31: // Unit Separator
+            sb.Append(",");
             break;
           default:
             sb.Append((char)input);
@@ -266,7 +294,7 @@
 #if ASYNC
  await
 #endif
- IsWaitForIncrementalResponse(rollingTimeout);
+ this.IsWaitForIncrementalResponse(rollingTimeout);
     }
   }
 }
