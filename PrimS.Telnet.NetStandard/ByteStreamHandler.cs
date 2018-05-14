@@ -12,7 +12,7 @@
   public partial class ByteStreamHandler : IByteStreamHandler
   {
     private readonly IByteStream byteStream;
-    
+
     private bool IsResponsePending
     {
       get
@@ -73,9 +73,9 @@
     {
       var result = DateTime.Now < rollingTimeout;
 #if ASYNC
-      await Task.Delay(1, this.internalCancellation.Token).ConfigureAwait(false);
+      await Task.Delay(10, this.internalCancellation.Token).ConfigureAwait(false);
 #else
-      System.Threading.Thread.Sleep(1);
+      System.Threading.Thread.Sleep(10);
 #endif
       return result;
     }
@@ -111,16 +111,6 @@
             }
 
             break;
-          case 7: // Bell character
-            Console.Beep();
-            break;
-          case 8: // Backspace
-            // We could delete a character from sb, or just swallow the char here.
-            break;
-          case 11: // Vertical TAB
-          case 12: // Form Feed
-            sb.Append(Environment.NewLine);
-            break;
           case 1: // Start of Heading
             sb.Append("\n \n");
             break;
@@ -132,7 +122,7 @@
             System.Diagnostics.Debug.WriteLine("^C");
             break;
           case 4: // End of Transmission
-            sb.Append("^D");
+            // Often used on Unix to indicate end-of-file on a terminal.
             break;
           case 5: // Enquiry
             this.byteStream.WriteByte(6); // Send ACK
@@ -180,7 +170,7 @@
         case (int)Commands.InterruptProcess:
           System.Diagnostics.Debug.WriteLine("Interrupt Process (IP) received.");
 #if ASYNC
-          this.SendCancel();        
+          this.SendCancel();
 #endif
           break;
         case (int)Commands.Dont:
@@ -190,7 +180,7 @@
           // See RFC1143: https://tools.ietf.org/html/rfc1143
           break;
         case (int)Commands.Do:
-        case (int)Commands.Will: 
+        case (int)Commands.Will:
           this.ReplyToCommand(inputVerb);
           break;
         case (int)Commands.Subnegotiation:
@@ -247,20 +237,20 @@
     /// <param name="inputOption">The option we are negotiating.</param>
     /// <param name="optionMessage">The setting for that option.</param>
     private void SendNegotiation(int inputOption, string optionMessage)
-    {    
-        System.Diagnostics.Debug.WriteLine("Sending: " + Enum.GetName(typeof(Options), inputOption) + " Setting: " + optionMessage);
-        this.byteStream.WriteByte((byte)Commands.InterpretAsCommand);
-        this.byteStream.WriteByte((byte)Commands.Subnegotiation);
-        this.byteStream.WriteByte((byte)inputOption);
-        this.byteStream.WriteByte(0);  // Sub-negotiation IS command.
-        byte[] myTerminalType = Encoding.ASCII.GetBytes(optionMessage); 
-        foreach (byte msgPart in myTerminalType)
-        {
-          this.byteStream.WriteByte(msgPart);
-        }
+    {
+      System.Diagnostics.Debug.WriteLine("Sending: " + Enum.GetName(typeof(Options), inputOption) + " Setting: " + optionMessage);
+      this.byteStream.WriteByte((byte)Commands.InterpretAsCommand);
+      this.byteStream.WriteByte((byte)Commands.Subnegotiation);
+      this.byteStream.WriteByte((byte)inputOption);
+      this.byteStream.WriteByte(0);  // Sub-negotiation IS command.
+      byte[] myTerminalType = Encoding.ASCII.GetBytes(optionMessage);
+      foreach (byte msgPart in myTerminalType)
+      {
+        this.byteStream.WriteByte(msgPart);
+      }
 
-        this.byteStream.WriteByte((byte)Commands.InterpretAsCommand);
-        this.byteStream.WriteByte((byte)Commands.SubnegotiationEnd);
+      this.byteStream.WriteByte((byte)Commands.InterpretAsCommand);
+      this.byteStream.WriteByte((byte)Commands.SubnegotiationEnd);
     }
 
     /// <summary>
