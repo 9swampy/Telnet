@@ -1,4 +1,6 @@
-﻿namespace PrimS.Telnet.CiTests
+﻿using System.ComponentModel;
+
+namespace PrimS.Telnet.CiTests
 {
   using System;
   using System.Diagnostics;
@@ -205,13 +207,16 @@
         ByteStreamHandler sut = new ByteStreamHandler(tcpByteStream, new CancellationTokenSource());
 
 #if ASYNC
-      string response = await sut.ReadAsync(TimeSpan.FromMilliseconds(10));
+        string response = await sut.ReadAsync(TimeSpan.FromMilliseconds(10));
+        // A.CallTo(() => networkStream.WriteAsync(A<byte[]>.That.Contains((char)255), 0, 3, new CancellationToken())).MustHaveHappened();
+        A.CallTo(networkStream).Where(x => x.Method.Name == "WriteAsync").MustHaveHappened();
 #else
         string response = sut.Read(TimeSpan.FromMilliseconds(10));
+        A.CallTo(networkStream).Where(x => x.Method.Name == "Write").MustHaveHappened();
+       // A.CallTo(() => networkStream.Write(A<byte[]>.That.Contains((char)255), 0, 3)).MustHaveHappened();
 #endif
+        
         response.Should().BeEmpty();
-        A.CallTo(() => networkStream.WriteByte((byte)Commands.InterpretAsCommand)).MustHaveHappened();
-        A.CallTo(() => networkStream.WriteByte((byte)Commands.Will)).MustHaveHappened();
       }
     }
 
@@ -244,14 +249,14 @@
           using (ByteStreamHandler sut = new ByteStreamHandler(tcpByteStream, new CancellationTokenSource()))
           {
 #if ASYNC
-      string response = await sut.ReadAsync(TimeSpan.FromMilliseconds(10));
+            string response = await sut.ReadAsync(TimeSpan.FromMilliseconds(10));
+            A.CallTo(networkStream).Where(x => x.Method.Name == "WriteAsync").MustHaveHappened();
 #else
             string response = sut.Read(TimeSpan.FromMilliseconds(10));
+            A.CallTo(networkStream).Where(x => x.Method.Name == "Write").MustHaveHappened();
 #endif
 
             response.Should().BeEmpty();
-            A.CallTo(() => networkStream.WriteByte((byte)Commands.InterpretAsCommand)).MustHaveHappened();
-            A.CallTo(() => networkStream.WriteByte((byte)Commands.Wont)).MustHaveHappened();
           }
         }
       }
