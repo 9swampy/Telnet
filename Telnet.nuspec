@@ -19,6 +19,12 @@
       Added Subnegotiation for TerminalType and TerminalSpeed.
       Added Enough Debug writes to watch the option negotiation occur in real time.
       Added ALL Telnet commands and options to Commands.cs Options.cs.
+      Remove erroneous token.register
+      Add cancel call to dispose
+      Increased read delay
+      Created buffered write operations for all internal functions
+      Added Window Size negotiation
+      Added proactive SGA send
     </releaseNotes>
     <copyright>Copyright (c) 9swampy, Telnet contributors</copyright>
     <tags>Telnet</tags>
