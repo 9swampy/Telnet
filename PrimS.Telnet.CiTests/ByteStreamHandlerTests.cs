@@ -206,13 +206,15 @@
 
 #if ASYNC
         var response = await sut.ReadAsync(TimeSpan.FromMilliseconds(10)).ConfigureAwait(false);
+        // A.CallTo(() => networkStream.WriteAsync(A<byte[]>.That.Contains((char)255), 0, 3, new CancellationToken())).MustHaveHappened();
+        A.CallTo(networkStream).Where(x => x.Method.Name == "WriteAsync").MustHaveHappened();
 #else
         var response = sut.Read(TimeSpan.FromMilliseconds(10));
+        A.CallTo(networkStream).Where(x => x.Method.Name == "Write").MustHaveHappened();
+       // A.CallTo(() => networkStream.Write(A<byte[]>.That.Contains((char)255), 0, 3)).MustHaveHappened();
 #endif
 
         response.Should().BeEmpty();
-        A.CallTo(() => networkStream.WriteByte((byte)Commands.InterpretAsCommand)).MustHaveHappened();
-        A.CallTo(() => networkStream.WriteByte((byte)Commands.Will)).MustHaveHappened();
       }
     }
 
@@ -246,13 +248,13 @@
           {
 #if ASYNC
             var response = await sut.ReadAsync(TimeSpan.FromMilliseconds(10)).ConfigureAwait(false);
+            A.CallTo(networkStream).Where(x => x.Method.Name == "WriteAsync").MustHaveHappened();
 #else
             var response = sut.Read(TimeSpan.FromMilliseconds(10));
+            A.CallTo(networkStream).Where(x => x.Method.Name == "Write").MustHaveHappened();
 #endif
 
             response.Should().BeEmpty();
-            A.CallTo(() => networkStream.WriteByte((byte)Commands.InterpretAsCommand)).MustHaveHappened();
-            A.CallTo(() => networkStream.WriteByte((byte)Commands.Wont)).MustHaveHappened();
           }
         }
       }
@@ -301,9 +303,9 @@
 
     [TestMethod]
 #if ASYNC
-    public async Task WhenIacDont1ByteStreamShouldReturnEmptyAndReplyIacDont()
+    public async Task WhenIacDont1ByteStreamShouldReturnEmptyAndNotReply()
 #else
-    public void WhenIacDont1ByteStreamShouldReturnEmptyAndReplyIacDont()
+    public void WhenIacDont1ByteStreamShouldReturnEmptyAndNotReply()
 #endif
     {
       var socket = A.Fake<ISocket>();
@@ -334,8 +336,7 @@
 #endif
 
             response.Should().BeEmpty();
-            A.CallTo(() => networkStream.WriteByte((byte)Commands.InterpretAsCommand)).MustHaveHappened();
-            A.CallTo(() => networkStream.WriteByte((byte)Commands.Dont)).MustHaveHappened();
+            A.CallTo(() => networkStream.WriteByte(A<byte>.Ignored)).MustNotHaveHappened();
           }
         }
       }
@@ -343,9 +344,9 @@
 
     [TestMethod]
 #if ASYNC
-    public async Task WhenIacDontSgaByteStreamShouldReturnEmptyAndReplyIacDo()
+    public async Task WhenIacDontSgaByteStreamShouldReturnEmptyAndNotReply()
 #else
-    public void WhenIacDontSgaByteStreamShouldReturnEmptyAndReplyIacDo()
+    public void WhenIacDontSgaByteStreamShouldReturnEmptyAndNotReply()
 #endif
     {
       var socket = A.Fake<ISocket>();
@@ -374,10 +375,8 @@
 #else
             var response = sut.Read(TimeSpan.FromMilliseconds(10));
 #endif
-
             response.Should().BeEmpty();
-            A.CallTo(() => networkStream.WriteByte((byte)Commands.InterpretAsCommand)).MustHaveHappened();
-            A.CallTo(() => networkStream.WriteByte((byte)Commands.Do)).MustHaveHappened();
+            A.CallTo(() => networkStream.WriteByte(A<byte>.Ignored)).MustNotHaveHappened();
           }
         }
       }

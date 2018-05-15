@@ -196,12 +196,12 @@
     /// </summary>
     private void PerformNegotiation()
     {
-      int inputOption = this.byteStream.ReadByte();
-      int subCommand = this.byteStream.ReadByte();
+      var inputOption = this.byteStream.ReadByte();
+      var subCommand = this.byteStream.ReadByte();
 
       // ISSUE: We should loop here until IAC-SE but what is the exit condition if that never comes?
-      int shouldIAC = this.byteStream.ReadByte();
-      int shouldSE = this.byteStream.ReadByte();
+      var shouldIAC = this.byteStream.ReadByte();
+      var shouldSE = this.byteStream.ReadByte();
       if (subCommand == 1 && // Sub-negotiation SEND command.
           shouldIAC == (int)Commands.InterpretAsCommand &&
           shouldSE == (int)Commands.SubnegotiationEnd)
@@ -209,11 +209,11 @@
         switch (inputOption)
         {
           case (int)Options.TerminalType:
-            string clientTerminalType = "vt100"; // This could be an environment variable
+            var clientTerminalType = "vt100"; // This could be an environment variable
             this.SendNegotiation(inputOption, clientTerminalType);
             break;
           case (int)Options.TerminalSpeed:
-            string clientTerminalSpeed = "19200,19200"; // This could be an environment variable
+            var clientTerminalSpeed = "19200,19200"; // This could be an environment variable
             this.SendNegotiation(inputOption, clientTerminalSpeed);
             break;
           default:
@@ -225,7 +225,7 @@
       else
       {
         // If we get lost just send WONT to end the negotiation
-        byte[] outBuffer = new byte[3];
+        var outBuffer = new byte[3];
         outBuffer[0] = (byte)Commands.InterpretAsCommand;
         outBuffer[1] = (byte)Commands.Wont;
         outBuffer[2] = (byte)inputOption;
@@ -243,10 +243,10 @@
     /// <param name="inputOption">The option we are negotiating.</param>
     /// <param name="optionMessage">The setting for that option.</param>
     private void SendNegotiation(int inputOption, string optionMessage)
-    {    
+    {
       System.Diagnostics.Debug.WriteLine("Sending: " + Enum.GetName(typeof(Options), inputOption) + " Setting: " + optionMessage);
-      byte[] myResponse = Encoding.ASCII.GetBytes(optionMessage);   
-      List<byte> outBuffer = new List<byte>();
+      var myResponse = Encoding.ASCII.GetBytes(optionMessage);
+      var outBuffer = new List<byte>();
       outBuffer.Add((byte)Commands.InterpretAsCommand);
       outBuffer.Add((byte)Commands.Subnegotiation);
       outBuffer.Add((byte)inputOption);
@@ -272,7 +272,7 @@
       if (inputOption != -1)
       {
         System.Diagnostics.Debug.WriteLine(Enum.GetName(typeof(Options), inputOption));
-        byte[] outBuffer = new byte[3];
+        var outBuffer = new byte[3];
         outBuffer[0] = (byte)Commands.InterpretAsCommand;
         switch (inputOption)
         {
@@ -292,7 +292,7 @@
             outBuffer[1] = inputVerb == (int)Commands.Do ? (byte)Commands.Wont : (byte)Commands.Dont;
             break;
         }
-        
+
         outBuffer[2] = (byte)inputOption;
 #if ASYNC
         this.byteStream.WriteAsync(outBuffer, 0, outBuffer.Length, this.internalCancellation.Token);
@@ -302,7 +302,7 @@
 
         if (inputOption == (int)Options.WindowSize)
         {  // NAWS needs to be sent immediately because the server doesn't request subnegotiation.
-          string clientNAWS = ((char)132 + (char)0 + (char)24).ToString(); // This could be an environment variable
+          var clientNAWS = ((char)132 + (char)0 + (char)24).ToString(); // This could be an environment variable
           this.SendNegotiation(inputOption, clientNAWS);
         }
       }

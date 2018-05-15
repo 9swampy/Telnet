@@ -48,7 +48,7 @@
     public IPAddress IPAddress { get; private set; }
 
     public int Port { get; private set; }
-
+    
     private void SpinListen()
     {
       try
