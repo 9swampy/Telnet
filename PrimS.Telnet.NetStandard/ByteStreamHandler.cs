@@ -73,9 +73,9 @@
     {
       var result = DateTime.Now < rollingTimeout;
 #if ASYNC
-      await Task.Delay(10, this.internalCancellation.Token).ConfigureAwait(false);
+      await Task.Delay(16, this.internalCancellation.Token).ConfigureAwait(false);
 #else
-      System.Threading.Thread.Sleep(10);
+      System.Threading.Thread.Sleep(16);
 #endif
       return result;
     }
@@ -122,7 +122,7 @@
             System.Diagnostics.Debug.WriteLine("^C");
             break;
           case 4: // End of Transmission
-            // Often used on Unix to indicate end-of-file on a terminal.
+            sb.Append("^D");
             break;
           case 5: // Enquiry
             this.byteStream.WriteByte(6); // Send ACK
@@ -209,11 +209,11 @@
         switch (inputOption)
         {
           case (int)Options.TerminalType:
-            string clientTerminalType = "VT100"; // This could be an environment variable in the client.
+            string clientTerminalType = "vt100"; // This could be an environment variable
             this.SendNegotiation(inputOption, clientTerminalType);
             break;
           case (int)Options.TerminalSpeed:
-            string clientTerminalSpeed = "38400,38400";
+            string clientTerminalSpeed = "19200,19200"; // This could be an environment variable
             this.SendNegotiation(inputOption, clientTerminalSpeed);
             break;
           default:
@@ -225,9 +225,15 @@
       else
       {
         // If we get lost just send WONT to end the negotiation
-        this.byteStream.WriteByte((byte)Commands.InterpretAsCommand);
-        this.byteStream.WriteByte((byte)Commands.Wont);
-        this.byteStream.WriteByte((byte)inputOption);
+        byte[] outBuffer = new byte[3];
+        outBuffer[0] = (byte)Commands.InterpretAsCommand;
+        outBuffer[1] = (byte)Commands.Wont;
+        outBuffer[2] = (byte)inputOption;
+#if ASYNC
+        this.byteStream.WriteAsync(outBuffer, 0, outBuffer.Length, this.internalCancellation.Token);
+#else
+        this.byteStream.Write(outBuffer, 0, outBuffer.Length);
+#endif
       }
     }
 
@@ -237,20 +243,22 @@
     /// <param name="inputOption">The option we are negotiating.</param>
     /// <param name="optionMessage">The setting for that option.</param>
     private void SendNegotiation(int inputOption, string optionMessage)
-    {
+    {    
       System.Diagnostics.Debug.WriteLine("Sending: " + Enum.GetName(typeof(Options), inputOption) + " Setting: " + optionMessage);
-      this.byteStream.WriteByte((byte)Commands.InterpretAsCommand);
-      this.byteStream.WriteByte((byte)Commands.Subnegotiation);
-      this.byteStream.WriteByte((byte)inputOption);
-      this.byteStream.WriteByte(0);  // Sub-negotiation IS command.
-      byte[] myTerminalType = Encoding.ASCII.GetBytes(optionMessage);
-      foreach (byte msgPart in myTerminalType)
-      {
-        this.byteStream.WriteByte(msgPart);
-      }
-
-      this.byteStream.WriteByte((byte)Commands.InterpretAsCommand);
-      this.byteStream.WriteByte((byte)Commands.SubnegotiationEnd);
+      byte[] myResponse = Encoding.ASCII.GetBytes(optionMessage);   
+      List<byte> outBuffer = new List<byte>();
+      outBuffer.Add((byte)Commands.InterpretAsCommand);
+      outBuffer.Add((byte)Commands.Subnegotiation);
+      outBuffer.Add((byte)inputOption);
+      outBuffer.Add(0);  // "IS"
+      outBuffer.AddRange(myResponse);
+      outBuffer.Add((byte)Commands.InterpretAsCommand);
+      outBuffer.Add((byte)Commands.SubnegotiationEnd);
+#if ASYNC
+      this.byteStream.WriteAsync(outBuffer.ToArray(), 0, outBuffer.Count, this.internalCancellation.Token);
+#else
+      this.byteStream.Write(outBuffer.ToArray(), 0, outBuffer.Count);
+#endif
     }
 
     /// <summary>
@@ -259,29 +267,44 @@
     /// <param name="inputVerb">The TELNET command we received.</param>
     private void ReplyToCommand(int inputVerb)
     {
-      // reply to all commands with "WONT\DONT", unless it is SGA (suppress go ahead), Terminal Type, or Terminal Speed
+      // reply to all commands with "WONT\DONT", unless it is SGA (suppress go ahead), Terminal Type, or Terminal Speed.
       var inputOption = this.byteStream.ReadByte();
       if (inputOption != -1)
       {
         System.Diagnostics.Debug.WriteLine(Enum.GetName(typeof(Options), inputOption));
-        this.byteStream.WriteByte((byte)Commands.InterpretAsCommand);
+        byte[] outBuffer = new byte[3];
+        outBuffer[0] = (byte)Commands.InterpretAsCommand;
         switch (inputOption)
         {
           case (int)Options.SuppressGoAhead:
-            this.byteStream.WriteByte(inputVerb == (int)Commands.Do ? (byte)Commands.Will : (byte)Commands.Do);
+            outBuffer[1] = inputVerb == (int)Commands.Do ? (byte)Commands.Will : (byte)Commands.Do;
             break;
           case (int)Options.TerminalType:
-            this.byteStream.WriteByte(inputVerb == (int)Commands.Do ? (byte)Commands.Will : (byte)Commands.Do);
+            outBuffer[1] = inputVerb == (int)Commands.Do ? (byte)Commands.Will : (byte)Commands.Do;
             break;
           case (int)Options.TerminalSpeed:
-            this.byteStream.WriteByte(inputVerb == (int)Commands.Do ? (byte)Commands.Will : (byte)Commands.Do);
+            outBuffer[1] = inputVerb == (int)Commands.Do ? (byte)Commands.Will : (byte)Commands.Do;
+            break;
+          case (int)Options.WindowSize:
+            outBuffer[1] = inputVerb == (int)Commands.Do ? (byte)Commands.Will : (byte)Commands.Do;
             break;
           default:
-            this.byteStream.WriteByte(inputVerb == (int)Commands.Do ? (byte)Commands.Wont : (byte)Commands.Dont);
+            outBuffer[1] = inputVerb == (int)Commands.Do ? (byte)Commands.Wont : (byte)Commands.Dont;
             break;
         }
+        
+        outBuffer[2] = (byte)inputOption;
+#if ASYNC
+        this.byteStream.WriteAsync(outBuffer, 0, outBuffer.Length, this.internalCancellation.Token);
+#else
+        this.byteStream.Write(outBuffer, 0, outBuffer.Length);
+#endif
 
-        this.byteStream.WriteByte((byte)inputOption);
+        if (inputOption == (int)Options.WindowSize)
+        {  // NAWS needs to be sent immediately because the server doesn't request subnegotiation.
+          string clientNAWS = ((char)132 + (char)0 + (char)24).ToString(); // This could be an environment variable
+          this.SendNegotiation(inputOption, clientNAWS);
+        }
       }
     }
 

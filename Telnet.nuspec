@@ -19,7 +19,14 @@
       Added Subnegotiation for TerminalType and TerminalSpeed.
       Added Enough Debug writes to watch the option negotiation occur in real time.
       Added ALL Telnet commands and options to Commands.cs Options.cs.
-    <copyright>Copyright (c) 9swampy, Telnet contributors</copyright>
+      Remove erroneous token.register
+      Add cancel call to dispose
+      Increased read delay
+      Created buffered write operations for all internal functions
+      Added Window Size negotiation
+      Added proactive SGA send
+      Upgrades, sort the LiteGuard dependency issue, output received text during read to console to better facilitate debugging while using the NuGet package.
+    </releaseNotes>    <copyright>Copyright (c) 9swampy, Telnet contributors</copyright>
     <tags>Telnet</tags>
     <dependencies>
       <group targetFramework="net35">
