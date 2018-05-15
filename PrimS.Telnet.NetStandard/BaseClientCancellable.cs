@@ -28,7 +28,7 @@
       this.byteStream = byteStream;
       this.sendRateLimit = new SemaphoreSlim(1);
       this.internalCancellation = new CancellationTokenSource();
-      token.Register(() => this.SendCancel());
+      ////token.Register(() => this.SendCancel()); // Call cancel after cancel? What?
     }
 
     /// <summary>
@@ -81,6 +81,11 @@
       {
         this.ByteStream.Close();
         this.sendRateLimit.Dispose();
+        if (!this.internalCancellation.IsCancellationRequested)
+        {
+          this.SendCancel();
+        }
+
         this.internalCancellation.Dispose();
       }
 
