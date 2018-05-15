@@ -71,7 +71,7 @@
     public void ProactiveOptionNegotiation()
     {
       // SEND DO SUPPRESS GO AHEAD
-      byte[] supressGoAhead = new byte[3];
+      var supressGoAhead = new byte[3];
       supressGoAhead[0] = (byte)Commands.InterpretAsCommand;
       supressGoAhead[1] = (byte)Commands.Do;
       supressGoAhead[2] = (byte)Options.SuppressGoAhead;
