@@ -12,7 +12,7 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>A minimal C# 3.5/4.0/4.5/4.5.1/NetStandard1.6 Telnet client library implementation; just enough to send simple text commands from your application, retrieve the response for parsing and react appropriately.</description>
     <releaseNotes>
-      Update to VS2017, add net451 and netstandard1.6 to NuGet.
+      Added configurable LineTerminator.
     </releaseNotes>
     <copyright>Copyright (c) 9swampy, Telnet contributors</copyright>
     <tags>Telnet</tags>
