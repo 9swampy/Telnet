@@ -205,10 +205,11 @@
         var sut = new ByteStreamHandler(tcpByteStream, new CancellationTokenSource());
 
 #if ASYNC
-      var response = await sut.ReadAsync(TimeSpan.FromMilliseconds(10)).ConfigureAwait(false);
+        var response = await sut.ReadAsync(TimeSpan.FromMilliseconds(10)).ConfigureAwait(false);
 #else
         var response = sut.Read(TimeSpan.FromMilliseconds(10));
 #endif
+
         response.Should().BeEmpty();
         A.CallTo(() => networkStream.WriteByte((byte)Commands.InterpretAsCommand)).MustHaveHappened();
         A.CallTo(() => networkStream.WriteByte((byte)Commands.Will)).MustHaveHappened();
@@ -407,7 +408,7 @@
 
 #if ASYNC
             cancellationToken.CancelAfter(100);
-      await sut.ReadAsync(TimeSpan.FromMilliseconds(1000)).ConfigureAwait(false);
+            await sut.ReadAsync(TimeSpan.FromMilliseconds(1000)).ConfigureAwait(false);
 #else
             var t = new Thread(new ThreadStart(() =>
             {

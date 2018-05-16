@@ -7,7 +7,7 @@
   using Microsoft.VisualStudio.TestTools.UnitTesting;
   using FluentAssertions;
   using FakeItEasy;
-  
+
   [TestClass]
   public class ExtendedTcpByteStreamTests
   {
@@ -30,7 +30,7 @@
       var stream = A.Fake<INetworkStream>();
       A.CallTo(() => socket.GetStream()).Returns(stream);
       var sut = new TcpByteStream(socket);
-      
+
       sut.WriteByte(writtenByte);
 
       A.CallTo(() => stream.WriteByte(writtenByte)).MustHaveHappened();
