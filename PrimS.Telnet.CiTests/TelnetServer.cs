@@ -98,13 +98,9 @@
     private void WaitFor(Socket handler, string awaitedResponse)
     {
       data = string.Empty;
-      while (true)
+      while (!this.IsResponseReceived(data, awaitedResponse))
       {
         ReceiveResponse(handler);
-        if (this.IsResponseReceived(data, awaitedResponse))
-        {
-          break;
-        }
       }
     }
 
@@ -112,12 +108,12 @@
     {
       byte[] bytes = new byte[1024];
       int bytesRec = handler.Receive(bytes);
-      data += Encoding.ASCII.GetString(bytes, 0, bytesRec);
+      data += Encoding.ASCII.GetString(bytes, 0, bytesRec).Trim((char)255);
     }
 
     private bool IsResponseReceived(string currentResponse, string responseAwaited)
     {
-      if (currentResponse == responseAwaited)
+      if (currentResponse.Contains(responseAwaited))
       {
         System.Diagnostics.Debug.Print("{0} response received", responseAwaited);
         Console.WriteLine("{0} response received", responseAwaited);

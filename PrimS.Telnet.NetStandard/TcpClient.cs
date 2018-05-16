@@ -29,7 +29,7 @@
       // Adding something awaitable on this class to connect or wait for connection
       // would break backward compatibility and require a lot of refactoring.
       // This will do for now.
-      var nowait = client.ConnectAsync(hostName, port);
+      var nowait = this.client.ConnectAsync(hostName, port);
 #endif
     }
 

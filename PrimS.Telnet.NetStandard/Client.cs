@@ -58,6 +58,27 @@ namespace PrimS.Telnet
       {
         throw new InvalidOperationException("Unable to connect to the host.");
       }
+      else
+      {
+        this.ProactiveOptionNegotiation();
+      }
+    }
+
+    /// <summary>
+    /// Sending options up front will get us to the logon prompt faster.
+    /// </summary>
+    public void ProactiveOptionNegotiation()
+    {
+      // SEND DO SUPPRESS GO AHEAD
+      byte[] supressGoAhead = new byte[3];
+      supressGoAhead[0] = (byte)Commands.InterpretAsCommand;
+      supressGoAhead[1] = (byte)Commands.Do;
+      supressGoAhead[2] = (byte)Options.SuppressGoAhead;
+#if ASYNC
+      this.ByteStream.WriteAsync(supressGoAhead, 0, supressGoAhead.Length, this.InternalCancellation.Token);
+#else
+      this.byteStream.Write(supressGoAhead, 0, outBuffer.Length);
+#endif
     }
 
     /// <summary>
@@ -69,7 +90,7 @@ namespace PrimS.Telnet
     /// <returns>True if successful.</returns>
     public Task<bool> TryLoginAsync(string username, string password, int loginTimeoutMs)
     {
-      return TryLoginAsync(username, password, loginTimeoutMs, ">");
+      return this.TryLoginAsync(username, password, loginTimeoutMs, ">");
     }
 
     /// <summary>
@@ -138,7 +159,7 @@ namespace PrimS.Telnet
     }
 
     /// <summary>
-    /// Reads asynchronously from the stream, terminating as soon as the <paramref name="terminator"/> is located.
+    /// Reads asynchronously from the stream, terminating as soon as the <paramref name="regex"/> is located.
     /// </summary>
     /// <param name="regex">The terminator.</param>
     /// <param name="timeout">The timeout.</param>
