@@ -98,7 +98,7 @@ namespace PrimS.Telnet
     /// <returns>An awaitable Task.</returns>
     public async Task WriteLine(string command)
     {
-      await this.Write(string.Format("{0}\n", command));
+      await this.Write(string.Format("{0}\r\n", command));
     }
 
     /// <summary>
