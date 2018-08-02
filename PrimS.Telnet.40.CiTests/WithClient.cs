@@ -101,6 +101,23 @@
     }
 
     [TestMethod, Timeout(5000)]
+    public void ShouldRespondWithWan2InfoCrlf()
+    {
+      using (TelnetServer server = new TelnetServer())
+      {
+        using (Client client = new Client(server.IPAddress.ToString(), server.Port, new System.Threading.CancellationToken()))
+        {
+          client.IsConnected.Should().Be(true);
+          (client.TryLogin("username", "password", TimeoutMs, linefeed: "\r\n")).Should().Be(true);
+          client.WriteLine("show statistic wan2", linefeed: "\r\n");
+          string s = client.TerminatedRead(">", TimeSpan.FromMilliseconds(TimeoutMs));
+          s.Should().Contain(">");
+          s.Should().Contain("WAN2");
+        }
+      }
+    }
+
+    [TestMethod, Timeout(5000)]
     public void ShouldLogin()
     {
       using (TelnetServer server = new TelnetServer())
@@ -109,6 +126,19 @@
         {
           client.IsConnected.Should().Be(true);
           client.TryLogin("username", "password", TimeoutMs).Should().Be(true);
+        }
+      }
+    }
+
+    [TestMethod, Timeout(5000)]
+    public void ShouldLoginCrlf()
+    {
+      using (TelnetServer server = new TelnetServer())
+      {
+        using (Client client = new Client(server.IPAddress.ToString(), server.Port, new System.Threading.CancellationToken()))
+        {
+          client.IsConnected.Should().Be(true);
+          client.TryLogin("username", "password", TimeoutMs, linefeed: "\r\n").Should().Be(true);
         }
       }
     }

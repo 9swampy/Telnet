@@ -95,10 +95,11 @@ namespace PrimS.Telnet
     /// Writes the line to the server.
     /// </summary>
     /// <param name="command">The command.</param>
+    /// <param name="linefeed">The type of linefeed to use.</param>
     /// <returns>An awaitable Task.</returns>
-    public async Task WriteLine(string command)
+    public async Task WriteLine(string command, string linefeed="\n")
     {
-      await this.Write(string.Format("{0}\r\n", command));
+      await this.Write(string.Format("{0}{1}", command, linefeed));
     }
 
     /// <summary>
@@ -217,12 +218,12 @@ namespace PrimS.Telnet
       return result;
     }
 
-    private async Task<bool> TryAwaitTerminatorThenSend(string value, int loginTimeoutMs)
+    private async Task<bool> TryAwaitTerminatorThenSend(string value, int loginTimeoutMs, string linefeed = "\n")
     {
       bool isTerminated = await this.IsTerminatedWith(loginTimeoutMs, ":");
       if (isTerminated)
       {
-        await this.WriteLine(value);
+        await this.WriteLine(value, linefeed);
       }
 
       return isTerminated;

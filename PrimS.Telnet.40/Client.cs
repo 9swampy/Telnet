@@ -10,7 +10,7 @@
   /// Basic Telnet client.
   /// </summary>
   public partial class Client : BaseClient
-  {   
+  {
     /// <summary>
     /// Tries to login.
     /// </summary>
@@ -18,17 +18,18 @@
     /// <param name="password">The password.</param>
     /// <param name="loginTimeOutMs">The login time out ms.</param>
     /// <param name="terminator">The terminator.</param>
+    /// <param name="linefeed">The type of linefeed to use.</param>
     /// <returns>True if successful.</returns>
-    public bool TryLogin(string userName, string password, int loginTimeOutMs, string terminator = ">")
+    public bool TryLogin(string userName, string password, int loginTimeOutMs, string terminator = ">", string linefeed = "\n")
     {
       try
       {
         if (this.IsTerminatedWith(loginTimeOutMs, ":"))
         {
-          this.WriteLine(userName);
+          this.WriteLine(userName, linefeed);
           if (this.IsTerminatedWith(loginTimeOutMs, ":"))
           {
-            this.WriteLine(password);
+            this.WriteLine(password, linefeed);
           }
 
           return this.IsTerminatedWith(loginTimeOutMs, terminator);
@@ -48,9 +49,10 @@
     /// Writes the line to the server.
     /// </summary>
     /// <param name="command">The command.</param>
-    public void WriteLine(string command)
+    /// <param name="linefeed">The type of linefeed to use.</param>
+    public void WriteLine(string command, string linefeed = "\n")
     {
-      this.Write(string.Format("{0}\n", command));
+      this.Write(string.Format("{0}{1}", command, linefeed));
     }
 
     /// <summary>
