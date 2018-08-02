@@ -29,7 +29,6 @@
   </dependencies>
   </metadata>
   <files>
-    <file src="License.txt" target="content" />
     <file src="PrimS.Telnet\Bin\Release\PrimS.Telnet.dll" target="lib\net45" />
     <file src="PrimS.Telnet\Bin\Release\PrimS.Telnet.xml" target="lib\net45" />
     <file src="PrimS.Telnet.40\Bin\Release\PrimS.Telnet.40.dll" target="lib\net40" />
