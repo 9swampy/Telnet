@@ -1,6 +1,4 @@
-﻿using System.Runtime.InteropServices;
-
-namespace PrimS.Telnet
+﻿namespace PrimS.Telnet
 {
   using System;
   using System.Text.RegularExpressions;
@@ -66,10 +64,11 @@ namespace PrimS.Telnet
     /// <param name="username">The username.</param>
     /// <param name="password">The password.</param>
     /// <param name="loginTimeoutMs">The login time out ms.</param>
+    /// <param name="lineFeed">The line feed to use. Issue 38: According to RFC 854, CR+LF should be the default a client sends. For backward compatibility \n maintained.</param>
     /// <returns>True if successful.</returns>
-    public Task<bool> TryLoginAsync(string username, string password, int loginTimeoutMs)
+    public Task<bool> TryLoginAsync(string username, string password, int loginTimeoutMs, string lineFeed = "\n")
     {
-      return TryLoginAsync(username, password, loginTimeoutMs, ">");
+      return this.TryLoginAsync(username, password, loginTimeoutMs, ">", lineFeed);
     }
 
     /// <summary>
@@ -79,10 +78,11 @@ namespace PrimS.Telnet
     /// <param name="password">The password.</param>
     /// <param name="loginTimeoutMs">The login time out ms.</param>
     /// <param name="terminator">The terminator.</param>
+    /// <param name="lineFeed">The line feed to use. Issue 38: According to RFC 854, CR+LF should be the default a client sends. For backward compatibility \n maintained.</param>
     /// <returns>True if successful.</returns>
-    public async Task<bool> TryLoginAsync(string username, string password, int loginTimeoutMs, string terminator)
+    public async Task<bool> TryLoginAsync(string username, string password, int loginTimeoutMs, string terminator, string lineFeed = "\n")
     {
-      bool result = await this.TrySendUsernameAndPassword(username, password, loginTimeoutMs);
+      bool result = await this.TrySendUsernameAndPassword(username, password, loginTimeoutMs, lineFeed);
       if (result)
       {
         result = await this.IsTerminatedWith(loginTimeoutMs, terminator);
@@ -95,10 +95,11 @@ namespace PrimS.Telnet
     /// Writes the line to the server.
     /// </summary>
     /// <param name="command">The command.</param>
+    /// <param name="linefeed">The type of linefeed to use.</param>
     /// <returns>An awaitable Task.</returns>
-    public async Task WriteLine(string command)
+    public async Task WriteLine(string command, string linefeed = "\n")
     {
-      await this.Write(string.Format("{0}\n", command));
+      await this.Write(string.Format("{0}{1}", command, linefeed));
     }
 
     /// <summary>
@@ -206,23 +207,23 @@ namespace PrimS.Telnet
       return await handler.ReadAsync(timeout);
     }
 
-    private async Task<bool> TrySendUsernameAndPassword(string username, string password, int loginTimeoutMs)
+    private async Task<bool> TrySendUsernameAndPassword(string username, string password, int loginTimeoutMs, string lineFeed)
     {
-      bool result = await this.TryAwaitTerminatorThenSend(username, loginTimeoutMs);
+      bool result = await this.TryAwaitTerminatorThenSend(username, loginTimeoutMs, lineFeed);
       if (result)
       {
-        result = await this.TryAwaitTerminatorThenSend(password, loginTimeoutMs);
+        result = await this.TryAwaitTerminatorThenSend(password, loginTimeoutMs, lineFeed);
       }
 
       return result;
     }
 
-    private async Task<bool> TryAwaitTerminatorThenSend(string value, int loginTimeoutMs)
+    private async Task<bool> TryAwaitTerminatorThenSend(string value, int loginTimeoutMs, string lineFeed)
     {
       bool isTerminated = await this.IsTerminatedWith(loginTimeoutMs, ":");
       if (isTerminated)
       {
-        await this.WriteLine(value);
+        await this.WriteLine(value, lineFeed);
       }
 
       return isTerminated;
