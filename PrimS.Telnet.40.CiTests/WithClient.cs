@@ -9,7 +9,7 @@
   [TestClass]
   public class WithClient
   {
-    private const int TimeoutMs = 500;
+    private const int timeoutMs = 500;
 
     [TestMethod]
     public void ShouldConnect()
@@ -31,7 +31,7 @@
         using (Client client = new Client(server.IPAddress.ToString(), server.Port, new System.Threading.CancellationToken()))
         {
           client.IsConnected.Should().Be(true);
-          client.TerminatedRead(":", TimeSpan.FromMilliseconds(TimeoutMs)).Should().EndWith(":");
+          client.TerminatedRead(":", TimeSpan.FromMilliseconds(timeoutMs)).Should().EndWith(":");
         }
       }
     }
@@ -44,7 +44,7 @@
         using (Client client = new Client(server.IPAddress.ToString(), server.Port, new System.Threading.CancellationToken()))
         {
           client.IsConnected.Should().Be(true);
-          string s = client.TerminatedRead("Account:", TimeSpan.FromMilliseconds(TimeoutMs));
+          string s = client.TerminatedRead("Account:", TimeSpan.FromMilliseconds(timeoutMs));
           s.Should().Contain("Account:");
         }
       }
@@ -58,10 +58,10 @@
         using (Client client = new Client(server.IPAddress.ToString(), server.Port, new System.Threading.CancellationToken()))
         {
           client.IsConnected.Should().Be(true);
-          string s = client.TerminatedRead("Account:", TimeSpan.FromMilliseconds(TimeoutMs));
+          string s = client.TerminatedRead("Account:", TimeSpan.FromMilliseconds(timeoutMs));
           s.Should().Contain("Account:");
           client.WriteLine("username");
-          s = client.TerminatedRead("Password:", TimeSpan.FromMilliseconds(TimeoutMs));
+          s = client.TerminatedRead("Password:", TimeSpan.FromMilliseconds(timeoutMs));
         }
       }
     }
@@ -74,11 +74,11 @@
         using (Client client = new Client(server.IPAddress.ToString(), server.Port, new System.Threading.CancellationToken()))
         {
           client.IsConnected.Should().Be(true);
-          client.TerminatedRead("Account:", TimeSpan.FromMilliseconds(TimeoutMs));
+          client.TerminatedRead("Account:", TimeSpan.FromMilliseconds(timeoutMs));
           client.WriteLine("username");
-          client.TerminatedRead("Password:", TimeSpan.FromMilliseconds(TimeoutMs));
+          client.TerminatedRead("Password:", TimeSpan.FromMilliseconds(timeoutMs));
           client.WriteLine("password");
-          client.TerminatedRead(">", TimeSpan.FromMilliseconds(TimeoutMs));
+          client.TerminatedRead(">", TimeSpan.FromMilliseconds(timeoutMs));
         }
       }
     }
@@ -91,9 +91,26 @@
         using (Client client = new Client(server.IPAddress.ToString(), server.Port, new System.Threading.CancellationToken()))
         {
           client.IsConnected.Should().Be(true);
-          (client.TryLogin("username", "password", TimeoutMs)).Should().Be(true);
+          (client.TryLogin("username", "password", timeoutMs)).Should().Be(true);
           client.WriteLine("show statistic wan2");
-          string s = client.TerminatedRead(">", TimeSpan.FromMilliseconds(TimeoutMs));
+          string s = client.TerminatedRead(">", TimeSpan.FromMilliseconds(timeoutMs));
+          s.Should().Contain(">");
+          s.Should().Contain("WAN2");
+        }
+      }
+    }
+
+    [TestMethod, Timeout(5000)]
+    public void ShouldRespondWithWan2InfoCrLf()
+    {
+      using (var server = new TelnetServerRFC854())
+      {
+        using (Client client = new Client(server.IPAddress.ToString(), server.Port, new System.Threading.CancellationToken()))
+        {
+          client.IsConnected.Should().Be(true);
+          (client.TryLogin("username", "password", timeoutMs, lineFeed: "\r\n")).Should().Be(true);
+          client.WriteLine("show statistic wan2", lineFeed: "\r\n");
+          string s = client.TerminatedRead(">", TimeSpan.FromMilliseconds(timeoutMs));
           s.Should().Contain(">");
           s.Should().Contain("WAN2");
         }
@@ -108,7 +125,20 @@
         using (Client client = new Client(server.IPAddress.ToString(), server.Port, new System.Threading.CancellationToken()))
         {
           client.IsConnected.Should().Be(true);
-          client.TryLogin("username", "password", TimeoutMs).Should().Be(true);
+          client.TryLogin("username", "password", timeoutMs).Should().Be(true);
+        }
+      }
+    }
+
+    [TestMethod, Timeout(5000)]
+    public void ShouldLoginCrLf()
+    {
+      using (var server = new TelnetServerRFC854())
+      {
+        using (Client client = new Client(server.IPAddress.ToString(), server.Port, new System.Threading.CancellationToken()))
+        {
+          client.IsConnected.Should().Be(true);
+          client.TryLogin("username", "password", timeoutMs, lineFeed: "\r\n").Should().Be(true);
         }
       }
     }

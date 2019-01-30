@@ -8,7 +8,7 @@
   [TestClass]
   public class WithClient
   {
-    private const int TimeoutMs = 500;
+    private const int timeoutMs = 500;
 
     [TestMethod]
     public void ShouldConnect()
@@ -30,7 +30,7 @@
         using (Client client = new Client(server.IPAddress.ToString(), server.Port))
         {
           Assert.AreEqual(client.IsConnected, true);
-          Assert.IsTrue(client.TerminatedRead(":", TimeSpan.FromMilliseconds(TimeoutMs)).EndsWith(":"));
+          Assert.IsTrue(client.TerminatedRead(":", TimeSpan.FromMilliseconds(timeoutMs)).EndsWith(":"));
         }
       }
     }
@@ -94,7 +94,7 @@
         {
           Assert.AreEqual(client.IsConnected, true);
           Regex regex = new Regex(".*:\r?$", RegexOptions.Multiline);
-          Assert.IsTrue(client.TerminatedRead(regex, TimeSpan.FromMilliseconds(TimeoutMs)).EndsWith(":"));
+          Assert.IsTrue(client.TerminatedRead(regex, TimeSpan.FromMilliseconds(timeoutMs)).EndsWith(":"));
         }
       }
     }
@@ -107,7 +107,7 @@
         using (Client client = new Client(server.IPAddress.ToString(), server.Port))
         {
           Assert.AreEqual(client.IsConnected, true);
-          string s = client.TerminatedRead("Account:", TimeSpan.FromMilliseconds(TimeoutMs));
+          string s = client.TerminatedRead("Account:", TimeSpan.FromMilliseconds(timeoutMs));
           Assert.IsTrue(s.Contains("Account:"));
         }
       }
@@ -122,7 +122,7 @@
         {
           Assert.AreEqual(client.IsConnected, true);
           Regex regex = new Regex(".*Account:\r?$", RegexOptions.Multiline);
-          string s = client.TerminatedRead(regex, TimeSpan.FromMilliseconds(TimeoutMs));
+          string s = client.TerminatedRead(regex, TimeSpan.FromMilliseconds(timeoutMs));
           Assert.IsTrue(s.Contains("Account:"));
         }
       }
@@ -136,10 +136,10 @@
         using (Client client = new Client(server.IPAddress.ToString(), server.Port))
         {
           Assert.AreEqual(client.IsConnected, true);
-          string s = client.TerminatedRead("Account:", TimeSpan.FromMilliseconds(TimeoutMs));
+          string s = client.TerminatedRead("Account:", TimeSpan.FromMilliseconds(timeoutMs));
           Assert.IsTrue(s.Contains("Account:"));
           client.WriteLine("username");
-          s = client.TerminatedRead("Password:", TimeSpan.FromMilliseconds(TimeoutMs));
+          s = client.TerminatedRead("Password:", TimeSpan.FromMilliseconds(timeoutMs));
         }
       }
     }
@@ -152,11 +152,11 @@
         using (Client client = new Client(server.IPAddress.ToString(), server.Port))
         {
           Assert.AreEqual(client.IsConnected, true);
-          client.TerminatedRead("Account:", TimeSpan.FromMilliseconds(TimeoutMs));
+          client.TerminatedRead("Account:", TimeSpan.FromMilliseconds(timeoutMs));
           client.WriteLine("username");
-          client.TerminatedRead("Password:", TimeSpan.FromMilliseconds(TimeoutMs));
+          client.TerminatedRead("Password:", TimeSpan.FromMilliseconds(timeoutMs));
           client.WriteLine("password");
-          client.TerminatedRead(">", TimeSpan.FromMilliseconds(TimeoutMs));
+          client.TerminatedRead(">", TimeSpan.FromMilliseconds(timeoutMs));
         }
       }
     }
@@ -169,9 +169,26 @@
         using (Client client = new Client(server.IPAddress.ToString(), server.Port))
         {
           Assert.AreEqual(client.IsConnected, true);
-          Assert.AreEqual(client.TryLogin("username", "password", TimeoutMs), true);
+          Assert.AreEqual(client.TryLogin("username", "password", timeoutMs), true);
           client.WriteLine("show statistic wan2");
-          string s = client.TerminatedRead(">", TimeSpan.FromMilliseconds(TimeoutMs));
+          string s = client.TerminatedRead(">", TimeSpan.FromMilliseconds(timeoutMs));
+          Assert.IsTrue(s.Contains(">"));
+          Assert.IsTrue(s.Contains("WAN2"));
+        }
+      }
+    }
+
+    [TestMethod, Timeout(5000)]
+    public void ShouldRespondWithWan2InfoCrLf()
+    {
+      using (var server = new TelnetServerRFC854())
+      {
+        using (Client client = new Client(server.IPAddress.ToString(), server.Port))
+        {
+          Assert.AreEqual(client.IsConnected, true);
+          Assert.AreEqual(client.TryLogin("username", "password", timeoutMs, lineFeed: "\r\n"), true);
+          client.WriteLine("show statistic wan2", "\r\n");
+          string s = client.TerminatedRead(">", TimeSpan.FromMilliseconds(timeoutMs));
           Assert.IsTrue(s.Contains(">"));
           Assert.IsTrue(s.Contains("WAN2"));
         }
@@ -186,7 +203,20 @@
         using (Client client = new Client(server.IPAddress.ToString(), server.Port))
         {
           Assert.AreEqual(client.IsConnected, true);
-          Assert.AreEqual((client.TryLogin("username", "password", TimeoutMs)), true);
+          Assert.AreEqual((client.TryLogin("username", "password", timeoutMs)), true);
+        }
+      }
+    }
+
+    [TestMethod, Timeout(5000)]
+    public void ShouldLoginCrLf()
+    {
+      using (var server = new TelnetServerRFC854())
+      {
+        using (Client client = new Client(server.IPAddress.ToString(), server.Port))
+        {
+          Assert.AreEqual(client.IsConnected, true);
+          Assert.AreEqual((client.TryLogin("username", "password", timeoutMs, lineFeed: "\r\n")), true);
         }
       }
     }
