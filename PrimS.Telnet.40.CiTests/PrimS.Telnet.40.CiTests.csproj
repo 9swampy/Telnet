@@ -73,6 +73,12 @@
     <Compile Include="..\PrimS.Telnet.CiTests\TelnetServer.cs">
       <Link>TelnetServer.cs</Link>
     </Compile>
+    <Compile Include="..\PrimS.Telnet.CiTests\TelnetServerBase.cs">
+      <Link>TelnetServerBase.cs</Link>
+    </Compile>
+    <Compile Include="..\PrimS.Telnet.CiTests\TelnetServerRFC854.cs">
+      <Link>TelnetServerRFC854.cs</Link>
+    </Compile>
     <Compile Include="..\PrimS.Telnet.CiTests\TelnetServerTests.cs">
       <Link>TelnetServerTests.cs</Link>
     </Compile>

@@ -18,28 +18,27 @@
     /// <param name="password">The password.</param>
     /// <param name="loginTimeOutMs">The login time out ms.</param>
     /// <param name="terminator">The terminator.</param>
-    /// <param name="linefeed">The type of linefeed to use.</param>
+    /// <param name="lineFeed">The line feed to use. Issue 38: According to RFC 854, CR+LF should be the default a client sends. For backward compatibility \n maintained.</param>
     /// <returns>True if successful.</returns>
-    public bool TryLogin(string userName, string password, int loginTimeOutMs, string terminator = ">", string linefeed = "\n")
+    public bool TryLogin(string userName, string password, int loginTimeOutMs, string terminator = ">", string lineFeed = "\n")
     {
       try
       {
         if (this.IsTerminatedWith(loginTimeOutMs, ":"))
         {
-          this.WriteLine(userName, linefeed);
+          this.WriteLine(userName, lineFeed);
           if (this.IsTerminatedWith(loginTimeOutMs, ":"))
           {
-            this.WriteLine(password, linefeed);
+            this.WriteLine(password, lineFeed);
           }
 
           return this.IsTerminatedWith(loginTimeOutMs, terminator);
         }
       }
-#pragma warning disable RCS1075 // Avoid empty catch clause that catches System.Exception.
-      catch (Exception)
-#pragma warning restore RCS1075 // Avoid empty catch clause that catches System.Exception.
+      catch (Exception ex)
       {
         // NOP
+        System.Diagnostics.Debug.Print(ex.Message);
       }
 
       return false;
@@ -49,10 +48,10 @@
     /// Writes the line to the server.
     /// </summary>
     /// <param name="command">The command.</param>
-    /// <param name="linefeed">The type of linefeed to use.</param>
-    public void WriteLine(string command, string linefeed = "\n")
+    /// <param name="lineFeed">The line feed to use. Issue 38: According to RFC 854, CR+LF should be the default a client sends. For backward compatibility \n maintained.</param>
+    public void WriteLine(string command, string lineFeed = "\n")
     {
-      this.Write(string.Format("{0}{1}", command, linefeed));
+      this.Write(string.Format("{0}{1}", command, lineFeed));
     }
 
     /// <summary>
