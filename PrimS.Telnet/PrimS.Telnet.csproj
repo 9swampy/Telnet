@@ -34,8 +34,8 @@
     <DocumentationFile>bin\Release\PrimS.Telnet.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="LiteGuard, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\LiteGuard.1.1.0\lib\net35\LiteGuard.dll</HintPath>
+    <Reference Include="LiteGuard, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\LiteGuard.2.0.1\lib\netstandard1.0\LiteGuard.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

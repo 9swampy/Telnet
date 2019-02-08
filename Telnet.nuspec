@@ -13,6 +13,9 @@
     <description>A minimal C# 3.5/4.0/4.5/4.5.1/NetStandard1.6/NetStandard2.0 Telnet client library implementation; just enough to send simple text commands and retrieve the response.</description>
     <releaseNotes>
       Add NetStandard2.0 target.
+      Fixed TerminatedReadAsync to never miss the terminator. 
+      Added Enough Debug writes to watch the option negotiation occur in real time.
+      Add cancel call to dispose
     </releaseNotes>
     <copyright>Copyright (c) 9swampy, Telnet contributors</copyright>
     <tags>Telnet</tags>
