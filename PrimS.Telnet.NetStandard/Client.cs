@@ -118,6 +118,21 @@
     }
 
     /// <summary>
+    /// Writes the specified data arrray to the server.
+    /// </summary>
+    /// <param name="data">The byte array.</param>
+    /// <returns>Any text read from the stream.</returns>
+    public async Task Write(byte[] data)
+    {
+      if (this.ByteStream.Connected && !this.InternalCancellation.Token.IsCancellationRequested)
+      {
+        await this.SendRateLimit.WaitAsync(this.InternalCancellation.Token);
+        await this.ByteStream.WriteAsync(data, 0, data.Length, this.InternalCancellation.Token);
+        this.SendRateLimit.Release();
+      }
+    }
+
+    /// <summary>
     /// Reads asynchronously from the stream, terminating as soon as the <paramref name="terminator"/> is located.
     /// </summary>
     /// <param name="terminator">The terminator.</param>
