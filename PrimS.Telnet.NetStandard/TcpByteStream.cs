@@ -101,6 +101,7 @@
     public void WriteByte(byte value)
     {
       this.socket.GetStream().WriteByte(value);
+      System.Diagnostics.Debug.WriteLine("SENT: " + (char)value);
     }
 
 #if ASYNC
@@ -116,6 +117,7 @@
     /// </returns>
     public Task WriteAsync(byte[] buffer, int offset, int count, System.Threading.CancellationToken cancellationToken)
     {
+      System.Diagnostics.Debug.WriteLine("SENT: " + System.Text.Encoding.UTF7.GetString(buffer));
       return this.socket.GetStream().WriteAsync(buffer, offset, count, cancellationToken);
     }
 #else    
@@ -127,6 +129,7 @@
     /// <param name="count">The count.</param>
     public void Write(byte[] buffer, int offset, int count)
     {
+      System.Diagnostics.Debug.WriteLine("SENT: " + System.Text.Encoding.UTF7.GetString(buffer));
       this.socket.GetStream().Write(buffer, offset, count);
     }
 #endif

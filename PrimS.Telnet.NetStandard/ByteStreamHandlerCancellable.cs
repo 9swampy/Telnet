@@ -73,6 +73,24 @@
       this.LogIfTimeoutExpired(rollingTimeout);
       return sb.ToString();
     }
+    
+    /// <summary>
+    /// Add null check to cancel commands. Fail gracefully.
+    /// </summary>
+    protected void SendCancel()
+    {
+      try
+      {
+        if (this.internalCancellation != null)
+        {
+          this.internalCancellation.Cancel();
+        }
+      }
+      catch (Exception ex)
+      {
+        System.Diagnostics.Debug.WriteLine(ex.Message);
+      }    
+    }
 
     private void LogIfTimeoutExpired(DateTime rollingTimeout)
     {
@@ -81,5 +99,5 @@
         System.Diagnostics.Debug.WriteLine("RollingTimeout exceeded {0}", DateTime.Now.ToString("ss:fff"));
       }
     }
-}
+  }
 }

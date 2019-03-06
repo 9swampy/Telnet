@@ -74,7 +74,7 @@
         return false;
       }
 
-      return s.TrimEnd().EndsWith(terminator, StringComparison.OrdinalIgnoreCase);
+      return s.Contains(terminator);
     }
 
     /// <summary>
