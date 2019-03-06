@@ -108,8 +108,8 @@
         using (Client client = new Client(server.IPAddress.ToString(), server.Port, new System.Threading.CancellationToken()))
         {
           client.IsConnected.Should().Be(true);
-          (client.TryLogin("username", "password", timeoutMs, lineFeed: "\r\n")).Should().Be(true);
-          client.WriteLine("show statistic wan2", lineFeed: "\r\n");
+          (client.TryLogin("username", "password", timeoutMs, linefeed: "\r\n")).Should().Be(true);
+          client.WriteLine("show statistic wan2", linefeed: "\r\n");
           string s = client.TerminatedRead(">", TimeSpan.FromMilliseconds(timeoutMs));
           s.Should().Contain(">");
           s.Should().Contain("WAN2");
@@ -138,7 +138,7 @@
         using (Client client = new Client(server.IPAddress.ToString(), server.Port, new System.Threading.CancellationToken()))
         {
           client.IsConnected.Should().Be(true);
-          client.TryLogin("username", "password", timeoutMs, lineFeed: "\r\n").Should().Be(true);
+          client.TryLogin("username", "password", timeoutMs, linefeed: "\r\n").Should().Be(true);
         }
       }
     }
