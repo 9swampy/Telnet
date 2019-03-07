@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>Telnet</id>
-    <version>0.8.2</version>
+    <version>0.8.3</version>
     <title>Telnet</title>
     <authors>Telnet contributors</authors>
     <owners>9swampy</owners>
@@ -10,9 +10,13 @@
     <projectUrl>https://github.com/9swampy/Telnet/</projectUrl>
     <iconUrl>https://raw.githubusercontent.com/9swampy/Telnet/master/Ptelnet128x600.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>A minimal C# 3.5/4.0/4.5/4.5.1/NetStandard1.6 Telnet client library implementation; just enough to send simple text commands and retrieve the response.</description>
+    <description>A minimal C# 3.5/4.0/4.5/4.5.1/NetStandard1.6/NetStandard2.0 Telnet client library implementation; just enough to send simple text commands and retrieve the response.</description>
     <releaseNotes>
-      Issue 38: Added optional parameter for passing "\r\n" instead of just "\n" for telnet servers that require "\r\n".
+      Add NetStandard2.0 target.
+      Fixed TerminatedReadAsync to never miss the terminator (A9G-Data-Droid). 
+      Added Enough Debug writes to watch the option negotiation occur in real time (A9G-Data-Droid).
+      Add cancel call to dispose (A9G-Data-Droid).
+      Add Write(byte[]) to NetStandard client (OddmarDam).
     </releaseNotes>
     <copyright>Copyright (c) 9swampy, Telnet contributors</copyright>
     <tags>Telnet</tags>
@@ -24,9 +28,12 @@
         <dependency id="LiteGuard" version="1.1.0" />
       </group>
       <group targetFramework="netstandard1.6">
-      <dependency id="LiteGuard" version="1.1.0" />
-    </group>
-  </dependencies>
+        <dependency id="LiteGuard" version="1.1.0" />
+      </group>
+      <group targetFramework="netstandard2.0">
+        <dependency id="LiteGuard" version="1.1.0" />
+      </group>
+    </dependencies>
   </metadata>
   <files>
     <file src="License.txt" target="content" />
@@ -39,6 +46,9 @@
     <file src="PrimS.Telnet.NetStandard\Bin\Release\netstandard1.6\PrimS.Telnet.NetStandard.dll" target="lib\netstandard1.6" />
     <file src="PrimS.Telnet.NetStandard\Bin\Release\netstandard1.6\PrimS.Telnet.NetStandard.xml" target="lib\netstandard1.6" />
     <file src="PrimS.Telnet.NetStandard\Bin\Release\netstandard1.6\PrimS.Telnet.NetStandard.deps.json" target="lib\netstandard1.6" />
+    <file src="PrimS.Telnet.NetStandard\Bin\Release\netstandard2.0\PrimS.Telnet.NetStandard.dll" target="lib\netstandard2.0" />
+    <file src="PrimS.Telnet.NetStandard\Bin\Release\netstandard2.0\PrimS.Telnet.NetStandard.xml" target="lib\netstandard2.0" />
+    <file src="PrimS.Telnet.NetStandard\Bin\Release\netstandard2.0\PrimS.Telnet.NetStandard.deps.json" target="lib\netstandard2.0" />
     <file src="PrimS.Telnet.NetStandard\Bin\Release\net451\PrimS.Telnet.NetStandard.dll" target="lib\net451" />
     <file src="PrimS.Telnet.NetStandard\Bin\Release\net451\PrimS.Telnet.NetStandard.xml" target="lib\net451" />
   </files>

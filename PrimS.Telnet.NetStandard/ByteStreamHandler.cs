@@ -1,6 +1,7 @@
-namespace PrimS.Telnet
+﻿namespace PrimS.Telnet
 {
   using System;
+  using System.Collections.Generic;
   using System.Text;
 #if ASYNC
   using System.Threading.Tasks;
@@ -39,27 +40,15 @@ namespace PrimS.Telnet
       if (disposing)
       {
         this.byteStream.Dispose();
+#if ASYNC
+        this.SendCancel();
+#endif
       }
     }
 
     private static DateTime ExtendRollingTimeout(TimeSpan timeout)
     {
       return DateTime.Now.Add(TimeSpan.FromMilliseconds(timeout.TotalMilliseconds / 100));
-    }
-
-#if ASYNC
-    private static async Task<bool> IsWaitForIncrementalResponse(DateTime rollingTimeout)
-#else
-    private static bool IsWaitForIncrementalResponse(DateTime rollingTimeout)
-#endif
-    {
-      bool result = DateTime.Now < rollingTimeout;
-#if ASYNC
-      await Task.Delay(1);
-#else
-      System.Threading.Thread.Sleep(1);
-#endif
-      return result;
     }
 
     private static bool IsWaitForInitialResponse(DateTime endInitialTimeout, bool isInitialResponseReceived)
@@ -77,6 +66,26 @@ namespace PrimS.Telnet
       return sb.Length > 0;
     }
 
+#if ASYNC
+    private async Task<bool> IsWaitForIncrementalResponse(DateTime rollingTimeout)
+#else
+    private bool IsWaitForIncrementalResponse(DateTime rollingTimeout)
+#endif
+    {
+      bool result = DateTime.Now < rollingTimeout;
+#if ASYNC
+      await Task.Delay(1, this.internalCancellation.Token);
+#else
+      System.Threading.Thread.Sleep(1);
+#endif
+      return result;
+    }
+
+    /// <summary>
+    /// Separate TELNET commands from text. Handle non-printable characters.
+    /// </summary>
+    /// <param name="sb">The incoming message.</param>
+    /// <returns>True if response is pending.</returns>
     private bool RetrieveAndParseResponse(StringBuilder sb)
     {
       if (this.IsResponsePending)
@@ -111,6 +120,42 @@ namespace PrimS.Telnet
             }
 
             break;
+          case 1: // Start of Heading
+            sb.Append("\n \n");
+            break;
+          case 2: // Start of Text
+            sb.Append("\t");
+            break;
+          case 3: // End of Text or "break" CTRL+C
+            sb.Append("^C");
+            System.Diagnostics.Debug.WriteLine("^C");
+            break;
+          case 4: // End of Transmission
+            sb.Append("^D");
+            break;
+          case 5: // Enquiry
+            this.byteStream.WriteByte((byte)6); // Send ACK
+            break;
+          case 6: // Acknowledge
+            // We got an ACK
+            break;
+          case 7: // Bell character
+            Console.Beep();
+            break;
+          case 8: // Backspace
+            // We could delete a character from sb, or just swallow the char here.
+            break;
+          case 11: // Vertical TAB
+          case 12: // Form Feed
+            sb.Append(Environment.NewLine);
+            break;
+          case 21:
+            sb.Append("NAK: Retransmit last message.");
+            System.Diagnostics.Debug.WriteLine("ERROR NAK: Retransmit last message.");
+            break;
+          case 31: // Unit Separator
+            sb.Append(",");
+            break;
           default:
             sb.Append((char)input);
             break;
@@ -122,6 +167,10 @@ namespace PrimS.Telnet
       return false;
     }
 
+    /// <summary>
+    /// Send TELNET command response to the server.
+    /// </summary>
+    /// <param name="inputVerb">The TELNET command we received.</param>
     private void ReplyToCommand(int inputVerb)
     {
       // reply to all commands with "WONT", unless it is SGA (suppress go ahead)
@@ -152,7 +201,7 @@ namespace PrimS.Telnet
 #if ASYNC
  await
 #endif
- IsWaitForIncrementalResponse(rollingTimeout);
+  this.IsWaitForIncrementalResponse(rollingTimeout);
     }
   }
 }
