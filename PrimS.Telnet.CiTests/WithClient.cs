@@ -175,7 +175,7 @@
           client.IsConnected.Should().Be(true);
           (await client.TryLoginAsync("username", "password", timeoutMs).ConfigureAwait(false)).Should().Be(true);
           await client.WriteLine("show statistic wan2").ConfigureAwait(false);
-          string s = await client.TerminatedReadAsync(">", TimeSpan.FromMilliseconds(timeoutMs));
+          string s = await client.TerminatedReadAsync(">", TimeSpan.FromMilliseconds(timeoutMs)).ConfigureAwait(false);
           s.Should().Contain(">");
           s.Should().Contain("WAN2");
           System.Text.RegularExpressions.Regex regEx = new System.Text.RegularExpressions.Regex("(?!WAN2 total TX: )([0-9.]*)(?! GB ,RX: )([0-9.]*)(?= GB)");

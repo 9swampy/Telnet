@@ -74,7 +74,7 @@
     {
       bool result = DateTime.Now < rollingTimeout;
 #if ASYNC
-      await Task.Delay(1, this.internalCancellation.Token);
+      await Task.Delay(1, this.internalCancellation.Token).ConfigureAwait(false);
 #else
       System.Threading.Thread.Sleep(1);
 #endif
@@ -199,9 +199,11 @@
     {
       return this.IsResponsePending || IsWaitForInitialResponse(endInitialTimeout, isInitialResponseReceived) ||
 #if ASYNC
- await
+ await this.IsWaitForIncrementalResponse(rollingTimeout).ConfigureAwait(false);
+#else
+      this.IsWaitForIncrementalResponse(rollingTimeout);
 #endif
-  this.IsWaitForIncrementalResponse(rollingTimeout);
+
     }
   }
 }
