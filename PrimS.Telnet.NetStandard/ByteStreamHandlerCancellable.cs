@@ -67,9 +67,11 @@
       }
       while (!this.IsCancellationRequested &&
 #if ASYNC
- await
+ await this.IsResponseAnticipated(IsInitialResponseReceived(sb), endInitialTimeout, rollingTimeout).ConfigureAwait(false));
+#else
+      this.IsResponseAnticipated(IsInitialResponseReceived(sb), endInitialTimeout, rollingTimeout));
 #endif
- this.IsResponseAnticipated(IsInitialResponseReceived(sb), endInitialTimeout, rollingTimeout));
+
       LogIfTimeoutExpired(rollingTimeout);
       return sb.ToString();
     }
