@@ -21,7 +21,7 @@
       TcpByteStream sut = new TcpByteStream(socket);
 
       CancellationToken cancellationToken = new CancellationToken();
-      await sut.WriteAsync(writtenString, cancellationToken);
+      await sut.WriteAsync(writtenString, cancellationToken).ConfigureAwait(false);
 
       A.CallTo(() => stream.WriteAsync(A<byte[]>.Ignored, 0, writtenString.Length, cancellationToken)).MustHaveHappened();
     }
