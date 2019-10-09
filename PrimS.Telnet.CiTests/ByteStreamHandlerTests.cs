@@ -58,7 +58,7 @@
         ByteStreamHandler sut = new ByteStreamHandler(tcpByteStream, new CancellationTokenSource());
 
 #if ASYNC
-      string response = await sut.ReadAsync(TimeSpan.FromMilliseconds(10)).ConfigureAwait(false);
+        string response = await sut.ReadAsync(TimeSpan.FromMilliseconds(10)).ConfigureAwait(false);
 #else
         string response = sut.Read(TimeSpan.FromMilliseconds(10));
 #endif
@@ -95,7 +95,7 @@
         ByteStreamHandler sut = new ByteStreamHandler(tcpByteStream, new CancellationTokenSource());
 
 #if ASYNC
-      string response = await sut.ReadAsync(TimeSpan.FromMilliseconds(10)).ConfigureAwait(false);
+        string response = await sut.ReadAsync(TimeSpan.FromMilliseconds(10)).ConfigureAwait(false);
 #else
         string response = sut.Read(TimeSpan.FromMilliseconds(10));
 #endif
@@ -132,7 +132,7 @@
         ByteStreamHandler sut = new ByteStreamHandler(tcpByteStream, new CancellationTokenSource());
 
 #if ASYNC
-      string response = await sut.ReadAsync(TimeSpan.FromMilliseconds(10)).ConfigureAwait(false);
+        string response = await sut.ReadAsync(TimeSpan.FromMilliseconds(10)).ConfigureAwait(false);
 #else
         string response = sut.Read(TimeSpan.FromMilliseconds(10));
 #endif
@@ -168,7 +168,7 @@
         ByteStreamHandler sut = new ByteStreamHandler(tcpByteStream, new CancellationTokenSource());
 
 #if ASYNC
-      string response = await sut.ReadAsync(TimeSpan.FromMilliseconds(10)).ConfigureAwait(false);
+        string response = await sut.ReadAsync(TimeSpan.FromMilliseconds(10)).ConfigureAwait(false);
 #else
         string response = sut.Read(TimeSpan.FromMilliseconds(10));
 #endif
@@ -244,7 +244,7 @@
           using (ByteStreamHandler sut = new ByteStreamHandler(tcpByteStream, new CancellationTokenSource()))
           {
 #if ASYNC
-      string response = await sut.ReadAsync(TimeSpan.FromMilliseconds(10)).ConfigureAwait(false);
+            string response = await sut.ReadAsync(TimeSpan.FromMilliseconds(10)).ConfigureAwait(false);
 #else
             string response = sut.Read(TimeSpan.FromMilliseconds(10));
 #endif
@@ -286,7 +286,7 @@
           using (ByteStreamHandler sut = new ByteStreamHandler(tcpByteStream, new CancellationTokenSource()))
           {
 #if ASYNC
-      string response = await sut.ReadAsync(TimeSpan.FromMilliseconds(10)).ConfigureAwait(false);
+            string response = await sut.ReadAsync(TimeSpan.FromMilliseconds(10)).ConfigureAwait(false);
 #else
             string response = sut.Read(TimeSpan.FromMilliseconds(10));
 #endif
@@ -327,7 +327,7 @@
           using (ByteStreamHandler sut = new ByteStreamHandler(tcpByteStream, new CancellationTokenSource()))
           {
 #if ASYNC
-      string response = await sut.ReadAsync(TimeSpan.FromMilliseconds(10)).ConfigureAwait(false);
+            string response = await sut.ReadAsync(TimeSpan.FromMilliseconds(10)).ConfigureAwait(false);
 #else
             string response = sut.Read(TimeSpan.FromMilliseconds(10));
 #endif
@@ -369,7 +369,7 @@
           using (ByteStreamHandler sut = new ByteStreamHandler(tcpByteStream, new CancellationTokenSource()))
           {
 #if ASYNC
-      string response = await sut.ReadAsync(TimeSpan.FromMilliseconds(10)).ConfigureAwait(false);
+            string response = await sut.ReadAsync(TimeSpan.FromMilliseconds(10)).ConfigureAwait(false);
 #else
             string response = sut.Read(TimeSpan.FromMilliseconds(10));
 #endif
@@ -406,7 +406,7 @@
           {
 
 #if ASYNC
-      cancellationToken.CancelAfter(100);
+            cancellationToken.CancelAfter(100);
       await sut.ReadAsync(TimeSpan.FromMilliseconds(1000)).ConfigureAwait(false);
 #else
             Thread t = new Thread(new ThreadStart(() =>

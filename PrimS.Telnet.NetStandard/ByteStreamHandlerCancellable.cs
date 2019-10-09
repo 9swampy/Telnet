@@ -67,15 +67,14 @@
       }
       while (!this.IsCancellationRequested &&
 #if ASYNC
- await this.IsResponseAnticipated(IsInitialResponseReceived(sb), endInitialTimeout, rollingTimeout).ConfigureAwait(false));
+await this.IsResponseAnticipated(IsInitialResponseReceived(sb), endInitialTimeout, rollingTimeout).ConfigureAwait(false));
 #else
       this.IsResponseAnticipated(IsInitialResponseReceived(sb), endInitialTimeout, rollingTimeout));
 #endif
-
       LogIfTimeoutExpired(rollingTimeout);
       return sb.ToString();
     }
-    
+
     /// <summary>
     /// Add null check to cancel commands. Fail gracefully.
     /// </summary>
@@ -91,7 +90,7 @@
       catch (Exception ex)
       {
         System.Diagnostics.Debug.WriteLine(ex.Message);
-      }    
+      }
     }
 
     private static void LogIfTimeoutExpired(DateTime rollingTimeout)

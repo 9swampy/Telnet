@@ -13,7 +13,7 @@
   public partial class ByteStreamHandler : IByteStreamHandler
   {
     private readonly IByteStream byteStream;
-    
+
     private bool IsResponsePending
     {
       get
@@ -199,7 +199,7 @@
     {
       return this.IsResponsePending || IsWaitForInitialResponse(endInitialTimeout, isInitialResponseReceived) ||
 #if ASYNC
- await this.IsWaitForIncrementalResponse(rollingTimeout).ConfigureAwait(false);
+await this.IsWaitForIncrementalResponse(rollingTimeout).ConfigureAwait(false);
 #else
       this.IsWaitForIncrementalResponse(rollingTimeout);
 #endif
