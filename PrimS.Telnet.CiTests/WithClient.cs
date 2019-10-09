@@ -112,7 +112,7 @@
         using (Client client = new Client(server.IPAddress.ToString(), server.Port, new System.Threading.CancellationToken()))
         {
           client.IsConnected.Should().Be(true);
-          (await client.TryLoginAsync("username", "password", 1500, lineFeed: "\r\n")).Should().Be(true);
+          (await client.TryLoginAsync("username", "password", 1500, linefeed: "\r\n")).Should().Be(true);
           await client.WriteLine("show statistic wan2", linefeed: "\r\n");
           string s = await client.TerminatedReadAsync(">", TimeSpan.FromMilliseconds(timeoutMs));
           s.Should().Contain(">");
@@ -160,7 +160,7 @@
         using (Client client = new Client(server.IPAddress.ToString(), server.Port, new System.Threading.CancellationToken()))
         {
           client.IsConnected.Should().Be(true);
-          (await client.TryLoginAsync("username", "password", timeoutMs, lineFeed: "\r\n")).Should().Be(true);
+          (await client.TryLoginAsync("username", "password", timeoutMs, linefeed: "\r\n")).Should().Be(true);
         }
       }
     }

@@ -70,7 +70,7 @@
  await
 #endif
  this.IsResponseAnticipated(IsInitialResponseReceived(sb), endInitialTimeout, rollingTimeout));
-      this.LogIfTimeoutExpired(rollingTimeout);
+      LogIfTimeoutExpired(rollingTimeout);
       return sb.ToString();
     }
     
@@ -92,7 +92,7 @@
       }    
     }
 
-    private void LogIfTimeoutExpired(DateTime rollingTimeout)
+    private static void LogIfTimeoutExpired(DateTime rollingTimeout)
     {
       if (IsRollingTimeoutExpired(rollingTimeout))
       {

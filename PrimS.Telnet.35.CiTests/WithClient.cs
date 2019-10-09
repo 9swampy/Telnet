@@ -186,7 +186,7 @@
         using (Client client = new Client(server.IPAddress.ToString(), server.Port))
         {
           Assert.AreEqual(client.IsConnected, true);
-          Assert.AreEqual(client.TryLogin("username", "password", timeoutMs, lineFeed: "\r\n"), true);
+          Assert.AreEqual(client.TryLogin("username", "password", timeoutMs, linefeed: "\r\n"), true);
           client.WriteLine("show statistic wan2", "\r\n");
           string s = client.TerminatedRead(">", TimeSpan.FromMilliseconds(timeoutMs));
           Assert.IsTrue(s.Contains(">"));
@@ -216,7 +216,7 @@
         using (Client client = new Client(server.IPAddress.ToString(), server.Port))
         {
           Assert.AreEqual(client.IsConnected, true);
-          Assert.AreEqual((client.TryLogin("username", "password", timeoutMs, lineFeed: "\r\n")), true);
+          Assert.AreEqual((client.TryLogin("username", "password", timeoutMs, linefeed: "\r\n")), true);
         }
       }
     }
