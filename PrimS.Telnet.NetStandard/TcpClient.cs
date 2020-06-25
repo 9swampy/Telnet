@@ -13,6 +13,35 @@
     /// <summary>
     /// Initialises a new instance of the <see cref="TcpClient"/> class.
     /// </summary>
+    /// <param name="localAddress">The IP end point to connect to.</param>
+    /// <param name="hostName">The host name.</param>
+    /// <param name="port">The port.</param>
+    public TcpClient(string localAddress, string hostName, int port)
+    {
+#if NET451
+      // Create local end point to bind to adapter
+      System.Net.IPEndPoint localEndPoint = new System.Net.IPEndPoint(System.Net.IPAddress.Parse(localAddress), port);
+
+      // Use socket initially to bind to end point
+      System.Net.Sockets.Socket socket = new System.Net.Sockets.Socket(System.Net.Sockets.AddressFamily.InterNetwork,
+                                                                       System.Net.Sockets.SocketType.Stream,
+                                                                       System.Net.Sockets.ProtocolType.Tcp);
+
+      // Bind socket to endpoint
+      socket.Bind(localEndPoint);
+
+      // Add socket to TcpClient
+      this.client = new System.Net.Sockets.TcpClient();
+
+      this.client.Client = socket;
+#else
+      throw new NotImplementedException();
+#endif
+    }
+
+    /// <summary>
+    /// Initialises a new instance of the <see cref="TcpClient"/> class.
+    /// </summary>
     /// <param name="hostName">The host name.</param>
     /// <param name="port">The port.</param>
     public TcpClient(string hostName, int port)

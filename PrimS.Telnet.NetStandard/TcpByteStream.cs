@@ -11,6 +11,17 @@
   public class TcpByteStream : IByteStream
   {
     private readonly ISocket socket;
+    /// <summary>
+    /// Initialises a new instance of the <see cref="TcpByteStream" /> class. 
+    /// </summary>
+    /// <param name="localAddress">The IP end point to connect to.</param>
+    /// <param name="hostName">The host name.</param>
+    /// <param name="port">The port.</param>
+    public TcpByteStream(string localAddress, string hostName, int port)
+      : this(new PrimS.Telnet.TcpClient(localAddress, hostName, port))
+    {
+    }
+
 
     /// <summary>
     /// Initialises a new instance of the <see cref="TcpByteStream" /> class. 
