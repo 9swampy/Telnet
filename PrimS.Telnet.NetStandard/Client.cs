@@ -16,12 +16,12 @@
     /// <summary>
     /// Initialises a new instance of the <see cref="Client"/> class.
     /// </summary>
-    /// <param name="localAddress">The adapter IP to connect through.</param>
+    /// <param name="interfaceIP">The IP of the network interface to connect through.</param>
     /// <param name="hostName">The hostname to connect to.</param>
     /// <param name="port">The port to connect to.</param>
     /// <param name="token">The cancellation token.</param>
-    public Client(string localAddress, string hostName, int port, CancellationToken token)
-      : this(new TcpByteStream(localAddress, hostName, port), token)
+    public Client(System.Net.IPAddress interfaceIP, string hostName, int port, CancellationToken token)
+      : this(new TcpByteStream(interfaceIP, hostName, port), token)
     {
     }
 

@@ -13,14 +13,14 @@
     /// <summary>
     /// Initialises a new instance of the <see cref="TcpClient"/> class.
     /// </summary>
-    /// <param name="localAddress">The IP end point to connect to.</param>
+    /// <param name="interfaceIP">The IP of the network interface to connect through.</param>
     /// <param name="hostName">The host name.</param>
     /// <param name="port">The port.</param>
-    public TcpClient(string localAddress, string hostName, int port)
+    public TcpClient(System.Net.IPAddress interfaceIP, string hostName, int port)
     {
 #if NET451
       // Create local end point to bind to adapter
-      System.Net.IPEndPoint localEndPoint = new System.Net.IPEndPoint(System.Net.IPAddress.Parse(localAddress), port);
+      System.Net.IPEndPoint localEndPoint = new System.Net.IPEndPoint(interfaceIP, port);
 
       // Use socket initially to bind to end point
       System.Net.Sockets.Socket socket = new System.Net.Sockets.Socket(System.Net.Sockets.AddressFamily.InterNetwork,
@@ -30,7 +30,10 @@
       // Bind socket to endpoint
       socket.Bind(localEndPoint);
 
-      // Add socket to TcpClient
+      // Connect to the host
+      socket.Connect(hostName, port);
+
+      // Add bound and connected socket to TcpClient
       this.client = new System.Net.Sockets.TcpClient();
 
       this.client.Client = socket;

@@ -22,6 +22,18 @@
     }
 
     /// <summary>
+    /// Initialises a new instance of the <see cref="Client"/> class.
+    /// </summary>
+    /// <param name="interfaceIP">The IP of the network interface to connect through.</param>
+    /// <param name="hostname">The hostname.</param>
+    /// <param name="port">The port.</param>
+    /// <param name="token">The cancellation token.</param>
+    public Client(System.Net.IPAddress interfaceIP, string hostname, int port, CancellationToken token)
+      : base(new TcpByteStream(interfaceIP, hostname, port), token)
+    {
+    }
+
+    /// <summary>
     /// Reads from the stream.
     /// </summary>
     /// <param name="timeout">The timeout.</param>

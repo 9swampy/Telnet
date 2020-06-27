@@ -14,11 +14,11 @@
     /// <summary>
     /// Initialises a new instance of the <see cref="TcpByteStream" /> class. 
     /// </summary>
-    /// <param name="localAddress">The IP end point to connect to.</param>
+    /// <param name="interfaceIP">The IP of the network interface to connect through.</param>
     /// <param name="hostName">The host name.</param>
     /// <param name="port">The port.</param>
-    public TcpByteStream(string localAddress, string hostName, int port)
-      : this(new PrimS.Telnet.TcpClient(localAddress, hostName, port))
+    public TcpByteStream(System.Net.IPAddress interfaceIP, string hostName, int port)
+      : this(new PrimS.Telnet.TcpClient(interfaceIP, hostName, port))
     {
     }
 
