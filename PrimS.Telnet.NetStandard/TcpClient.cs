@@ -18,49 +18,14 @@
     /// <param name="port">The port.</param>
     public TcpClient(System.Net.IPAddress interfaceIP, string hostName, int port)
     {
-
       // Create local end point to bind to adapter
-      System.Net.IPEndPoint localEndPoint = new System.Net.IPEndPoint(interfaceIP, port);
-
-      // Use socket initially to bind to end point
-      System.Net.Sockets.Socket socket = new System.Net.Sockets.Socket(System.Net.Sockets.AddressFamily.InterNetwork,
-                                                                       System.Net.Sockets.SocketType.Stream,
-                                                                       System.Net.Sockets.ProtocolType.Tcp);
-
-      // Bind socket to endpoint
-      socket.Bind(localEndPoint);
+      System.Net.IPEndPoint localEndPoint = new System.Net.IPEndPoint(interfaceIP, 0);
+      this.client = new System.Net.Sockets.TcpClient(localEndPoint);
 
 #if NET451
-      // Connect to the host
-      socket.Connect(hostName, port);
+      this.client.Connect(hostName, port);
 #else
-      // ConnectAsync implementation
-      // (Not tested) throw exception for time being
-      throw new NotImplementedException("This feature has not been fully implemented for the framework you are using." +
-                                        "An implementation exists, but it has not been tested and is therefore disabled by this exception." +
-                                        "See source code for more.");  
-
-      System.Net.Sockets.SocketAsyncEventArgs e = new System.Net.Sockets.SocketAsyncEventArgs();
-
-      var addresses = System.Net.Dns.GetHostAddresses(hostName);
-      if (addresses.Length == 0)
-      {
-          throw new ArgumentException(
-              "Unable to retrieve address from specified host name.", 
-              "hostName"
-          );
-      }
-      else if (addresses.Length > 1)
-      {
-          throw new ArgumentException(
-              "There is more than one IP address to the specified host.", 
-              "hostName"
-          );
-      }
-
-      e.RemoteEndPoint = System.Net.IPEndPoint(addresses[0], port); // Port gets validated here.
-      e.UserToken = socket;
-
+      this.client = new System.Net.Sockets.TcpClient();
       // .NetStandard does not include a synchronous constructor or Connect method.
       // This will normally not be connected by the time the constructor returns,
       // it is the responsibility of the caller to ensure that they wait for the
@@ -69,14 +34,8 @@
       // Adding something awaitable on this class to connect or wait for connection
       // would break backward compatibility and require a lot of refactoring.
       // This will do for now.
-      var nowait = socket.ConnectAsync(e);
+      var nowait = this.client.ConnectAsync(hostName, port);
 #endif
-
-      // Add bound and connected socket to TcpClient
-      this.client = new System.Net.Sockets.TcpClient
-      {
-        Client = socket
-      };
     }
 
     /// <summary>
