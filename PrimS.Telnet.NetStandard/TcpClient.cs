@@ -25,7 +25,6 @@
 #if NET451
       this.client.Connect(hostName, port);
 #else
-      this.client = new System.Net.Sockets.TcpClient();
       // .NetStandard does not include a synchronous constructor or Connect method.
       // This will normally not be connected by the time the constructor returns,
       // it is the responsibility of the caller to ensure that they wait for the
