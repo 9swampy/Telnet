@@ -19,8 +19,8 @@
     public TcpClient(System.Net.IPAddress interfaceIP, string hostName, int port)
     {
       // Create local end point to bind to adapter
-      System.Net.IPEndPoint localEndPoint = new System.Net.IPEndPoint(interfaceIP, 0);
-      this.client = new System.Net.Sockets.TcpClient(localEndPoint);
+      this.client = new System.Net.Sockets.TcpClient();
+      this.client.Client.Bind(new System.Net.IPEndPoint(interfaceIP, 0));
 
 #if NET451
       this.client.Connect(hostName, port);
