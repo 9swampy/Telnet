@@ -1,7 +1,6 @@
 ﻿namespace PrimS.Telnet
 {
   using System;
-  using System.Linq;
 
   /// <summary>
   /// A TcpClient to connect to the specified socket.

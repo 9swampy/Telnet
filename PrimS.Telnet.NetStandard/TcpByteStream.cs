@@ -1,4 +1,8 @@
-﻿namespace PrimS.Telnet
+﻿using System.Runtime.CompilerServices;
+
+[assembly: InternalsVisibleTo("PrimS.Telnet.NetStandard.CiTests")]
+
+namespace PrimS.Telnet
 {
   using System;
 #if ASYNC
@@ -31,7 +35,7 @@
       this.socket = tcpSocket;
 #if ASYNC
 #else
-      System.Threading.AutoResetEvent are = new System.Threading.AutoResetEvent(false);
+      var are = new System.Threading.AutoResetEvent(false);
       are.WaitOne(20);
 #endif
     }
@@ -143,7 +147,7 @@
     /// <returns>A task representing the asynchronous action.</returns>
     public Task WriteAsync(string value, System.Threading.CancellationToken cancellationToken)
     {
-      byte[] buffer = ConvertStringToByteArray(value);
+      var buffer = ConvertStringToByteArray(value);
       return this.socket.GetStream().WriteAsync(buffer, 0, buffer.Length, cancellationToken);
     }
 #else    
@@ -153,7 +157,7 @@
     /// <param name="value">The command.</param>
     public void Write(string value)
     {        
-      byte[] buffer = ConvertStringToByteArray(value);
+      var buffer = ConvertStringToByteArray(value);
       this.socket.GetStream().Write(buffer, 0, buffer.Length);
     }
 #endif
@@ -189,7 +193,7 @@
 
     private static byte[] ConvertStringToByteArray(string command)
     {
-      byte[] buffer = System.Text.ASCIIEncoding.ASCII.GetBytes(command.Replace("\0xFF", "\0xFF\0xFF"));
+      var buffer = System.Text.ASCIIEncoding.ASCII.GetBytes(command.Replace("\0xFF", "\0xFF\0xFF"));
       return buffer;
     }
   }

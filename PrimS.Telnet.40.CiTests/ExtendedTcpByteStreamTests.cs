@@ -14,10 +14,10 @@
     [TestMethod]
     public void ShouldConstructWithAFakedSocket()
     {
-      ISocket socket = A.Fake<ISocket>();
+      var socket = A.Fake<ISocket>();
       TcpByteStream sut = null;
       Action act = () => sut = new TcpByteStream(socket);
-      act.ShouldNotThrow();
+      act.Should().NotThrow();
       sut.Should().NotBeNull();
       sut.Dispose();
     }
@@ -25,11 +25,11 @@
     [TestMethod]
     public void GivenAFakedSocketACallToWriteByteShouldBeRelayed()
     {
-      byte writtenByte = new byte();
-      ISocket socket = A.Fake<ISocket>();
-      INetworkStream stream = A.Fake<INetworkStream>();
+      var writtenByte = new byte();
+      var socket = A.Fake<ISocket>();
+      var stream = A.Fake<INetworkStream>();
       A.CallTo(() => socket.GetStream()).Returns(stream);
-      TcpByteStream sut = new TcpByteStream(socket);
+      var sut = new TcpByteStream(socket);
       
       sut.WriteByte(writtenByte);
 
@@ -39,10 +39,10 @@
     [TestMethod]
     public void GivenAFakedSocketACallToReadByteShouldBeRelayed()
     {
-      ISocket socket = A.Fake<ISocket>();
-      INetworkStream stream = A.Fake<INetworkStream>();
+      var socket = A.Fake<ISocket>();
+      var stream = A.Fake<INetworkStream>();
       A.CallTo(() => socket.GetStream()).Returns(stream);
-      TcpByteStream sut = new TcpByteStream(socket);
+      var sut = new TcpByteStream(socket);
 
       sut.ReadByte();
 

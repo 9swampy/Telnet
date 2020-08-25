@@ -10,9 +10,9 @@
     [TestMethod]
     public void TcpByteStreamShouldTerminateAndReleaseDebuggingContext()
     {
-      using (TelnetServer server = new TelnetServer())
+      using (var server = new TelnetServer())
       {
-        using (TcpByteStream sut = new TcpByteStream(server.IPAddress.ToString(), server.Port))
+        using (var sut = new TcpByteStream(server.IPAddress.ToString(), server.Port))
         {
           sut.Should().NotBeNull();
         }
@@ -22,12 +22,12 @@
     [TestMethod]
     public void TcpByteStreamShouldConstruct()
     {
-      using (TelnetServer server = new TelnetServer())
+      using (var server = new TelnetServer())
       {
         TcpByteStream sut = null;
         Action act = () => sut = new TcpByteStream(server.IPAddress.ToString(), server.Port);
 
-        act.ShouldNotThrow();
+        act.Should().NotThrow();
         sut.Dispose();
       }
     }
@@ -35,9 +35,9 @@
     [TestMethod]
     public void ReceiveTimeoutShouldBeDefaultTo0()
     {
-      using (TelnetServer server = new TelnetServer())
+      using (var server = new TelnetServer())
       {
-        using (TcpByteStream sut = new TcpByteStream(server.IPAddress.ToString(), server.Port))
+        using (var sut = new TcpByteStream(server.IPAddress.ToString(), server.Port))
         {
           sut.ReceiveTimeout.Should().Be(0);
         }
@@ -47,13 +47,13 @@
     [TestMethod]
     public void WriteByteShouldNotThrow()
     {
-      byte writtenByte = new byte();
-      using (TelnetServer server = new TelnetServer())
+      var writtenByte = new byte();
+      using (var server = new TelnetServer())
       {
-        using (TcpByteStream sut = new TcpByteStream(server.IPAddress.ToString(), server.Port))
+        using (var sut = new TcpByteStream(server.IPAddress.ToString(), server.Port))
         {
           Action act = () => sut.WriteByte(writtenByte);
-          act.ShouldNotThrow();
+          act.Should().NotThrow();
         }
       }
     }

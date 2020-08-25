@@ -126,8 +126,8 @@
     /// <returns>Any text read from the stream.</returns>
     public string TerminatedRead(string terminator, TimeSpan timeout, int millisecondSpin)
     {
-      DateTime endTimeout = DateTime.Now.Add(timeout);
-      string s = string.Empty;
+      var endTimeout = DateTime.Now.Add(timeout);
+      var s = string.Empty;
       while (!Client.IsTerminatorLocated(terminator, s) && endTimeout >= DateTime.Now)
       {
         s += this.Read(TimeSpan.FromMilliseconds(millisecondSpin));
@@ -150,8 +150,8 @@
     /// <returns>Any text read from the stream.</returns>
     public string TerminatedRead(Regex regex, TimeSpan timeout, int millisecondSpin)
     {
-      DateTime endTimeout = DateTime.Now.Add(timeout);
-      string s = string.Empty;
+      var endTimeout = DateTime.Now.Add(timeout);
+      var s = string.Empty;
       while (!Client.IsRegexLocated(regex, s) && endTimeout >= DateTime.Now)
       {
         s += this.Read(TimeSpan.FromMilliseconds(1));

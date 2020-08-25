@@ -72,7 +72,7 @@
     private bool IsWaitForIncrementalResponse(DateTime rollingTimeout)
 #endif
     {
-      bool result = DateTime.Now < rollingTimeout;
+      var result = DateTime.Now < rollingTimeout;
 #if ASYNC
       await Task.Delay(1, this.internalCancellation.Token).ConfigureAwait(false);
 #else
@@ -90,14 +90,14 @@
     {
       if (this.IsResponsePending)
       {
-        int input = this.byteStream.ReadByte();
+        var input = this.byteStream.ReadByte();
         switch (input)
         {
           case -1:
             break;
           case (int)Commands.InterpretAsCommand:
             // interpret as command
-            int inputVerb = this.byteStream.ReadByte();
+            var inputVerb = this.byteStream.ReadByte();
             if (inputVerb == -1)
             {
               break;
@@ -174,7 +174,7 @@
     private void ReplyToCommand(int inputVerb)
     {
       // reply to all commands with "WONT", unless it is SGA (suppress go ahead)
-      int inputOption = this.byteStream.ReadByte();
+      var inputOption = this.byteStream.ReadByte();
       if (inputOption != -1)
       {
         this.byteStream.WriteByte((byte)Commands.InterpretAsCommand);
@@ -203,7 +203,6 @@ await this.IsWaitForIncrementalResponse(rollingTimeout).ConfigureAwait(false);
 #else
       this.IsWaitForIncrementalResponse(rollingTimeout);
 #endif
-
     }
   }
 }
