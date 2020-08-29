@@ -12,8 +12,13 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>A minimal open-source C# 3.5/4.0/4.5/4.5.1/NetStandard1.6/NetStandard2.0 Telnet client library implementation; just enough to send simple text commands and retrieve the response.</description>
     <releaseNotes>
-      Fix the LiteGuard dependency issue again (apologies for 0.8.5).
-    </releaseNotes>
+      Fixed TerminatedReadAsync to never miss the terminator. 
+      Fixed the null exception on internalCancellation.Cancel.
+      Changed DONT\WONT behavior to ignore, eliminating negotiation loops.
+      Added handlers for basic non-printable Telnet symbols.
+      Added Subnegotiation for TerminalType and TerminalSpeed.
+      Added Enough Debug writes to watch the option negotiation occur in real time.
+      Added ALL Telnet commands and options to Commands.cs Options.cs.
     <copyright>Copyright (c) 9swampy, Telnet contributors</copyright>
     <tags>Telnet</tags>
     <dependencies>
@@ -27,10 +32,10 @@
       </group>
       <group targetFramework="netstandard1.6">
 
-      </group>
+    </group>
       <group targetFramework="netstandard2.0">
       </group>
-    </dependencies>
+  </dependencies>
   </metadata>
   <files>
     <file src="License.txt" target="content" />
