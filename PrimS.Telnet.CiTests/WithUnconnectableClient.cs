@@ -1,4 +1,4 @@
-namespace PrimS.Telnet.CiTests
+﻿namespace PrimS.Telnet.CiTests
 {
   using System;
   using System.Diagnostics.CodeAnalysis;
@@ -14,12 +14,12 @@ namespace PrimS.Telnet.CiTests
     [TestMethod]
     public void ShouldTimeoutOnCtor()
     {
-      IByteStream byteStream = A.Fake<IByteStream>();
+      var byteStream = A.Fake<IByteStream>();
       A.CallTo(() => byteStream.Connected).Returns(false);
       Client sut = null;
       Action act = () => sut = new Client(byteStream, default(CancellationToken), new TimeSpan(0, 0, 0, 0, 1));
 
-      act.ShouldThrow<InvalidOperationException>().WithMessage("Unable to connect to the host.");
+      act.Should().Throw<InvalidOperationException>().WithMessage("Unable to connect to the host.");
       sut.Should().BeNull();
     }
   }

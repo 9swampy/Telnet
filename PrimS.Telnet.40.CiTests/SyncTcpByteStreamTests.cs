@@ -10,11 +10,11 @@
     [TestMethod]
     public void GivenAFakedSocketACallToWriteShouldBeRelayed()
     {
-      string writtenString = Guid.NewGuid().ToString();
-      ISocket socket = A.Fake<ISocket>();
-      INetworkStream stream = A.Fake<INetworkStream>();
+      var writtenString = Guid.NewGuid().ToString();
+      var socket = A.Fake<ISocket>();
+      var stream = A.Fake<INetworkStream>();
       A.CallTo(() => socket.GetStream()).Returns(stream);
-      TcpByteStream sut = new TcpByteStream(socket);
+      var sut = new TcpByteStream(socket);
 
       sut.Write(writtenString);
 
