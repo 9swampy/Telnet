@@ -45,8 +45,8 @@
     {
       Guard.AgainstNullArgument("byteStream", byteStream);
 
-      DateTime timeoutEnd = DateTime.Now.Add(timeout);
-      AutoResetEvent are = new AutoResetEvent(false);
+      var timeoutEnd = DateTime.Now.Add(timeout);
+      var are = new AutoResetEvent(false);
       while (!this.ByteStream.Connected && timeoutEnd > DateTime.Now)
       {
         are.WaitOne(2);
@@ -82,7 +82,7 @@
     /// <returns>True if successful.</returns>
     public async Task<bool> TryLoginAsync(string userName, string password, int loginTimeoutMs, string terminator, string linefeed = "\n")
     {
-      bool result = await this.TrySendUsernameAndPassword(userName, password, loginTimeoutMs, linefeed).ConfigureAwait(false);
+      var result = await this.TrySendUsernameAndPassword(userName, password, loginTimeoutMs, linefeed).ConfigureAwait(false);
       if (result)
       {
         result = await this.IsTerminatedWith(loginTimeoutMs, terminator).ConfigureAwait(false);
@@ -174,7 +174,7 @@
     public async Task<string> TerminatedReadAsync(string terminator, TimeSpan timeout, int millisecondSpin)
     {
       Func<string, bool> isTerminated = (x) => Client.IsTerminatorLocated(terminator, x);
-      string s = await this.TerminatedReadAsync(isTerminated, timeout, millisecondSpin).ConfigureAwait(false);
+      var s = await this.TerminatedReadAsync(isTerminated, timeout, millisecondSpin).ConfigureAwait(false);
       if (!isTerminated(s))
       {
         System.Diagnostics.Debug.WriteLine("Failed to terminate '{0}' with '{1}'", s, terminator);
@@ -193,7 +193,7 @@
     public async Task<string> TerminatedReadAsync(Regex regex, TimeSpan timeout, int millisecondSpin)
     {
       Func<string, bool> isTerminated = (x) => Client.IsRegexLocated(regex, x);
-      string s = await this.TerminatedReadAsync(isTerminated, timeout, millisecondSpin).ConfigureAwait(false);
+      var s = await this.TerminatedReadAsync(isTerminated, timeout, millisecondSpin).ConfigureAwait(false);
       if (!isTerminated(s))
       {
         System.Diagnostics.Debug.WriteLine(string.Format("Failed to match '{0}' with '{1}'", s, regex.ToString()));
@@ -218,13 +218,13 @@
     /// <returns>Any text read from the stream.</returns>
     public async Task<string> ReadAsync(TimeSpan timeout)
     {
-      ByteStreamHandler handler = new ByteStreamHandler(this.ByteStream, this.InternalCancellation);
+      var handler = new ByteStreamHandler(this.ByteStream, this.InternalCancellation);
       return await handler.ReadAsync(timeout).ConfigureAwait(false);
     }
 
     private async Task<bool> TrySendUsernameAndPassword(string userName, string password, int loginTimeoutMs, string linefeed)
     {
-      bool result = await this.TryAwaitTerminatorThenSend(userName, loginTimeoutMs, linefeed).ConfigureAwait(false);
+      var result = await this.TryAwaitTerminatorThenSend(userName, loginTimeoutMs, linefeed).ConfigureAwait(false);
       if (result)
       {
         result = await this.TryAwaitTerminatorThenSend(password, loginTimeoutMs, linefeed).ConfigureAwait(false);
@@ -235,7 +235,7 @@
 
     private async Task<bool> TryAwaitTerminatorThenSend(string value, int loginTimeoutMs, string linefeed)
     {
-      bool isTerminated = await this.IsTerminatedWith(loginTimeoutMs, ":").ConfigureAwait(false);
+      var isTerminated = await this.IsTerminatedWith(loginTimeoutMs, ":").ConfigureAwait(false);
       if (isTerminated)
       {
         await this.WriteLine(value, linefeed).ConfigureAwait(false);
@@ -246,11 +246,13 @@
 
     private async Task<string> TerminatedReadAsync(Func<string, bool> isTerminated, TimeSpan timeout, int millisecondSpin)
     {
-      DateTime endTimeout = DateTime.Now.Add(timeout);
-      string s = string.Empty;
+      var endTimeout = DateTime.Now.Add(timeout);
+      var s = string.Empty;
       while (!isTerminated(s) && endTimeout >= DateTime.Now)
       {
-        s += await this.ReadAsync(TimeSpan.FromMilliseconds(millisecondSpin)).ConfigureAwait(false);
+        var read = await this.ReadAsync(TimeSpan.FromMilliseconds(millisecondSpin)).ConfigureAwait(false);
+        Console.Write(read);
+        s += read;
       }
 
       return s;

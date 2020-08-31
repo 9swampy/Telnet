@@ -1,8 +1,5 @@
 ﻿namespace PrimS.Telnet
 {
-  using System;
-  using System.Linq;
-
   /// <summary>
   /// A socket to connect to.
   /// </summary>
