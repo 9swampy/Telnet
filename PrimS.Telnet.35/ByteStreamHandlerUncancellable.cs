@@ -53,9 +53,10 @@
       }
       while (
 #if ASYNC
- await
+ await this.IsResponseAnticipated(IsInitialResponseReceived(sb), endInitialTimeout, rollingTimeout)).ConfigureAwait(false);
+#else
+       this.IsResponseAnticipated(IsInitialResponseReceived(sb), endInitialTimeout, rollingTimeout));
 #endif
-this.IsResponseAnticipated(IsInitialResponseReceived(sb), endInitialTimeout, rollingTimeout));
       if (IsRollingTimeoutExpired(rollingTimeout))
       {
         System.Diagnostics.Debug.Print("RollingTimeout exceeded {0}", DateTime.Now.ToString("ss:fff"));

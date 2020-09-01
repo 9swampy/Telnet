@@ -81,6 +81,11 @@
       {
         this.ByteStream.Close();
         this.sendRateLimit.Dispose();
+        if (!this.internalCancellation.IsCancellationRequested)
+        {
+          this.SendCancel();
+        }
+
         this.internalCancellation.Dispose();
       }
 

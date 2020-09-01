@@ -1,6 +1,4 @@
-﻿using System.Runtime.InteropServices;
-
-namespace PrimS.Telnet
+﻿namespace PrimS.Telnet
 {
   using System;
   using System.Text.RegularExpressions;
@@ -63,29 +61,31 @@ namespace PrimS.Telnet
     /// <summary>
     /// Tries to login asynchronously, passing in a default LineTerminator of ">".
     /// </summary>
-    /// <param name="username">The username.</param>
+    /// <param name="userName">The user name.</param>
     /// <param name="password">The password.</param>
     /// <param name="loginTimeoutMs">The login time out ms.</param>
+    /// <param name="linefeed">The line feed to use. Issue 38: According to RFC 854, CR+LF should be the default a client sends. For backward compatibility \n maintained.</param>
     /// <returns>True if successful.</returns>
-    public Task<bool> TryLoginAsync(string username, string password, int loginTimeoutMs)
+    public Task<bool> TryLoginAsync(string userName, string password, int loginTimeoutMs, string linefeed = "\n")
     {
-      return this.TryLoginAsync(username, password, loginTimeoutMs, ">");
+      return this.TryLoginAsync(userName, password, loginTimeoutMs, ">", linefeed);
     }
 
     /// <summary>
     /// Tries to login asynchronously.
     /// </summary>
-    /// <param name="username">The username.</param>
+    /// <param name="userName">The user name.</param>
     /// <param name="password">The password.</param>
     /// <param name="loginTimeoutMs">The login time out ms.</param>
     /// <param name="terminator">The terminator.</param>
+    /// <param name="linefeed">The line feed to use. Issue 38: According to RFC 854, CR+LF should be the default a client sends. For backward compatibility \n maintained.</param>
     /// <returns>True if successful.</returns>
-    public async Task<bool> TryLoginAsync(string username, string password, int loginTimeoutMs, string terminator)
+    public async Task<bool> TryLoginAsync(string userName, string password, int loginTimeoutMs, string terminator, string linefeed = "\n")
     {
-      bool result = await this.TrySendUsernameAndPassword(username, password, loginTimeoutMs);
+      bool result = await this.TrySendUsernameAndPassword(userName, password, loginTimeoutMs, linefeed).ConfigureAwait(false);
       if (result)
       {
-        result = await this.IsTerminatedWith(loginTimeoutMs, terminator);
+        result = await this.IsTerminatedWith(loginTimeoutMs, terminator).ConfigureAwait(false);
       }
 
       return result;
@@ -95,23 +95,39 @@ namespace PrimS.Telnet
     /// Writes the line to the server.
     /// </summary>
     /// <param name="command">The command.</param>
+    /// <param name="linefeed">The type of linefeed to use.</param>
     /// <returns>An awaitable Task.</returns>
-    public async Task WriteLine(string command)
+    public async Task WriteLine(string command, string linefeed = "\n")
     {
-      await this.Write(string.Format("{0}\n", command));
+      await this.Write(string.Format("{0}{1}", command, linefeed)).ConfigureAwait(false);
     }
 
     /// <summary>
     /// Writes the specified command to the server.
     /// </summary>
     /// <param name="command">The command.</param>
-    /// <returns>Any text read from the stream.</returns>
+    /// <returns>An awaitable Task.</returns>
     public async Task Write(string command)
     {
       if (this.ByteStream.Connected && !this.InternalCancellation.Token.IsCancellationRequested)
       {
-        await this.SendRateLimit.WaitAsync(this.InternalCancellation.Token);
-        await this.ByteStream.WriteAsync(command, this.InternalCancellation.Token);
+        await this.SendRateLimit.WaitAsync(this.InternalCancellation.Token).ConfigureAwait(false);
+        await this.ByteStream.WriteAsync(command, this.InternalCancellation.Token).ConfigureAwait(false);
+        this.SendRateLimit.Release();
+      }
+    }
+
+    /// <summary>
+    /// Writes the specified <paramref name="data"/> to the server.
+    /// </summary>
+    /// <param name="data">The byte array to send.</param>
+    /// <returns>An awaitable Task.</returns>
+    public async Task Write(byte[] data)
+    {
+      if (this.ByteStream.Connected && !this.InternalCancellation.Token.IsCancellationRequested)
+      {
+        await this.SendRateLimit.WaitAsync(this.InternalCancellation.Token).ConfigureAwait(false);
+        await this.ByteStream.WriteAsync(data, 0, data.Length, this.InternalCancellation.Token).ConfigureAwait(false);
         this.SendRateLimit.Release();
       }
     }
@@ -123,7 +139,7 @@ namespace PrimS.Telnet
     /// <returns>Any text read from the stream.</returns>
     public async Task<string> TerminatedReadAsync(string terminator)
     {
-      return await this.TerminatedReadAsync(terminator, TimeSpan.FromMilliseconds(Client.DefaultTimeoutMs));
+      return await this.TerminatedReadAsync(terminator, TimeSpan.FromMilliseconds(Client.DefaultTimeoutMs)).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -134,7 +150,7 @@ namespace PrimS.Telnet
     /// <returns>Any text read from the stream.</returns>
     public async Task<string> TerminatedReadAsync(string terminator, TimeSpan timeout)
     {
-      return await this.TerminatedReadAsync(terminator, timeout, 1);
+      return await this.TerminatedReadAsync(terminator, timeout, 1).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -145,7 +161,7 @@ namespace PrimS.Telnet
     /// <returns>Any text read from the stream.</returns>
     public async Task<string> TerminatedReadAsync(Regex regex, TimeSpan timeout)
     {
-      return await this.TerminatedReadAsync(regex, timeout, 1);
+      return await this.TerminatedReadAsync(regex, timeout, 1).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -158,7 +174,7 @@ namespace PrimS.Telnet
     public async Task<string> TerminatedReadAsync(string terminator, TimeSpan timeout, int millisecondSpin)
     {
       Func<string, bool> isTerminated = (x) => Client.IsTerminatorLocated(terminator, x);
-      string s = await this.TerminatedReadAsync(isTerminated, timeout, millisecondSpin);
+      string s = await this.TerminatedReadAsync(isTerminated, timeout, millisecondSpin).ConfigureAwait(false);
       if (!isTerminated(s))
       {
         System.Diagnostics.Debug.WriteLine("Failed to terminate '{0}' with '{1}'", s, terminator);
@@ -177,7 +193,7 @@ namespace PrimS.Telnet
     public async Task<string> TerminatedReadAsync(Regex regex, TimeSpan timeout, int millisecondSpin)
     {
       Func<string, bool> isTerminated = (x) => Client.IsRegexLocated(regex, x);
-      string s = await this.TerminatedReadAsync(isTerminated, timeout, millisecondSpin);
+      string s = await this.TerminatedReadAsync(isTerminated, timeout, millisecondSpin).ConfigureAwait(false);
       if (!isTerminated(s))
       {
         System.Diagnostics.Debug.WriteLine(string.Format("Failed to match '{0}' with '{1}'", s, regex.ToString()));
@@ -192,7 +208,7 @@ namespace PrimS.Telnet
     /// <returns>Any text read from the stream.</returns>
     public async Task<string> ReadAsync()
     {
-      return await this.ReadAsync(TimeSpan.FromMilliseconds(Client.DefaultTimeoutMs));
+      return await this.ReadAsync(TimeSpan.FromMilliseconds(Client.DefaultTimeoutMs)).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -203,26 +219,26 @@ namespace PrimS.Telnet
     public async Task<string> ReadAsync(TimeSpan timeout)
     {
       ByteStreamHandler handler = new ByteStreamHandler(this.ByteStream, this.InternalCancellation);
-      return await handler.ReadAsync(timeout);
+      return await handler.ReadAsync(timeout).ConfigureAwait(false);
     }
 
-    private async Task<bool> TrySendUsernameAndPassword(string username, string password, int loginTimeoutMs)
+    private async Task<bool> TrySendUsernameAndPassword(string userName, string password, int loginTimeoutMs, string linefeed)
     {
-      bool result = await this.TryAwaitTerminatorThenSend(username, loginTimeoutMs);
+      bool result = await this.TryAwaitTerminatorThenSend(userName, loginTimeoutMs, linefeed).ConfigureAwait(false);
       if (result)
       {
-        result = await this.TryAwaitTerminatorThenSend(password, loginTimeoutMs);
+        result = await this.TryAwaitTerminatorThenSend(password, loginTimeoutMs, linefeed).ConfigureAwait(false);
       }
 
       return result;
     }
 
-    private async Task<bool> TryAwaitTerminatorThenSend(string value, int loginTimeoutMs)
+    private async Task<bool> TryAwaitTerminatorThenSend(string value, int loginTimeoutMs, string linefeed)
     {
-      bool isTerminated = await this.IsTerminatedWith(loginTimeoutMs, ":");
+      bool isTerminated = await this.IsTerminatedWith(loginTimeoutMs, ":").ConfigureAwait(false);
       if (isTerminated)
       {
-        await this.WriteLine(value);
+        await this.WriteLine(value, linefeed).ConfigureAwait(false);
       }
 
       return isTerminated;
@@ -234,7 +250,7 @@ namespace PrimS.Telnet
       string s = string.Empty;
       while (!isTerminated(s) && endTimeout >= DateTime.Now)
       {
-        s += await this.ReadAsync(TimeSpan.FromMilliseconds(millisecondSpin));
+        s += await this.ReadAsync(TimeSpan.FromMilliseconds(millisecondSpin)).ConfigureAwait(false);
       }
 
       return s;
@@ -242,7 +258,7 @@ namespace PrimS.Telnet
 
     private async Task<bool> IsTerminatedWith(int loginTimeoutMs, string terminator)
     {
-      return (await this.TerminatedReadAsync(terminator, TimeSpan.FromMilliseconds(loginTimeoutMs), 1)).TrimEnd().EndsWith(terminator);
+      return (await this.TerminatedReadAsync(terminator, TimeSpan.FromMilliseconds(loginTimeoutMs), 1).ConfigureAwait(false)).TrimEnd().EndsWith(terminator);
     }
   }
 }

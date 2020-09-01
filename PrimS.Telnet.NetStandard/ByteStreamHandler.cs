@@ -1,6 +1,7 @@
 ﻿namespace PrimS.Telnet
 {
   using System;
+  using System.Collections.Generic;
   using System.Text;
 #if ASYNC
   using System.Threading.Tasks;
@@ -12,7 +13,7 @@
   public partial class ByteStreamHandler : IByteStreamHandler
   {
     private readonly IByteStream byteStream;
-    
+
     private bool IsResponsePending
     {
       get
@@ -39,27 +40,15 @@
       if (disposing)
       {
         this.byteStream.Dispose();
+#if ASYNC
+        this.SendCancel();
+#endif
       }
     }
 
     private static DateTime ExtendRollingTimeout(TimeSpan timeout)
     {
       return DateTime.Now.Add(TimeSpan.FromMilliseconds(timeout.TotalMilliseconds / 100));
-    }
-
-#if ASYNC
-    private static async Task<bool> IsWaitForIncrementalResponse(DateTime rollingTimeout)
-#else
-    private static bool IsWaitForIncrementalResponse(DateTime rollingTimeout)
-#endif
-    {
-      bool result = DateTime.Now < rollingTimeout;
-#if ASYNC
-      await Task.Delay(1);
-#else
-      System.Threading.Thread.Sleep(1);
-#endif
-      return result;
     }
 
     private static bool IsWaitForInitialResponse(DateTime endInitialTimeout, bool isInitialResponseReceived)
@@ -75,6 +64,21 @@
     private static bool IsInitialResponseReceived(StringBuilder sb)
     {
       return sb.Length > 0;
+    }
+
+#if ASYNC
+    private async Task<bool> IsWaitForIncrementalResponse(DateTime rollingTimeout)
+#else
+    private bool IsWaitForIncrementalResponse(DateTime rollingTimeout)
+#endif
+    {
+      bool result = DateTime.Now < rollingTimeout;
+#if ASYNC
+      await Task.Delay(1, this.internalCancellation.Token).ConfigureAwait(false);
+#else
+      System.Threading.Thread.Sleep(1);
+#endif
+      return result;
     }
 
     /// <summary>
@@ -108,6 +112,25 @@
             }
 
             break;
+          case 1: // Start of Heading
+            sb.Append("\n \n");
+            break;
+          case 2: // Start of Text
+            sb.Append("\t");
+            break;
+          case 3: // End of Text or "break" CTRL+C
+            sb.Append("^C");
+            System.Diagnostics.Debug.WriteLine("^C");
+            break;
+          case 4: // End of Transmission
+            sb.Append("^D");
+            break;
+          case 5: // Enquiry
+            this.byteStream.WriteByte((byte)6); // Send ACK
+            break;
+          case 6: // Acknowledge
+            // We got an ACK
+            break;
           case 7: // Bell character
             Console.Beep();
             break;
@@ -117,6 +140,13 @@
           case 11: // Vertical TAB
           case 12: // Form Feed
             sb.Append(Environment.NewLine);
+            break;
+          case 21:
+            sb.Append("NAK: Retransmit last message.");
+            System.Diagnostics.Debug.WriteLine("ERROR NAK: Retransmit last message.");
+            break;
+          case 31: // Unit Separator
+            sb.Append(",");
             break;
           default:
             sb.Append((char)input);
@@ -130,42 +160,10 @@
     }
 
     /// <summary>
-    /// We received a TELNET command. Handle it.
+    /// Send TELNET command response to the server.
     /// </summary>
-    /// <param name="inputVerb">The command we received.</param>
-    private void InterpretNextAsCommand(int inputVerb)
-    {
-      System.Diagnostics.Debug.Write(Enum.GetName(typeof(Commands), inputVerb));
-      switch (inputVerb)
-      {
-        case (int)Commands.InterruptProcess:
-          System.Diagnostics.Debug.WriteLine("Interrupt Process (IP) received.");
-#if ASYNC
-          this.SendCancel();        
-#endif
-          break;
-        case (int)Commands.Dont:
-        case (int)Commands.Wont:
-          // We should ignore Don't\Won't because that is the default state.
-          // Only reply on state change. This helps avoid loops.
-          // See RFC1143: https://tools.ietf.org/html/rfc1143
-          break;
-        case (int)Commands.Do:
-        case (int)Commands.Will: 
-          this.ReplyToCommand(inputVerb);
-          break;
-        case (int)Commands.Subnegotiation:
-          this.PerformNegotiation();
-          break;
-        default:
-          break;
-      }
-    }
-
-    /// <summary>
-    /// We received a request to perform sub negotiation on a TELNET option.
-    /// </summary>
-    private void PerformNegotiation()
+    /// <param name="inputVerb">The TELNET command we received.</param>
+    private void ReplyToCommand(int inputVerb)
     {
       int inputOption = this.byteStream.ReadByte();
       int subCommand = this.byteStream.ReadByte();
@@ -264,9 +262,11 @@
     {
       return this.IsResponsePending || IsWaitForInitialResponse(endInitialTimeout, isInitialResponseReceived) ||
 #if ASYNC
- await
+await this.IsWaitForIncrementalResponse(rollingTimeout).ConfigureAwait(false);
+#else
+      this.IsWaitForIncrementalResponse(rollingTimeout);
 #endif
- IsWaitForIncrementalResponse(rollingTimeout);
+
     }
   }
 }

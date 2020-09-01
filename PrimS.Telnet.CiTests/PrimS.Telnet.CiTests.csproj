@@ -67,6 +67,8 @@
     </Compile>
     <Compile Include="ByteStreamHandlerTests.cs" />
     <Compile Include="AsyncTcpByteStreamTests.cs" />
+    <Compile Include="TelnetServerBase.cs" />
+    <Compile Include="TelnetServerRFC854.cs" />
     <Compile Include="TelnetServerTests.cs" />
     <Compile Include="TelnetServer.cs" />
     <Compile Include="WithClient.cs" />
