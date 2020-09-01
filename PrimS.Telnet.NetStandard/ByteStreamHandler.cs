@@ -72,7 +72,7 @@
     private bool IsWaitForIncrementalResponse(DateTime rollingTimeout)
 #endif
     {
-      bool result = DateTime.Now < rollingTimeout;
+      var result = DateTime.Now < rollingTimeout;
 #if ASYNC
       await Task.Delay(1, this.internalCancellation.Token).ConfigureAwait(false);
 #else
@@ -90,13 +90,14 @@
     {
       if (this.IsResponsePending)
       {
-        int input = this.byteStream.ReadByte();
+        var input = this.byteStream.ReadByte();
         switch (input)
         {
           case -1:
             break;
           case (int)Commands.InterpretAsCommand:
-            int inputVerb = this.byteStream.ReadByte();
+            // interpret as command
+            var inputVerb = this.byteStream.ReadByte();
             if (inputVerb == -1)
             {
               // do nothing
@@ -266,7 +267,6 @@ await this.IsWaitForIncrementalResponse(rollingTimeout).ConfigureAwait(false);
 #else
       this.IsWaitForIncrementalResponse(rollingTimeout);
 #endif
-
     }
   }
 }

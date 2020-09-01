@@ -34,8 +34,8 @@
     [TestMethod]
     public async Task ShouldWaitRoughlyOneTimeout()
     {
-      DateTime start = DateTime.Now;
-      TimeSpan timeout = new TimeSpan(0, 0, 1);
+      var start = DateTime.Now;
+      var timeout = new TimeSpan(0, 0, 1);
       await sut.TerminatedReadAsync(".", timeout, 1).ConfigureAwait(false);
       DateTime.Now.Subtract(start).Should().BeCloseTo(timeout, 35);
     }
@@ -43,9 +43,9 @@
     [TestMethod]
     public async Task ShouldWaitRoughlyOneMillisecondSpin()
     {
-      Stopwatch stopwatch = new Stopwatch();
+      var stopwatch = new Stopwatch();
       stopwatch.Start();
-      int millisecondsSpin = 150;
+      var millisecondsSpin = 150;
       await sut.TerminatedReadAsync(".", new TimeSpan(0, 0, 0, 0, 10), millisecondsSpin).ConfigureAwait(false);
       stopwatch.Elapsed.Should().BeCloseTo(TimeSpan.FromMilliseconds(millisecondsSpin), 70);
     }

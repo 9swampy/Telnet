@@ -89,7 +89,7 @@
         this.internalCancellation.Dispose();
       }
 
-      System.Threading.AutoResetEvent are = new System.Threading.AutoResetEvent(false);
+      var are = new System.Threading.AutoResetEvent(false);
       are.WaitOne(100);
     }
   }

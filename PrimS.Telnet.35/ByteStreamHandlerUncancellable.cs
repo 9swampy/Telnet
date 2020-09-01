@@ -40,10 +40,10 @@
         return string.Empty;
       }
 
-      StringBuilder sb = new StringBuilder();
+      var sb = new StringBuilder();
       this.byteStream.ReceiveTimeout = (int)timeout.TotalMilliseconds;
-      DateTime endInitialTimeout = DateTime.Now.Add(timeout);
-      DateTime rollingTimeout = ExtendRollingTimeout(timeout);
+      var endInitialTimeout = DateTime.Now.Add(timeout);
+      var rollingTimeout = ExtendRollingTimeout(timeout);
       do
       {
         if (this.RetrieveAndParseResponse(sb))

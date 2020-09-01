@@ -27,7 +27,7 @@
     <DocumentationFile>bin\Release\netstandard2.0\PrimS.Telnet.NetStandard.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="LiteGuard" Version="2.0.1" />
+    <PackageReference Include="LiteGuard" Version="2.2.0" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net451' ">

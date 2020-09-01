@@ -20,7 +20,7 @@
       this.IsListening = true;
       this.expectedLineFeedTerminator = expectedLineFeedTerminator;
 
-      IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
+      var ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
       this.IPAddress = ipHostInfo.AddressList.First(o => o.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork);
       this.Port = 11000;
 
@@ -54,14 +54,14 @@
       try
       {
         // Start listening for connections.
-        IPEndPoint localEndPoint = new IPEndPoint(this.IPAddress, this.Port);
+        var localEndPoint = new IPEndPoint(this.IPAddress, this.Port);
         this.Bind(localEndPoint);
         this.Listen(10);
 
         while (this.IsListening)
         {
           Console.WriteLine("Waiting for a connection...");
-          Socket handler = this.Accept();
+          var handler = this.Accept();
           data = null;
 
           Console.WriteLine("Connection made, respond with Account: prompt");
@@ -113,8 +113,8 @@
 
     private static void ReceiveResponse(Socket handler)
     {
-      byte[] bytes = new byte[1024];
-      int bytesRec = handler.Receive(bytes);
+      var bytes = new byte[1024];
+      var bytesRec = handler.Receive(bytes);
       data += Encoding.ASCII.GetString(bytes, 0, bytesRec).Trim((char)255);
     }
 

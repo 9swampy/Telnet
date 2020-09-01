@@ -26,7 +26,7 @@
     /// <returns>Any text read from the stream.</returns>
     public string Read(TimeSpan timeout)
     {
-      ByteStreamHandler handler = new ByteStreamHandler(this.ByteStream);
+      var handler = new ByteStreamHandler(this.ByteStream);
       return handler.Read(timeout);
     }
   }
