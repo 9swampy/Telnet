@@ -161,10 +161,9 @@
     }
 
     /// <summary>
-    /// Send TELNET command response to the server.
+    /// We received a request to perform sub negotiation on a TELNET option.
     /// </summary>
-    /// <param name="inputVerb">The TELNET command we received.</param>
-    private void ReplyToCommand(int inputVerb)
+    private void PerformNegotiation()
     {
       int inputOption = this.byteStream.ReadByte();
       int subCommand = this.byteStream.ReadByte();
