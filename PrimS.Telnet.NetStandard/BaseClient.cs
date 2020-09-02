@@ -13,10 +13,14 @@
     /// </summary>
     protected const int DefaultTimeoutMs = 100;
 
+    public const int DefaultMillisecondReadDelay = 16;
+
     /// <summary>
     /// The byte stream.
     /// </summary>
     private readonly IByteStream byteStream;
+
+    public int MillisecondReadDelay { get; set; } = DefaultMillisecondReadDelay;
 
     /// <summary>
     /// Gets a value indicating whether this instance is connected.

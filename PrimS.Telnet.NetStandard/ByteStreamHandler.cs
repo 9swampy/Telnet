@@ -1,6 +1,7 @@
 ﻿namespace PrimS.Telnet
 {
   using System;
+  using System.Collections.Generic;
   using System.Text;
 #if ASYNC
   using System.Threading.Tasks;
@@ -20,6 +21,8 @@
         return this.byteStream.Available > 0;
       }
     }
+
+    internal int MillisecondReadDelay { get; set; } = 16;
 
     /// <summary>
     /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
@@ -73,9 +76,9 @@
     {
       var result = DateTime.Now < rollingTimeout;
 #if ASYNC
-      await Task.Delay(16, this.internalCancellation.Token).ConfigureAwait(false);
+      await Task.Delay(MillisecondReadDelay, this.internalCancellation.Token).ConfigureAwait(false);
 #else
-      System.Threading.Thread.Sleep(16);
+      System.Threading.Thread.Sleep(MillisecondReadDelay);
 #endif
       return result;
     }
@@ -316,7 +319,7 @@
     {
       return this.IsResponsePending || IsWaitForInitialResponse(endInitialTimeout, isInitialResponseReceived) ||
 #if ASYNC
-await this.IsWaitForIncrementalResponse(rollingTimeout).ConfigureAwait(false);
+      await this.IsWaitForIncrementalResponse(rollingTimeout).ConfigureAwait(false);
 #else
       this.IsWaitForIncrementalResponse(rollingTimeout);
 #endif

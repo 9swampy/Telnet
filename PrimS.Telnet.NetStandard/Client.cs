@@ -10,7 +10,7 @@
   /// <summary>
   /// Basic Telnet client.
   /// </summary>
-  public class Client : BaseClient
+  public partial class Client : BaseClient
   {
     /// <summary>
     /// Initialises a new instance of the <see cref="Client"/> class.
@@ -55,20 +55,20 @@
         are.WaitOne(2);
       }
 
-      if (!this.ByteStream.Connected)
+      if (!ByteStream.Connected)
       {
         throw new InvalidOperationException("Unable to connect to the host.");
       }
       else
       {
-        this.ProactiveOptionNegotiation();
+        ProactiveOptionNegotiation();
       }
     }
 
     /// <summary>
     /// Sending options up front will get us to the logon prompt faster.
     /// </summary>
-    public void ProactiveOptionNegotiation()
+    private void ProactiveOptionNegotiation()
     {
       // SEND DO SUPPRESS GO AHEAD
       var supressGoAhead = new byte[3];
@@ -76,7 +76,7 @@
       supressGoAhead[1] = (byte)Commands.Do;
       supressGoAhead[2] = (byte)Options.SuppressGoAhead;
 #if ASYNC
-      this.ByteStream.WriteAsync(supressGoAhead, 0, supressGoAhead.Length, this.InternalCancellation.Token);
+      Task.Run(async () => await ByteStream.WriteAsync(supressGoAhead, 0, supressGoAhead.Length, InternalCancellation.Token)).Wait();
 #else
       this.byteStream.Write(supressGoAhead, 0, outBuffer.Length);
 #endif
@@ -198,7 +198,7 @@
     public async Task<string> TerminatedReadAsync(string terminator, TimeSpan timeout, int millisecondSpin)
     {
       Func<string, bool> isTerminated = (x) => Client.IsTerminatorLocated(terminator, x);
-      var s = await this.TerminatedReadAsync(isTerminated, timeout, millisecondSpin).ConfigureAwait(false);
+      var s = await TerminatedReadAsync(isTerminated, timeout, millisecondSpin).ConfigureAwait(false);
       if (!isTerminated(s))
       {
         System.Diagnostics.Debug.WriteLine("Failed to terminate '{0}' with '{1}'", s, terminator);
@@ -242,7 +242,7 @@
     /// <returns>Any text read from the stream.</returns>
     public async Task<string> ReadAsync(TimeSpan timeout)
     {
-      var handler = new ByteStreamHandler(this.ByteStream, this.InternalCancellation);
+      var handler = new ByteStreamHandler(this.ByteStream, this.InternalCancellation, this.MillisecondReadDelay);
       return await handler.ReadAsync(timeout).ConfigureAwait(false);
     }
 
