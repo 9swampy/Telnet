@@ -19,10 +19,11 @@
     /// </summary>
     /// <param name="byteStream">The byteStream to handle.</param>
     /// <param name="internalCancellation">A cancellation token.</param>
-    public ByteStreamHandler(IByteStream byteStream, CancellationTokenSource internalCancellation)
+    public ByteStreamHandler(IByteStream byteStream, CancellationTokenSource internalCancellation, int millisecondReadDelay = Client.DefaultMillisecondReadDelay)
     {
       this.byteStream = byteStream;
       this.internalCancellation = internalCancellation;
+      MillisecondReadDelay = millisecondReadDelay;
     }
 
     private bool IsCancellationRequested
@@ -67,14 +68,14 @@
       }
       while (!this.IsCancellationRequested &&
 #if ASYNC
-await this.IsResponseAnticipated(IsInitialResponseReceived(sb), endInitialTimeout, rollingTimeout).ConfigureAwait(false));
+      await this.IsResponseAnticipated(IsInitialResponseReceived(sb), endInitialTimeout, rollingTimeout).ConfigureAwait(false));
 #else
       this.IsResponseAnticipated(IsInitialResponseReceived(sb), endInitialTimeout, rollingTimeout));
 #endif
       LogIfTimeoutExpired(rollingTimeout);
       return sb.ToString();
     }
-    
+
     /// <summary>
     /// Add null check to cancel commands. Fail gracefully.
     /// </summary>

@@ -52,7 +52,7 @@
         return this.internalCancellation;
       }
     }
-    
+
     /// <summary>
     /// Add null check to cancel commands. Fail gracefully.
     /// </summary>
@@ -68,7 +68,7 @@
       catch (Exception ex)
       {
         System.Diagnostics.Debug.WriteLine(ex.Message);
-      }    
+      }
     }
 
     /// <summary>

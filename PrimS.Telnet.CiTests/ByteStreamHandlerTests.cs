@@ -206,12 +206,14 @@
 
 #if ASYNC
         var response = await sut.ReadAsync(TimeSpan.FromMilliseconds(10)).ConfigureAwait(false);
-        // A.CallTo(() => networkStream.WriteAsync(A<byte[]>.That.Contains((char)255), 0, 3, new CancellationToken())).MustHaveHappened();
-        A.CallTo(networkStream).Where(x => x.Method.Name == "WriteAsync").MustHaveHappened();
+        A.CallTo(() => networkStream.WriteAsync(A<byte[]>.Ignored, 0, 3, A<CancellationToken>.Ignored))
+                            .WhenArgumentsMatch(o => o[0] is byte[] param && param[0] == (byte)Commands.InterpretAsCommand && param[1] == (byte)Commands.Will && param[2] == 3)
+                            .MustHaveHappened();
 #else
         var response = sut.Read(TimeSpan.FromMilliseconds(10));
-        A.CallTo(networkStream).Where(x => x.Method.Name == "Write").MustHaveHappened();
-       // A.CallTo(() => networkStream.Write(A<byte[]>.That.Contains((char)255), 0, 3)).MustHaveHappened();
+        A.CallTo(() => networkStream.Write(A<byte[]>.Ignored, 0, 3))
+                            .WhenArgumentsMatch(o => o[0] is byte[] param && param[0] == (byte)Commands.InterpretAsCommand && param[1] == (byte)Commands.Will && param[2] == 3)
+                            .MustHaveHappened();
 #endif
 
         response.Should().BeEmpty();
@@ -248,10 +250,14 @@
           {
 #if ASYNC
             var response = await sut.ReadAsync(TimeSpan.FromMilliseconds(10)).ConfigureAwait(false);
-            A.CallTo(networkStream).Where(x => x.Method.Name == "WriteAsync").MustHaveHappened();
+            A.CallTo(() => networkStream.WriteAsync(A<byte[]>.Ignored, 0, 3, A<CancellationToken>.Ignored))
+                .WhenArgumentsMatch(o => o[0] is byte[] param && param[0] == (byte)Commands.InterpretAsCommand && param[1] == (byte)Commands.Wont && param[2] == 1)
+                .MustHaveHappened();
 #else
             var response = sut.Read(TimeSpan.FromMilliseconds(10));
-            A.CallTo(networkStream).Where(x => x.Method.Name == "Write").MustHaveHappened();
+            A.CallTo(() => networkStream.Write(A<byte[]>.Ignored, 0, 3))
+                .WhenArgumentsMatch(o => o[0] is byte[] param && param[0] == (byte)Commands.InterpretAsCommand && param[1] == (byte)Commands.Wont && param[2] == 1)
+                .MustHaveHappened();
 #endif
 
             response.Should().BeEmpty();

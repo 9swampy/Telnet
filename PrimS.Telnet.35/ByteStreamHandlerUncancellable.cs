@@ -15,10 +15,12 @@
     /// Initialises a new instance of the <see cref="ByteStreamHandler"/> class.
     /// </summary>
     /// <param name="byteStream">The byteStream to handle.</param>
-    public ByteStreamHandler(IByteStream byteStream)
+    public ByteStreamHandler(IByteStream byteStream, int millisecondReadDelay = BaseClient.DefaultMillisecondReadDelay)
     {
       this.byteStream = byteStream;
+      MillisecondReadDelay = millisecondReadDelay;
     }
+
 #if ASYNC
     /// <summary>
     /// Reads asynchronously from the stream.
