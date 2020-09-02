@@ -1,7 +1,6 @@
 ﻿namespace PrimS.Telnet.CiTests
 {
   using System;
-  using System.Linq;
   using Microsoft.VisualStudio.TestTools.UnitTesting;
   using FluentAssertions;
   using System.Threading.Tasks;

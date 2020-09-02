@@ -1,8 +1,11 @@
 version: 1.0.{build}
+image: Visual Studio 2019
 configuration: Debug
 before_build:
 - cmd: >-
     gitversion /output buildserver
+
+    where msbuild
 
     nuget restore
 build:

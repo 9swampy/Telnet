@@ -4,7 +4,6 @@
   using System.Text.RegularExpressions;
   using System.Threading;
   using System.Threading.Tasks;
-  using LiteGuard;
 
   // Referencing https://support.microsoft.com/kb/231866?wa=wsignin1.0 and http://www.codeproject.com/Articles/19071/Quick-tool-A-minimalistic-Telnet-library got me started
 
@@ -43,11 +42,15 @@
     public Client(IByteStream byteStream, CancellationToken token, TimeSpan timeout)
       : base(byteStream, token)
     {
-      Guard.AgainstNullArgument("byteStream", byteStream);
+#if NetStandard
+      PrimS.Telnet.NetStandard.Guard.AgainstNullArgument(nameof(byteStream), byteStream);
+#else
+      PrimS.Telnet.Guard.AgainstNullArgument(nameof(byteStream), byteStream);
+#endif
 
       var timeoutEnd = DateTime.Now.Add(timeout);
       var are = new AutoResetEvent(false);
-      while (!this.ByteStream.Connected && timeoutEnd > DateTime.Now)
+      while (!ByteStream.Connected && timeoutEnd > DateTime.Now)
       {
         are.WaitOne(2);
       }
