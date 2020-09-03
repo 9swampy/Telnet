@@ -3,7 +3,7 @@
   <PropertyGroup>
     <VersionPrefix>0.7.1</VersionPrefix>
     <TargetFrameworks>net451;netstandard1.6;netstandard2.0</TargetFrameworks>
-    <DefineConstants>$(DefineConstants);ASYNC</DefineConstants>
+    <DefineConstants>$(DefineConstants);ASYNC;NetStandard</DefineConstants>
     <AssemblyName>PrimS.Telnet.NetStandard</AssemblyName>
     <PackageId>PrimS.Telnet.NetStandard</PackageId>
     <PackageTargetFallback Condition=" '$(TargetFramework)' == 'netstandard1.6' ">$(PackageTargetFallback);dnxcore50</PackageTargetFallback>
@@ -26,9 +26,6 @@
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netstandard2.0|AnyCPU'">
     <DocumentationFile>bin\Release\netstandard2.0\PrimS.Telnet.NetStandard.xml</DocumentationFile>
   </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="LiteGuard" Version="2.2.0" />
-  </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net451' ">
     <Reference Include="System" />
@@ -38,5 +35,20 @@
   <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard1.6' ">
     <PackageReference Include="System.Threading.Thread" Version="4.3.0" />
   </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="LiteGuard.Source" Version="2.2.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp">
+      <Version>3.7.0</Version>
+    </PackageReference>
+  </ItemGroup>
+
+  
 
 </Project>
