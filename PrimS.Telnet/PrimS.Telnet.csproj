@@ -101,7 +101,9 @@
     <Compile Include="..\PrimS.Telnet.NetStandard\TcpClient.cs">
       <Link>TcpClient.cs</Link>
     </Compile>
-    <Compile Include="Guard.cs" />
+    <Compile Include="..\PrimS.Telnet.NetStandard\Guard.cs">
+      <Link>Guard.cs</Link>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

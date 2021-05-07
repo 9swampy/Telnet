@@ -42,11 +42,7 @@
     public Client(IByteStream byteStream, CancellationToken token, TimeSpan timeout)
       : base(byteStream, token)
     {
-#if NetStandard
-      PrimS.Telnet.NetStandard.Guard.AgainstNullArgument(nameof(byteStream), byteStream);
-#else
       PrimS.Telnet.Guard.AgainstNullArgument(nameof(byteStream), byteStream);
-#endif
 
       var timeoutEnd = DateTime.Now.Add(timeout);
       var are = new AutoResetEvent(false);
