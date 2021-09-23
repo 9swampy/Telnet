@@ -19,6 +19,11 @@
     private readonly IByteStream byteStream;
 
     /// <summary>
+    /// Write out data read from telent connection to console
+    /// </summary>
+    public bool EnableWritingToConsole { get; set; } = true;
+
+    /// <summary>
     /// Gets a value indicating whether this instance is connected.
     /// </summary>
     /// <value>

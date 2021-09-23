@@ -12,6 +12,8 @@
   {
     private readonly System.Threading.Thread t;
 
+    public bool enableWritingToConsole = true;
+
     protected string expectedLineFeedTerminator;
 
     protected TelnetServerBase(string expectedLineFeedTerminator)
@@ -60,26 +62,31 @@
 
         while (this.IsListening)
         {
-          Console.WriteLine("Waiting for a connection...");
+          if (this.enableWritingToConsole)
+            Console.WriteLine("Waiting for a connection...");
           var handler = this.Accept();
           data = null;
 
-          Console.WriteLine("Connection made, respond with Account: prompt");
+          if (this.enableWritingToConsole)
+            Console.WriteLine("Connection made, respond with Account: prompt");
           handler.Send(Encoding.ASCII.GetBytes("Account:"));
 
           this.WaitFor(handler, $"username{this.expectedLineFeedTerminator}");
 
-          Console.WriteLine("Account entered, respond with Password: prompt");
+          if (this.enableWritingToConsole)
+            Console.WriteLine("Account entered, respond with Password: prompt");
           handler.Send(Encoding.ASCII.GetBytes("Password:"));
 
           this.WaitFor(handler, $"password{this.expectedLineFeedTerminator}");
 
-          Console.WriteLine("Password entered, respond with Command> prompt");
+          if (this.enableWritingToConsole)
+            Console.WriteLine("Password entered, respond with Command> prompt");
           handler.Send(Encoding.ASCII.GetBytes("Command >"));
 
           this.WaitFor(handler, $"show statistic wan2{this.expectedLineFeedTerminator}");
 
-          Console.WriteLine("Command entered, respond with WAN2 terminated reply");
+          if (this.enableWritingToConsole)
+            Console.WriteLine("Command entered, respond with WAN2 terminated reply");
           handler.Send(Encoding.ASCII.GetBytes("show statistic wan2\n\r WAN1 total TX: 0 Bytes ,RX: 0 Bytes \n\r WAN2 total TX: 6.3 GB ,RX: 6.9 GB \n\r WAN3 total TX: 0 Bytes ,RX: 0 Bytes \n\r WAN4 total TX: 0 Bytes ,RX: 0 Bytes \n\r WAN5 total TX: 0 Bytes ,RX: 0 Bytes \n\r>"));
 
           //handler.Send(new byte[] { (byte)PrimS.Telnet.Commands.InterpretAsCommand, (byte)PrimS.Telnet.Commands.Do });
@@ -94,7 +101,10 @@
       }
       catch (Exception e)
       {
-        Console.WriteLine(e.ToString());
+        if (this.enableWritingToConsole)
+          Console.WriteLine(e.ToString());
+        else 
+          throw e;
       }
     }
 
@@ -123,13 +133,15 @@
       if (currentResponse.Contains(responseAwaited))
       {
         System.Diagnostics.Debug.Print("{0} response received", responseAwaited);
-        Console.WriteLine("{0} response received", responseAwaited);
+        if (this.enableWritingToConsole)
+          Console.WriteLine("{0} response received", responseAwaited);
         return true;
       }
       else
       {
         System.Diagnostics.Debug.Print("Waiting for {1} response, received {0}", currentResponse, responseAwaited);
-        Console.WriteLine("Waiting for {1} response, received {0}", currentResponse, responseAwaited);
+        if (this.enableWritingToConsole)
+          Console.WriteLine("Waiting for {1} response, received {0}", currentResponse, responseAwaited);
         System.Threading.Thread.Sleep(this.spinWait);
         return false;
       }

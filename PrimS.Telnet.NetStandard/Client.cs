@@ -218,7 +218,7 @@
     /// <returns>Any text read from the stream.</returns>
     public async Task<string> ReadAsync(TimeSpan timeout)
     {
-      var handler = new ByteStreamHandler(this.ByteStream, this.InternalCancellation);
+      var handler = new ByteStreamHandler(this.ByteStream, this.InternalCancellation, this.EnableWritingToConsole);
       return await handler.ReadAsync(timeout).ConfigureAwait(false);
     }
 
@@ -251,7 +251,8 @@
       while (!isTerminated(s) && endTimeout >= DateTime.Now)
       {
         var read = await this.ReadAsync(TimeSpan.FromMilliseconds(millisecondSpin)).ConfigureAwait(false);
-        Console.Write(read);
+        if (EnableWritingToConsole)
+          Console.Write(read);
         s += read;
       }
 

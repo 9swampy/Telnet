@@ -14,6 +14,8 @@
   {
     private readonly IByteStream byteStream;
 
+    private bool enableWritingToConsole;
+
     private bool IsResponsePending
     {
       get
@@ -140,7 +142,8 @@
             // We got an ACK
             break;
           case 7: // Bell character
-            Console.Beep();
+            if (this.enableWritingToConsole)
+              Console.Beep();
             break;
           case 8: // Backspace
             // We could delete a character from sb, or just swallow the char here.

@@ -19,10 +19,11 @@
     /// </summary>
     /// <param name="byteStream">The byteStream to handle.</param>
     /// <param name="internalCancellation">A cancellation token.</param>
-    public ByteStreamHandler(IByteStream byteStream, CancellationTokenSource internalCancellation)
+    public ByteStreamHandler(IByteStream byteStream, CancellationTokenSource internalCancellation, bool enableWritingToConsole)
     {
       this.byteStream = byteStream;
       this.internalCancellation = internalCancellation;
+      this.enableWritingToConsole = enableWritingToConsole;
     }
 
     private bool IsCancellationRequested
