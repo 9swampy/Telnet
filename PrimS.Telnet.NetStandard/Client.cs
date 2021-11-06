@@ -251,7 +251,7 @@
       while (!isTerminated(s) && endTimeout >= DateTime.Now)
       {
         var read = await this.ReadAsync(TimeSpan.FromMilliseconds(millisecondSpin)).ConfigureAwait(false);
-        Console.Write(read);
+        //Console.Write(read);
         s += read;
       }
 
