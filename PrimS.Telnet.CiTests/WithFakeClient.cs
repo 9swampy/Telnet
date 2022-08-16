@@ -37,7 +37,7 @@
       var start = DateTime.Now;
       var timeout = new TimeSpan(0, 0, 1);
       await sut.TerminatedReadAsync(".", timeout, 1).ConfigureAwait(false);
-      DateTime.Now.Subtract(start).Should().BeCloseTo(timeout, 35);
+      DateTime.Now.Subtract(start).Should().BeCloseTo(timeout, 70);
     }
 
     [TestMethod]

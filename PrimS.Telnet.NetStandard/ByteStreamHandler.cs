@@ -1,7 +1,6 @@
 ﻿namespace PrimS.Telnet
 {
   using System;
-  using System.Collections.Generic;
   using System.Text;
 #if ASYNC
   using System.Threading.Tasks;
@@ -134,7 +133,7 @@
             sb.Append("^D");
             break;
           case 5: // Enquiry
-            this.byteStream.WriteByte((byte)6); // Send ACK
+            this.byteStream.WriteByte(6); // Send ACK
             break;
           case 6: // Acknowledge
             // We got an ACK
