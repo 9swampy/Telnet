@@ -13,6 +13,9 @@
     /// </summary>
     protected const int DefaultTimeoutMs = 100;
 
+    /// <summary>
+    /// The default read delay ms.
+    /// </summary>
     public const int DefaultMillisecondReadDelay = 16;
 
     /// <summary>
@@ -20,6 +23,9 @@
     /// </summary>
     private readonly IByteStream byteStream;
 
+    /// <summary>
+    /// The read delay ms.
+    /// </summary>
     public int MillisecondReadDelay { get; set; } = DefaultMillisecondReadDelay;
 
     /// <summary>

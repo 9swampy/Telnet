@@ -18,12 +18,13 @@
       var socket = A.Fake<ISocket>();
       var stream = A.Fake<INetworkStream>();
       A.CallTo(() => socket.GetStream()).Returns(stream);
-      var sut = new TcpByteStream(socket);
+      using (var sut = new TcpByteStream(socket))
+      {
+        var cancellationToken = new CancellationToken();
+        await sut.WriteAsync(writtenString, cancellationToken).ConfigureAwait(false);
 
-      var cancellationToken = new CancellationToken();
-      await sut.WriteAsync(writtenString, cancellationToken).ConfigureAwait(false);
-
-      A.CallTo(() => stream.WriteAsync(A<byte[]>.Ignored, 0, writtenString.Length, cancellationToken)).MustHaveHappened();
+        A.CallTo(() => stream.WriteAsync(A<byte[]>.Ignored, 0, writtenString.Length, cancellationToken)).MustHaveHappened();
+      }
     }
   }
 }

@@ -19,7 +19,17 @@
     /// </summary>
     /// <param name="byteStream">The byteStream to handle.</param>
     /// <param name="internalCancellation">A cancellation token.</param>
-    public ByteStreamHandler(IByteStream byteStream, CancellationTokenSource internalCancellation, int millisecondReadDelay = Client.DefaultMillisecondReadDelay)
+    public ByteStreamHandler(IByteStream byteStream, CancellationTokenSource internalCancellation)
+      : this(byteStream, internalCancellation, Client.DefaultMillisecondReadDelay)
+    { }
+
+    /// <summary>
+    /// Initialises a new instance of the <see cref="ByteStreamHandler"/> class.
+    /// </summary>
+    /// <param name="byteStream">The byteStream to handle.</param>
+    /// <param name="internalCancellation">A cancellation token.</param>
+    /// <param name="millisecondReadDelay">Time to delay between reads from the stream.</param>
+    public ByteStreamHandler(IByteStream byteStream, CancellationTokenSource internalCancellation, int millisecondReadDelay)
     {
       this.byteStream = byteStream;
       this.internalCancellation = internalCancellation;

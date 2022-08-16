@@ -12,6 +12,8 @@
   /// </summary>
   public partial class Client : BaseClient
   {
+    public static bool IsWriteConsole { get; set; } = false;
+
     /// <summary>
     /// Initialises a new instance of the <see cref="Client"/> class.
     /// </summary>
@@ -42,12 +44,7 @@
     public Client(IByteStream byteStream, CancellationToken token, TimeSpan timeout)
       : base(byteStream, token)
     {
-#if NetStandard
-      PrimS.Telnet.NetStandard.Guard.AgainstNullArgument(nameof(byteStream), byteStream);
-#else
-      PrimS.Telnet.Guard.AgainstNullArgument(nameof(byteStream), byteStream);
-#endif
-
+      Guard.AgainstNullArgument(nameof(byteStream), byteStream);
       var timeoutEnd = DateTime.Now.Add(timeout);
       var are = new AutoResetEvent(false);
       while (!ByteStream.Connected && timeoutEnd > DateTime.Now)
@@ -106,10 +103,10 @@
     /// <returns>True if successful.</returns>
     public async Task<bool> TryLoginAsync(string userName, string password, int loginTimeoutMs, string terminator, string linefeed = "\n")
     {
-      var result = await this.TrySendUsernameAndPassword(userName, password, loginTimeoutMs, linefeed).ConfigureAwait(false);
+      var result = await this.TrySendUsernameAndPasswordAsync(userName, password, loginTimeoutMs, linefeed).ConfigureAwait(false);
       if (result)
       {
-        result = await this.IsTerminatedWith(loginTimeoutMs, terminator).ConfigureAwait(false);
+        result = await this.IsTerminatedWithAsync(loginTimeoutMs, terminator).ConfigureAwait(false);
       }
 
       return result;
@@ -121,9 +118,9 @@
     /// <param name="command">The command.</param>
     /// <param name="linefeed">The type of linefeed to use.</param>
     /// <returns>An awaitable Task.</returns>
-    public async Task WriteLine(string command, string linefeed = "\n")
+    public Task WriteLineAsync(string command, string linefeed = "\n")
     {
-      await this.Write(string.Format("{0}{1}", command, linefeed)).ConfigureAwait(false);
+      return this.WriteAsync(string.Format("{0}{1}", command, linefeed));
     }
 
     /// <summary>
@@ -131,7 +128,7 @@
     /// </summary>
     /// <param name="command">The command.</param>
     /// <returns>An awaitable Task.</returns>
-    public async Task Write(string command)
+    public async Task WriteAsync(string command)
     {
       if (this.ByteStream.Connected && !this.InternalCancellation.Token.IsCancellationRequested)
       {
@@ -146,7 +143,7 @@
     /// </summary>
     /// <param name="data">The byte array to send.</param>
     /// <returns>An awaitable Task.</returns>
-    public async Task Write(byte[] data)
+    public async Task WriteAsync(byte[] data)
     {
       if (this.ByteStream.Connected && !this.InternalCancellation.Token.IsCancellationRequested)
       {
@@ -161,9 +158,9 @@
     /// </summary>
     /// <param name="terminator">The terminator.</param>
     /// <returns>Any text read from the stream.</returns>
-    public async Task<string> TerminatedReadAsync(string terminator)
+    public Task<string> TerminatedReadAsync(string terminator)
     {
-      return await this.TerminatedReadAsync(terminator, TimeSpan.FromMilliseconds(Client.DefaultTimeoutMs)).ConfigureAwait(false);
+      return this.TerminatedReadAsync(terminator, TimeSpan.FromMilliseconds(Client.DefaultTimeoutMs));
     }
 
     /// <summary>
@@ -172,9 +169,9 @@
     /// <param name="terminator">The terminator.</param>
     /// <param name="timeout">The timeout.</param>
     /// <returns>Any text read from the stream.</returns>
-    public async Task<string> TerminatedReadAsync(string terminator, TimeSpan timeout)
+    public Task<string> TerminatedReadAsync(string terminator, TimeSpan timeout)
     {
-      return await this.TerminatedReadAsync(terminator, timeout, 1).ConfigureAwait(false);
+      return this.TerminatedReadAsync(terminator, timeout, 1);
     }
 
     /// <summary>
@@ -183,9 +180,9 @@
     /// <param name="regex">The terminator.</param>
     /// <param name="timeout">The timeout.</param>
     /// <returns>Any text read from the stream.</returns>
-    public async Task<string> TerminatedReadAsync(Regex regex, TimeSpan timeout)
+    public Task<string> TerminatedReadAsync(Regex regex, TimeSpan timeout)
     {
-      return await this.TerminatedReadAsync(regex, timeout, 1).ConfigureAwait(false);
+      return this.TerminatedReadAsync(regex, timeout, 1);
     }
 
     /// <summary>
@@ -230,9 +227,9 @@
     /// Reads asynchronously from the stream.
     /// </summary>
     /// <returns>Any text read from the stream.</returns>
-    public async Task<string> ReadAsync()
+    public Task<string> ReadAsync()
     {
-      return await this.ReadAsync(TimeSpan.FromMilliseconds(Client.DefaultTimeoutMs)).ConfigureAwait(false);
+      return this.ReadAsync(TimeSpan.FromMilliseconds(Client.DefaultTimeoutMs));
     }
 
     /// <summary>
@@ -240,29 +237,29 @@
     /// </summary>
     /// <param name="timeout">The timeout.</param>
     /// <returns>Any text read from the stream.</returns>
-    public async Task<string> ReadAsync(TimeSpan timeout)
+    public Task<string> ReadAsync(TimeSpan timeout)
     {
       var handler = new ByteStreamHandler(this.ByteStream, this.InternalCancellation, this.MillisecondReadDelay);
-      return await handler.ReadAsync(timeout).ConfigureAwait(false);
+      return handler.ReadAsync(timeout);
     }
 
-    private async Task<bool> TrySendUsernameAndPassword(string userName, string password, int loginTimeoutMs, string linefeed)
+    private async Task<bool> TrySendUsernameAndPasswordAsync(string userName, string password, int loginTimeoutMs, string linefeed)
     {
-      var result = await this.TryAwaitTerminatorThenSend(userName, loginTimeoutMs, linefeed).ConfigureAwait(false);
+      var result = await this.TryAwaitTerminatorThenSendAsync(userName, loginTimeoutMs, linefeed).ConfigureAwait(false);
       if (result)
       {
-        result = await this.TryAwaitTerminatorThenSend(password, loginTimeoutMs, linefeed).ConfigureAwait(false);
+        result = await this.TryAwaitTerminatorThenSendAsync(password, loginTimeoutMs, linefeed).ConfigureAwait(false);
       }
 
       return result;
     }
 
-    private async Task<bool> TryAwaitTerminatorThenSend(string value, int loginTimeoutMs, string linefeed)
+    private async Task<bool> TryAwaitTerminatorThenSendAsync(string value, int loginTimeoutMs, string linefeed)
     {
-      var isTerminated = await this.IsTerminatedWith(loginTimeoutMs, ":").ConfigureAwait(false);
+      var isTerminated = await this.IsTerminatedWithAsync(loginTimeoutMs, ":").ConfigureAwait(false);
       if (isTerminated)
       {
-        await this.WriteLine(value, linefeed).ConfigureAwait(false);
+        await this.WriteLineAsync(value, linefeed).ConfigureAwait(false);
       }
 
       return isTerminated;
@@ -275,14 +272,18 @@
       while (!isTerminated(s) && endTimeout >= DateTime.Now)
       {
         var read = await this.ReadAsync(TimeSpan.FromMilliseconds(millisecondSpin)).ConfigureAwait(false);
-        Console.Write(read);
+        if (IsWriteConsole)
+        {
+          Console.Write(read);
+        }
+
         s += read;
       }
 
       return s;
     }
 
-    private async Task<bool> IsTerminatedWith(int loginTimeoutMs, string terminator)
+    private async Task<bool> IsTerminatedWithAsync(int loginTimeoutMs, string terminator)
     {
       return (await this.TerminatedReadAsync(terminator, TimeSpan.FromMilliseconds(loginTimeoutMs), 1).ConfigureAwait(false)).TrimEnd().EndsWith(terminator);
     }

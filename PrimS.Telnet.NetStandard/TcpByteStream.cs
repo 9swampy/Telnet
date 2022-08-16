@@ -1,6 +1,7 @@
 ﻿using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("PrimS.Telnet.NetStandard.CiTests")]
+[assembly: InternalsVisibleTo("PrimS.Telnet.CiTests")]
 
 namespace PrimS.Telnet
 {

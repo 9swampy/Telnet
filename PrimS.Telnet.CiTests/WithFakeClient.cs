@@ -38,7 +38,7 @@
       var timeout = new TimeSpan(0, 0, 2);
       sut.MillisecondReadDelay = 1;
       await sut.TerminatedReadAsync(".", timeout, 1).ConfigureAwait(false);
-      DateTime.Now.Subtract(start).Should().BeCloseTo(timeout, 30);
+      DateTime.Now.Subtract(start).Should().BeCloseTo(timeout, TimeSpan.FromMilliseconds(30));
     }
 
     [TestMethod]
@@ -49,7 +49,7 @@
       var millisecondsSpin = 150;
       sut.MillisecondReadDelay = 1;
       await sut.TerminatedReadAsync(".", new TimeSpan(0, 0, 0, 0, 10), millisecondsSpin).ConfigureAwait(false);
-      stopwatch.Elapsed.Should().BeCloseTo(TimeSpan.FromMilliseconds(millisecondsSpin + 30), 30);
+      stopwatch.Elapsed.Should().BeCloseTo(TimeSpan.FromMilliseconds(millisecondsSpin + 30), TimeSpan.FromMilliseconds(30));
     }
   }
 }

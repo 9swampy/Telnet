@@ -8,8 +8,8 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>PrimS.Telnet.CiTests</RootNamespace>
-    <AssemblyName>PrimS.Telnet.40.CiTests</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <AssemblyName>PrimS.Telnet.Sync.CiTests</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -102,11 +102,11 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="..\PrimS.Telnet.35.CiTests\TcpByteStreamTests.cs">
-      <Link>TcpByteStreamTests.cs</Link>
-    </Compile>
     <Compile Include="..\PrimS.Telnet.CiTests\ByteStreamHandlerTests.cs">
       <Link>ByteStreamHandlerTests.cs</Link>
+    </Compile>
+    <Compile Include="..\PrimS.Telnet.CiTests\TcpByteStreamTests.cs">
+      <Link>TcpByteStreamTests.cs</Link>
     </Compile>
     <Compile Include="..\PrimS.Telnet.CiTests\TelnetServer.cs">
       <Link>TelnetServer.cs</Link>
@@ -122,13 +122,14 @@
     </Compile>
     <Compile Include="ExtendedTcpByteStreamTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReadMeExampleFixture.cs" />
     <Compile Include="SyncTcpByteStreamTests.cs" />
     <Compile Include="WithClient.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\PrimS.Telnet.40\PrimS.Telnet.40.csproj">
+    <ProjectReference Include="..\PrimS.Telnet.Sync\PrimS.Telnet.Sync.csproj">
       <Project>{e99132bb-f35d-44fb-885c-ccb4aec1cf34}</Project>
-      <Name>PrimS.Telnet.40</Name>
+      <Name>PrimS.Telnet.Sync</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

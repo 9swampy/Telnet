@@ -9,10 +9,11 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>PrimS.Telnet</RootNamespace>
     <AssemblyName>PrimS.Telnet</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -74,6 +75,9 @@
     <Compile Include="..\PrimS.Telnet.NetStandard\Commands.cs">
       <Link>Commands.cs</Link>
     </Compile>
+    <Compile Include="..\PrimS.Telnet.NetStandard\Guard.cs">
+      <Link>Guard.cs</Link>
+    </Compile>
     <Compile Include="..\PrimS.Telnet.NetStandard\IByteStream.cs">
       <Link>IByteStream.cs</Link>
     </Compile>
@@ -101,7 +105,6 @@
     <Compile Include="..\PrimS.Telnet.NetStandard\TcpClient.cs">
       <Link>TcpClient.cs</Link>
     </Compile>
-    <Compile Include="Guard.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
