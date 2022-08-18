@@ -82,7 +82,7 @@
 #else
       this.IsResponseAnticipated(IsInitialResponseReceived(sb), endInitialTimeout, rollingTimeout));
 #endif
-      LogIfTimeoutExpired(rollingTimeout);
+      LogIfTimeoutExpired(endInitialTimeout);
       return sb.ToString();
     }
 
@@ -104,11 +104,11 @@
       }
     }
 
-    private static void LogIfTimeoutExpired(DateTime rollingTimeout)
+    private static void LogIfTimeoutExpired(DateTime timeout)
     {
-      if (IsRollingTimeoutExpired(rollingTimeout))
+      if (IsTimeoutExpired(timeout))
       {
-        System.Diagnostics.Debug.WriteLine("RollingTimeout exceeded {0}", DateTime.Now.ToString("ss:fff"));
+        System.Diagnostics.Debug.WriteLine("Timeout exceeded {0}", DateTime.Now.ToString("ss:fff"));
       }
     }
   }

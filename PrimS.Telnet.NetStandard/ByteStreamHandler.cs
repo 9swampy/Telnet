@@ -58,9 +58,9 @@
       return !isInitialResponseReceived && DateTime.Now < endInitialTimeout;
     }
 
-    private static bool IsRollingTimeoutExpired(DateTime rollingTimeout)
+    private static bool IsTimeoutExpired(DateTime timeout)
     {
-      return DateTime.Now >= rollingTimeout;
+      return DateTime.Now >= timeout;
     }
 
     private static bool IsInitialResponseReceived(StringBuilder sb)
