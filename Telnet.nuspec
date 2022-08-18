@@ -1,5 +1,5 @@
-<?xml version="1.0"?>
-<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+<?xml version="1.0" encoding="utf-8"?>
+<package>
   <metadata>
     <id>Telnet</id>
     <version>0.9.1</version>
@@ -8,6 +8,7 @@
     <owners>9swampy</owners>
     <license type="expression">MIT</license>
     <projectUrl>https://github.com/9swampy/Telnet/</projectUrl>
+    <repository type="git" url="https://github.com/9swampy/Telnet" />
     <icon>images\Ptelnet128x600.png</icon>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>A minimal open-source C# 4.6.2/4.7.2/4.8/NetStandard2.0/NetStandard2.1 Telnet client library implementation; just enough to send simple text commands and retrieve the response.</description>
