@@ -20,9 +20,20 @@
     /// <param name="byteStream">The byteStream to handle.</param>
     /// <param name="internalCancellation">A cancellation token.</param>
     public ByteStreamHandler(IByteStream byteStream, CancellationTokenSource internalCancellation)
+      : this(byteStream, internalCancellation, Client.DefaultMillisecondReadDelay)
+    { }
+
+    /// <summary>
+    /// Initialises a new instance of the <see cref="ByteStreamHandler"/> class.
+    /// </summary>
+    /// <param name="byteStream">The byteStream to handle.</param>
+    /// <param name="internalCancellation">A cancellation token.</param>
+    /// <param name="millisecondReadDelay">Time to delay between reads from the stream.</param>
+    public ByteStreamHandler(IByteStream byteStream, CancellationTokenSource internalCancellation, int millisecondReadDelay)
     {
       this.byteStream = byteStream;
       this.internalCancellation = internalCancellation;
+      MillisecondReadDelay = millisecondReadDelay;
     }
 
     private bool IsCancellationRequested
@@ -67,7 +78,7 @@
       }
       while (!this.IsCancellationRequested &&
 #if ASYNC
-await this.IsResponseAnticipated(IsInitialResponseReceived(sb), endInitialTimeout, rollingTimeout).ConfigureAwait(false));
+      await this.IsResponseAnticipated(IsInitialResponseReceived(sb), endInitialTimeout, rollingTimeout).ConfigureAwait(false));
 #else
       this.IsResponseAnticipated(IsInitialResponseReceived(sb), endInitialTimeout, rollingTimeout));
 #endif

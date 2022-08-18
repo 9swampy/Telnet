@@ -12,7 +12,7 @@
   {
     private readonly System.Threading.Thread t;
 
-    protected string expectedLineFeedTerminator;
+    private readonly string expectedLineFeedTerminator;
 
     protected TelnetServerBase(string expectedLineFeedTerminator)
       : base(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)
@@ -120,7 +120,11 @@
 
     private bool IsResponseReceived(string currentResponse, string responseAwaited)
     {
+#if NetStandard
+      if (currentResponse.Contains(responseAwaited, StringComparison.InvariantCulture))
+#else
       if (currentResponse.Contains(responseAwaited))
+#endif
       {
         System.Diagnostics.Debug.Print("{0} response received", responseAwaited);
         Console.WriteLine("{0} response received", responseAwaited);

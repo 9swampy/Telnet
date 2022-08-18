@@ -1,15 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29806.167
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32602.215
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrimS.Telnet", "PrimS.Telnet\PrimS.Telnet.csproj", "{36BAFCF1-6905-4A3C-9D58-C2C33A882ABF}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrimS.Telnet.CiTests", "PrimS.Telnet.CiTests\PrimS.Telnet.CiTests.csproj", "{A6FFDD66-624F-421B-B402-B6F02071CC10}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrimS.Telnet.40", "PrimS.Telnet.40\PrimS.Telnet.40.csproj", "{E99132BB-F35D-44FB-885C-CCB4AEC1CF34}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrimS.Telnet.40.CiTests", "PrimS.Telnet.40.CiTests\PrimS.Telnet.40.CiTests.csproj", "{C06628AF-EC29-42D9-A445-8F32FC949C11}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NuGet", "NuGet", "{C32FBB99-146C-4733-BA43-D725EBDBF7F5}"
 	ProjectSection(SolutionItems) = preProject
@@ -26,16 +20,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionIt
 		.gitignore = .gitignore
 		appveyor.CiBuild.yml = appveyor.CiBuild.yml
 		appveyor.Release.yml = appveyor.Release.yml
+		README.md = README.md
 		Settings.StyleCop = Settings.StyleCop
 	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrimS.Telnet.35", "PrimS.Telnet.35\PrimS.Telnet.35.csproj", "{1592C110-381F-4B82-A804-00DC9B2130ED}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrimS.Telnet.35.CiTests", "PrimS.Telnet.35.CiTests\PrimS.Telnet.35.CiTests.csproj", "{66EE0C34-16C9-486E-88E1-BA79BFBEDB4A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PrimS.Telnet.NetStandard", "PrimS.Telnet.NetStandard\PrimS.Telnet.NetStandard.csproj", "{3C62B208-6588-4403-9DDA-9B833B2C123F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PrimS.Telnet.NetStandard.CiTests", "NetStandard.CiTests\PrimS.Telnet.NetStandard.CiTests.csproj", "{C86EF0B7-4772-4B6E-876E-1A36B4259001}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrimS.Telnet.Sync", "PrimS.Telnet.Sync\PrimS.Telnet.Sync.csproj", "{E99132BB-F35D-44FB-885C-CCB4AEC1CF34}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrimS.Telnet.Sync.CiTests", "PrimS.Telnet.Sync.CiTests\PrimS.Telnet.Sync.CiTests.csproj", "{C06628AF-EC29-42D9-A445-8F32FC949C11}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -43,30 +38,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{36BAFCF1-6905-4A3C-9D58-C2C33A882ABF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{36BAFCF1-6905-4A3C-9D58-C2C33A882ABF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{36BAFCF1-6905-4A3C-9D58-C2C33A882ABF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{36BAFCF1-6905-4A3C-9D58-C2C33A882ABF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A6FFDD66-624F-421B-B402-B6F02071CC10}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A6FFDD66-624F-421B-B402-B6F02071CC10}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A6FFDD66-624F-421B-B402-B6F02071CC10}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A6FFDD66-624F-421B-B402-B6F02071CC10}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E99132BB-F35D-44FB-885C-CCB4AEC1CF34}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E99132BB-F35D-44FB-885C-CCB4AEC1CF34}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E99132BB-F35D-44FB-885C-CCB4AEC1CF34}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E99132BB-F35D-44FB-885C-CCB4AEC1CF34}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C06628AF-EC29-42D9-A445-8F32FC949C11}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C06628AF-EC29-42D9-A445-8F32FC949C11}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C06628AF-EC29-42D9-A445-8F32FC949C11}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C06628AF-EC29-42D9-A445-8F32FC949C11}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1592C110-381F-4B82-A804-00DC9B2130ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1592C110-381F-4B82-A804-00DC9B2130ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1592C110-381F-4B82-A804-00DC9B2130ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1592C110-381F-4B82-A804-00DC9B2130ED}.Release|Any CPU.Build.0 = Release|Any CPU
-		{66EE0C34-16C9-486E-88E1-BA79BFBEDB4A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{66EE0C34-16C9-486E-88E1-BA79BFBEDB4A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{66EE0C34-16C9-486E-88E1-BA79BFBEDB4A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{66EE0C34-16C9-486E-88E1-BA79BFBEDB4A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3C62B208-6588-4403-9DDA-9B833B2C123F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{3C62B208-6588-4403-9DDA-9B833B2C123F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3C62B208-6588-4403-9DDA-9B833B2C123F}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -75,6 +50,14 @@ Global
 		{C86EF0B7-4772-4B6E-876E-1A36B4259001}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C86EF0B7-4772-4B6E-876E-1A36B4259001}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C86EF0B7-4772-4B6E-876E-1A36B4259001}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E99132BB-F35D-44FB-885C-CCB4AEC1CF34}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E99132BB-F35D-44FB-885C-CCB4AEC1CF34}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E99132BB-F35D-44FB-885C-CCB4AEC1CF34}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E99132BB-F35D-44FB-885C-CCB4AEC1CF34}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C06628AF-EC29-42D9-A445-8F32FC949C11}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C06628AF-EC29-42D9-A445-8F32FC949C11}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C06628AF-EC29-42D9-A445-8F32FC949C11}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C06628AF-EC29-42D9-A445-8F32FC949C11}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

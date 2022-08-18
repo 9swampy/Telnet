@@ -12,6 +12,11 @@
   public partial class Client : BaseClient
   {
     /// <summary>
+    /// Gets and sets a value indicating whether the Client should write responses received by TerminatedRead out to the Console.
+    /// </summary>
+    public static bool IsWriteConsole { get; set; } = false;
+
+    /// <summary>
     /// Tries to login.
     /// </summary>
     /// <param name="userName">The user name.</param>
@@ -130,6 +135,13 @@
       var s = string.Empty;
       while (!Client.IsTerminatorLocated(terminator, s) && endTimeout >= DateTime.Now)
       {
+        var read = this.Read(TimeSpan.FromMilliseconds(millisecondSpin));
+        if (IsWriteConsole)
+        {
+          Console.Write(read);
+        }
+
+        s += read;
         s += this.Read(TimeSpan.FromMilliseconds(millisecondSpin));
       }
 
@@ -154,7 +166,7 @@
       var s = string.Empty;
       while (!Client.IsRegexLocated(regex, s) && endTimeout >= DateTime.Now)
       {
-        s += this.Read(TimeSpan.FromMilliseconds(1));
+        s += this.Read(TimeSpan.FromMilliseconds(millisecondSpin));
       }
 
       if (!Client.IsRegexLocated(regex, s))
