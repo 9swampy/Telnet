@@ -206,13 +206,17 @@
 
 #if ASYNC
         var response = await sut.ReadAsync(TimeSpan.FromMilliseconds(10)).ConfigureAwait(false);
+        A.CallTo(() => networkStream.WriteAsync(A<byte[]>.Ignored, 0, 3, A<CancellationToken>.Ignored))
+                            .WhenArgumentsMatch(o => o[0] is byte[] param && param[0] == (byte)Commands.InterpretAsCommand && param[1] == (byte)Commands.Will && param[2] == 3)
+                            .MustHaveHappened();
 #else
         var response = sut.Read(TimeSpan.FromMilliseconds(10));
+        A.CallTo(() => networkStream.Write(A<byte[]>.Ignored, 0, 3))
+                            .WhenArgumentsMatch(o => o[0] is byte[] param && param[0] == (byte)Commands.InterpretAsCommand && param[1] == (byte)Commands.Will && param[2] == 3)
+                            .MustHaveHappened();
 #endif
 
         response.Should().BeEmpty();
-        A.CallTo(() => networkStream.WriteByte((byte)Commands.InterpretAsCommand)).MustHaveHappened();
-        A.CallTo(() => networkStream.WriteByte((byte)Commands.Will)).MustHaveHappened();
       }
     }
 
@@ -246,13 +250,17 @@
           {
 #if ASYNC
             var response = await sut.ReadAsync(TimeSpan.FromMilliseconds(10)).ConfigureAwait(false);
+            A.CallTo(() => networkStream.WriteAsync(A<byte[]>.Ignored, 0, 3, A<CancellationToken>.Ignored))
+                .WhenArgumentsMatch(o => o[0] is byte[] param && param[0] == (byte)Commands.InterpretAsCommand && param[1] == (byte)Commands.Wont && param[2] == 1)
+                .MustHaveHappened();
 #else
             var response = sut.Read(TimeSpan.FromMilliseconds(10));
+            A.CallTo(() => networkStream.Write(A<byte[]>.Ignored, 0, 3))
+                .WhenArgumentsMatch(o => o[0] is byte[] param && param[0] == (byte)Commands.InterpretAsCommand && param[1] == (byte)Commands.Wont && param[2] == 1)
+                .MustHaveHappened();
 #endif
 
             response.Should().BeEmpty();
-            A.CallTo(() => networkStream.WriteByte((byte)Commands.InterpretAsCommand)).MustHaveHappened();
-            A.CallTo(() => networkStream.WriteByte((byte)Commands.Wont)).MustHaveHappened();
           }
         }
       }
@@ -301,9 +309,9 @@
 
     [TestMethod]
 #if ASYNC
-    public async Task WhenIacDont1ByteStreamShouldReturnEmptyAndReplyIacDont()
+    public async Task WhenIacDont1ByteStreamShouldReturnEmptyAndNotReply()
 #else
-    public void WhenIacDont1ByteStreamShouldReturnEmptyAndReplyIacDont()
+    public void WhenIacDont1ByteStreamShouldReturnEmptyAndNotReply()
 #endif
     {
       var socket = A.Fake<ISocket>();
@@ -334,8 +342,7 @@
 #endif
 
             response.Should().BeEmpty();
-            A.CallTo(() => networkStream.WriteByte((byte)Commands.InterpretAsCommand)).MustHaveHappened();
-            A.CallTo(() => networkStream.WriteByte((byte)Commands.Dont)).MustHaveHappened();
+            A.CallTo(() => networkStream.WriteByte(A<byte>.Ignored)).MustNotHaveHappened();
           }
         }
       }
@@ -343,9 +350,9 @@
 
     [TestMethod]
 #if ASYNC
-    public async Task WhenIacDontSgaByteStreamShouldReturnEmptyAndReplyIacDo()
+    public async Task WhenIacDontSgaByteStreamShouldReturnEmptyAndNotReply()
 #else
-    public void WhenIacDontSgaByteStreamShouldReturnEmptyAndReplyIacDo()
+    public void WhenIacDontSgaByteStreamShouldReturnEmptyAndNotReply()
 #endif
     {
       var socket = A.Fake<ISocket>();
@@ -374,10 +381,8 @@
 #else
             var response = sut.Read(TimeSpan.FromMilliseconds(10));
 #endif
-
             response.Should().BeEmpty();
-            A.CallTo(() => networkStream.WriteByte((byte)Commands.InterpretAsCommand)).MustHaveHappened();
-            A.CallTo(() => networkStream.WriteByte((byte)Commands.Do)).MustHaveHappened();
+            A.CallTo(() => networkStream.WriteByte(A<byte>.Ignored)).MustNotHaveHappened();
           }
         }
       }

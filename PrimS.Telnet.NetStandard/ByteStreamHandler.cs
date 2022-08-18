@@ -1,6 +1,7 @@
 ﻿namespace PrimS.Telnet
 {
   using System;
+  using System.Collections.Generic;
   using System.Text;
 #if ASYNC
   using System.Threading.Tasks;
@@ -20,6 +21,8 @@
         return this.byteStream.Available > 0;
       }
     }
+
+    internal int MillisecondReadDelay { get; set; } = 16;
 
     /// <summary>
     /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
@@ -73,9 +76,9 @@
     {
       var result = DateTime.Now < rollingTimeout;
 #if ASYNC
-      await Task.Delay(1, this.internalCancellation.Token).ConfigureAwait(false);
+      await Task.Delay(MillisecondReadDelay, this.internalCancellation.Token).ConfigureAwait(false);
 #else
-      System.Threading.Thread.Sleep(1);
+      System.Threading.Thread.Sleep(MillisecondReadDelay);
 #endif
       return result;
     }
@@ -95,27 +98,19 @@
           case -1:
             break;
           case (int)Commands.InterpretAsCommand:
-            // interpret as command
             var inputVerb = this.byteStream.ReadByte();
             if (inputVerb == -1)
             {
-              break;
+              // do nothing
             }
-
-            switch (inputVerb)
+            else if (inputVerb == 255)
             {
-              case (int)Commands.InterpretAsCommand:
-                // literal IAC = 255 escaped, so append char 255 to string
-                sb.Append(inputVerb);
-                break;
-              case (int)Commands.Do:
-              case (int)Commands.Dont:
-              case (int)Commands.Will:
-              case (int)Commands.Wont:
-                this.ReplyToCommand(inputVerb);
-                break;
-              default:
-                break;
+              // literal IAC = 255 escaped, so append char 255 to string
+              sb.Append(inputVerb);
+            }
+            else
+            {
+              this.InterpretNextAsCommand(inputVerb);
             }
 
             break;
@@ -167,26 +162,152 @@
     }
 
     /// <summary>
+    /// We received a TELNET command. Handle it.
+    /// </summary>
+    /// <param name="inputVerb">The command we received.</param>
+    private void InterpretNextAsCommand(int inputVerb)
+    {
+      System.Diagnostics.Debug.Write(Enum.GetName(typeof(Commands), inputVerb));
+      switch (inputVerb)
+      {
+        case (int)Commands.InterruptProcess:
+          System.Diagnostics.Debug.WriteLine("Interrupt Process (IP) received.");
+#if ASYNC
+          this.SendCancel();
+#endif
+          break;
+        case (int)Commands.Dont:
+        case (int)Commands.Wont:
+          // We should ignore Don't\Won't because that is the default state.
+          // Only reply on state change. This helps avoid loops.
+          // See RFC1143: https://tools.ietf.org/html/rfc1143
+          break;
+        case (int)Commands.Do:
+        case (int)Commands.Will:
+          this.ReplyToCommand(inputVerb);
+          break;
+        case (int)Commands.Subnegotiation:
+          this.PerformNegotiation();
+          break;
+        default:
+          break;
+      }
+    }
+
+    /// <summary>
+    /// We received a request to perform sub negotiation on a TELNET option.
+    /// </summary>
+    private void PerformNegotiation()
+    {
+      var inputOption = this.byteStream.ReadByte();
+      var subCommand = this.byteStream.ReadByte();
+
+      // ISSUE: We should loop here until IAC-SE but what is the exit condition if that never comes?
+      var shouldIAC = this.byteStream.ReadByte();
+      var shouldSE = this.byteStream.ReadByte();
+      if (subCommand == 1 && // Sub-negotiation SEND command.
+          shouldIAC == (int)Commands.InterpretAsCommand &&
+          shouldSE == (int)Commands.SubnegotiationEnd)
+      {
+        switch (inputOption)
+        {
+          case (int)Options.TerminalType:
+            var clientTerminalType = "vt100"; // This could be an environment variable
+            this.SendNegotiation(inputOption, clientTerminalType);
+            break;
+          case (int)Options.TerminalSpeed:
+            var clientTerminalSpeed = "19200,19200"; // This could be an environment variable
+            this.SendNegotiation(inputOption, clientTerminalSpeed);
+            break;
+          default:
+            // We don't handle other sub negotiation options yet.
+            System.Diagnostics.Debug.WriteLine("Request to negotiate: " + Enum.GetName(typeof(Options), inputOption));
+            break;
+        }
+      }
+      else
+      {
+        // If we get lost just send WONT to end the negotiation
+        var outBuffer = new byte[3];
+        outBuffer[0] = (byte)Commands.InterpretAsCommand;
+        outBuffer[1] = (byte)Commands.Wont;
+        outBuffer[2] = (byte)inputOption;
+#if ASYNC
+        this.byteStream.WriteAsync(outBuffer, 0, outBuffer.Length, this.internalCancellation.Token);
+#else
+        this.byteStream.Write(outBuffer, 0, outBuffer.Length);
+#endif
+      }
+    }
+
+    /// <summary>
+    /// Send the sub negotiation response to the server.
+    /// </summary>
+    /// <param name="inputOption">The option we are negotiating.</param>
+    /// <param name="optionMessage">The setting for that option.</param>
+    private void SendNegotiation(int inputOption, string optionMessage)
+    {
+      System.Diagnostics.Debug.WriteLine("Sending: " + Enum.GetName(typeof(Options), inputOption) + " Setting: " + optionMessage);
+      var myResponse = Encoding.ASCII.GetBytes(optionMessage);
+      var outBuffer = new List<byte>();
+      outBuffer.Add((byte)Commands.InterpretAsCommand);
+      outBuffer.Add((byte)Commands.Subnegotiation);
+      outBuffer.Add((byte)inputOption);
+      outBuffer.Add(0);  // "IS"
+      outBuffer.AddRange(myResponse);
+      outBuffer.Add((byte)Commands.InterpretAsCommand);
+      outBuffer.Add((byte)Commands.SubnegotiationEnd);
+#if ASYNC
+      this.byteStream.WriteAsync(outBuffer.ToArray(), 0, outBuffer.Count, this.internalCancellation.Token);
+#else
+      this.byteStream.Write(outBuffer.ToArray(), 0, outBuffer.Count);
+#endif
+    }
+
+    /// <summary>
     /// Send TELNET command response to the server.
     /// </summary>
     /// <param name="inputVerb">The TELNET command we received.</param>
     private void ReplyToCommand(int inputVerb)
     {
-      // reply to all commands with "WONT", unless it is SGA (suppress go ahead)
+      // reply to all commands with "WONT\DONT", unless it is SGA (suppress go ahead), Terminal Type, or Terminal Speed.
       var inputOption = this.byteStream.ReadByte();
       if (inputOption != -1)
       {
-        this.byteStream.WriteByte((byte)Commands.InterpretAsCommand);
-        if (inputOption == (int)Options.SuppressGoAhead)
+        System.Diagnostics.Debug.WriteLine(Enum.GetName(typeof(Options), inputOption));
+        var outBuffer = new byte[3];
+        outBuffer[0] = (byte)Commands.InterpretAsCommand;
+        switch (inputOption)
         {
-          this.byteStream.WriteByte(inputVerb == (int)Commands.Do ? (byte)Commands.Will : (byte)Commands.Do);
-        }
-        else
-        {
-          this.byteStream.WriteByte(inputVerb == (int)Commands.Do ? (byte)Commands.Wont : (byte)Commands.Dont);
+          case (int)Options.SuppressGoAhead:
+            outBuffer[1] = inputVerb == (int)Commands.Do ? (byte)Commands.Will : (byte)Commands.Do;
+            break;
+          case (int)Options.TerminalType:
+            outBuffer[1] = inputVerb == (int)Commands.Do ? (byte)Commands.Will : (byte)Commands.Do;
+            break;
+          case (int)Options.TerminalSpeed:
+            outBuffer[1] = inputVerb == (int)Commands.Do ? (byte)Commands.Will : (byte)Commands.Do;
+            break;
+          case (int)Options.WindowSize:
+            outBuffer[1] = inputVerb == (int)Commands.Do ? (byte)Commands.Will : (byte)Commands.Do;
+            break;
+          default:
+            outBuffer[1] = inputVerb == (int)Commands.Do ? (byte)Commands.Wont : (byte)Commands.Dont;
+            break;
         }
 
-        this.byteStream.WriteByte((byte)inputOption);
+        outBuffer[2] = (byte)inputOption;
+#if ASYNC
+        this.byteStream.WriteAsync(outBuffer, 0, outBuffer.Length, this.internalCancellation.Token);
+#else
+        this.byteStream.Write(outBuffer, 0, outBuffer.Length);
+#endif
+
+        if (inputOption == (int)Options.WindowSize)
+        {  // NAWS needs to be sent immediately because the server doesn't request subnegotiation.
+          var clientNAWS = ((char)132 + (char)0 + (char)24).ToString(); // This could be an environment variable
+          this.SendNegotiation(inputOption, clientNAWS);
+        }
       }
     }
 
@@ -198,7 +319,7 @@
     {
       return this.IsResponsePending || IsWaitForInitialResponse(endInitialTimeout, isInitialResponseReceived) ||
 #if ASYNC
-await this.IsWaitForIncrementalResponse(rollingTimeout).ConfigureAwait(false);
+      await this.IsWaitForIncrementalResponse(rollingTimeout).ConfigureAwait(false);
 #else
       this.IsWaitForIncrementalResponse(rollingTimeout);
 #endif

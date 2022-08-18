@@ -16,7 +16,7 @@
     /// <param name="port">The port.</param>
     public TcpClient(string hostName, int port)
     {
-#if NET451
+#if NET462
       this.client = new System.Net.Sockets.TcpClient(hostName, port);
 #else
       this.client = new System.Net.Sockets.TcpClient();
@@ -93,7 +93,7 @@
     /// </summary>
     public void Close()
     {
-#if NET451
+#if NET462
       this.client.Close();
 #else
       this.client.Dispose();
@@ -115,7 +115,7 @@
     {
       if (isDisposing)
       {
-#if NET451
+#if NET461
         this.client.Close();
 #else
         this.client.Dispose();
