@@ -32,6 +32,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrimS.Telnet.Sync", "PrimS.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrimS.Telnet.Sync.CiTests", "PrimS.Telnet.Sync.CiTests\PrimS.Telnet.Sync.CiTests.csproj", "{C06628AF-EC29-42D9-A445-8F32FC949C11}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{CB09D5D1-A0A1-4190-91A6-F259E60AAC72}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{49C8DB0D-CA4C-402C-9A7D-4AB0A6268472}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\build.yml = .github\workflows\build.yml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -61,6 +68,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{49C8DB0D-CA4C-402C-9A7D-4AB0A6268472} = {CB09D5D1-A0A1-4190-91A6-F259E60AAC72}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2BE0BC56-5673-4BC5-AB2A-2645AD51175C}

@@ -19,7 +19,7 @@
         using (Client client = new Client(server.IPAddress.ToString(), server.Port, new System.Threading.CancellationToken()))
         {
           client.IsConnected.Should().Be(true);
-          Client.IsWriteConsole = true;
+          Client.IsWriteConsole = false;
           (await client.TryLoginAsync("username", "password", TimeoutMs)).Should().Be(true);
           await client.WriteLineAsync("show statistic wan2");
           string s = await client.TerminatedReadAsync(">", TimeSpan.FromMilliseconds(TimeoutMs));
