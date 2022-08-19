@@ -1,8 +1,5 @@
-[![][build-img]][build]
+[![Build, Publish, Tag](https://github.com/9swampy/Telnet/actions/workflows/build.yml/badge.svg)](https://github.com/9swampy/Telnet/actions/workflows/build.yml)
 [![][nuget-img]][nuget]
-
-[build]:     https://ci.appveyor.com/project/9swampy/telnet
-[build-img]: https://ci.appveyor.com/api/projects/status/a85v943mb52y0gii?svg=true
 
 [nuget]:     https://badge.fury.io/nu/telnet
 [nuget-img]: https://badge.fury.io/nu/telnet.svg
@@ -10,13 +7,18 @@
 Telnet
 ======
 
-
-
-I needed to issue simple commands to (and monitor) a router remotely and that's what I've been able to achieve with this 
+We needed to issue simple commands to (and monitor) a router remotely and that's what we've been able to achieve with this 
 little library. It's usage is simple, it doesn't do anything particularly fancy but if all you're wanting to do is interact
-with a telnet server by issuing commands, parsing text responses and having the opportunity to respond in code accordingly then hopefully having taken the time to wrap this up in a simple NuGet package will make your life easier!
+with a telnet server by issuing commands, parsing text responses and having the opportunity to respond in code accordingly
+then hopefully having taken the time to wrap this up in a simple NuGet package will make your life easier!
 
-FWIW I'm happy to take merge requests and if I can help out with bugs or feature requests I'll do what I can, outside my day job ofc!
+FWIW I'm happy to take merge requests if they meet incumbent standards, don't break anything and accomodate the code file
+sharing so all versions work (and likely receive the same change). I'm no TCPIP/Telnet expert but if I can help out with
+bugs or feature requests I'll do what I can, outside my day job ofc!
+
+v0.9 introduced a significant bump to Net versions and some potentially breaking code changes. Changes to your consuming
+code should be minimal, but be prepared to test thoroughly. Please raise an Issue if you encounter any problems; in part
+it'll help others with the same problems and we'll see what we can do to accomodate your use cases.
 
 Usage:
 ```C# Sync

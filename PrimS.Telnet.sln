@@ -18,8 +18,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionIt
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 		.gitignore = .gitignore
-		appveyor.CiBuild.yml = appveyor.CiBuild.yml
-		appveyor.Release.yml = appveyor.Release.yml
 		README.md = README.md
 		Settings.StyleCop = Settings.StyleCop
 	EndProjectSection

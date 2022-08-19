@@ -1,8 +1,8 @@
-name: Build & Publish master
+name: Build, Publish, Tag
 
 on:
   push:
-    branches: [ "master", "develop", "release/**" ]
+    branches: [ "master", "release/**", "GitTag" ]
   pull_request:
     branches: [ "master", "develop" ]
 
@@ -73,4 +73,13 @@ jobs:
       run: nuget pack Telnet.nuspec -Version $Env:FullSemVer
 
     - name: Publish to GitHub packages 
-      run: dotnet nuget push "Telnet.$Env:FullSemVer.nupkg" --api-key ${{ secrets.PUBLISH_TO_GITHUB_PACKAGES }}  --source "https://nuget.pkg.github.com/9swampy/index.json"
+      run: dotnet nuget push "Telnet.$Env:SemVer.nupkg" --api-key ${{ secrets.PUBLISH_TO_GITHUB_PACKAGES }}  --source "https://nuget.pkg.github.com/9swampy/index.json"
+      
+    - name: Setup Git User
+      uses: fregante/setup-git-user@v1.1.0
+
+    - name: Git tag
+      run: |
+        git tag v$Env:FullSemVer
+        git push origin v$Env:FullSemVer
+
