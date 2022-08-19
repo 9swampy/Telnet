@@ -1,12 +1,18 @@
 ﻿namespace PrimS.Telnet
 {
   using System;
+#if ASYNC
+  using Microsoft.VisualStudio.Threading;
+#endif
 
   /// <summary>
   /// A TcpClient to connect to the specified socket.
   /// </summary>
   public class TcpClient : ISocket, IDisposable
   {
+#if ASYNC
+    private static readonly JoinableTaskContext joinableTaskContext = new JoinableTaskContext();
+#endif
     private readonly System.Net.Sockets.TcpClient client;
 
     /// <summary>
@@ -28,7 +34,7 @@
       // Adding something awaitable on this class to connect or wait for connection
       // would break backward compatibility and require a lot of refactoring.
       // This will do for now.
-      var nowait = this.client.ConnectAsync(hostName, port);
+      joinableTaskContext.Factory.Run(async () => await this.client.ConnectAsync(hostName, port).ConfigureAwait(false));
 #endif
     }
 

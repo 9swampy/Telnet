@@ -4,6 +4,7 @@
   using System.Text.RegularExpressions;
   using System.Threading;
   using System.Threading.Tasks;
+  using Microsoft.VisualStudio.Threading;
 
   // Referencing https://support.microsoft.com/kb/231866?wa=wsignin1.0 and http://www.codeproject.com/Articles/19071/Quick-tool-A-minimalistic-Telnet-library got me started
 
@@ -12,6 +13,11 @@
   /// </summary>
   public partial class Client : BaseClient
   {
+    private static readonly JoinableTaskContext joinableTaskContext = new JoinableTaskContext();
+
+    /// <summary>
+    /// Gets or sets a flag that indicates whether TerminatedReadAsync should write to the console.
+    /// </summary>
     public static bool IsWriteConsole { get; set; } = false;
 
     /// <summary>
@@ -72,11 +78,7 @@
       supressGoAhead[0] = (byte)Commands.InterpretAsCommand;
       supressGoAhead[1] = (byte)Commands.Do;
       supressGoAhead[2] = (byte)Options.SuppressGoAhead;
-#if ASYNC
-      Task.Run(async () => await ByteStream.WriteAsync(supressGoAhead, 0, supressGoAhead.Length, InternalCancellation.Token)).Wait();
-#else
-      this.byteStream.Write(supressGoAhead, 0, outBuffer.Length);
-#endif
+      joinableTaskContext.Factory.Run(async () => await ByteStream.WriteAsync(supressGoAhead, 0, supressGoAhead.Length, InternalCancellation.Token));
     }
 
     /// <summary>
@@ -272,11 +274,6 @@
       while (!isTerminated(s) && endTimeout >= DateTime.Now)
       {
         var read = await this.ReadAsync(TimeSpan.FromMilliseconds(millisecondSpin)).ConfigureAwait(false);
-        if (IsWriteConsole)
-        {
-          Console.Write(read);
-        }
-
         s += read;
       }
 

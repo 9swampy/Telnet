@@ -12,7 +12,7 @@
   public partial class Client : BaseClient
   {
     /// <summary>
-    /// Gets and sets a value indicating whether the Client should write responses received by TerminatedRead out to the Console.
+    /// Gets and sets a value indicating whether the <see cref="Client"/> should write responses received by <see cref="ByteStreamHandler"/>.Read to the Console.
     /// </summary>
     public static bool IsWriteConsole { get; set; } = false;
 
@@ -136,11 +136,6 @@
       while (!Client.IsTerminatorLocated(terminator, s) && endTimeout >= DateTime.Now)
       {
         var read = this.Read(TimeSpan.FromMilliseconds(millisecondSpin));
-        if (IsWriteConsole)
-        {
-          Console.Write(read);
-        }
-
         s += read;
         s += this.Read(TimeSpan.FromMilliseconds(millisecondSpin));
       }

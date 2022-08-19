@@ -52,6 +52,7 @@
       {
         using (var sut = new TcpByteStream(server.IPAddress.ToString(), server.Port))
         {
+          sut.Connected.Should().BeTrue();
           Action act = () => sut.WriteByte(writtenByte);
           act.Should().NotThrow();
         }

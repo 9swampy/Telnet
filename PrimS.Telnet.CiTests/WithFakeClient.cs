@@ -16,6 +16,7 @@
     [TestMethod]
     public async Task GivenByteStreamWillNeverRespondWhenTerminatedReadShouldWaitRoughlyOneTimeout()
     {
+      var millisecondTolerance = 30;
       var byteStream = A.Fake<IByteStream>();
       A.CallTo(() => byteStream.Connected).Returns(true);
 
@@ -25,7 +26,7 @@
         var timeout = new TimeSpan(0, 0, 2);
         sut.MillisecondReadDelay = 1;
         await sut.TerminatedReadAsync(".", timeout, 1).ConfigureAwait(false);
-        DateTime.Now.Subtract(start).Should().BeCloseTo(timeout, TimeSpan.FromMilliseconds(30));
+        DateTime.Now.Subtract(start).Should().BeCloseTo(timeout.Add(TimeSpan.FromMilliseconds(millisecondTolerance)), TimeSpan.FromMilliseconds(millisecondTolerance));
       }
     }
 
@@ -33,6 +34,7 @@
     public async Task ShouldWaitRoughlyOneMillisecondSpin()
     {
       var millisecondsSpin = 1500;
+      var millisecondTolerance = 250;
       bool hasResponded = false;
       var stopwatch = new Stopwatch();
       var byteStream = ArrangeByteStreamToRespondWithTerminationOnceAfterMillisecondSpin();
@@ -42,7 +44,7 @@
         stopwatch.Start();
         await sut.TerminatedReadAsync(".", new TimeSpan(0, 0, 0, 3), millisecondsSpin).ConfigureAwait(false);
 
-        stopwatch.Elapsed.Should().BeCloseTo(TimeSpan.FromMilliseconds(millisecondsSpin + 150), TimeSpan.FromMilliseconds(200));
+        stopwatch.Elapsed.Should().BeCloseTo(TimeSpan.FromMilliseconds(millisecondsSpin + millisecondTolerance), TimeSpan.FromMilliseconds(millisecondTolerance));
       }
 
       IByteStream ArrangeByteStreamToRespondWithTerminationOnceAfterMillisecondSpin()

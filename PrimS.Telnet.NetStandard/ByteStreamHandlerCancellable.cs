@@ -83,7 +83,14 @@
       this.IsResponseAnticipated(IsInitialResponseReceived(sb), endInitialTimeout, rollingTimeout));
 #endif
       LogIfTimeoutExpired(endInitialTimeout);
-      return sb.ToString();
+
+      var read = sb.ToString();
+      if (Client.IsWriteConsole)
+      {
+        Console.Write(read);
+      }
+
+      return read;
     }
 
     /// <summary>
