@@ -1,4 +1,4 @@
-﻿namespace PrimS.Telnet.CiTests
+﻿namespace PrimS.Telnet.Sync.CiTests
 {
   using System;
   using FakeItEasy;

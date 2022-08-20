@@ -38,7 +38,7 @@
     {
       get
       {
-        return this.byteStream.Connected;
+        return byteStream.Connected;
       }
     }
 
@@ -49,7 +49,7 @@
     {
       get
       {
-        return this.byteStream;
+        return byteStream;
       }
     }
 
@@ -60,7 +60,7 @@
     {
       try
       {
-        this.Dispose(true);
+        Dispose(true);
         GC.SuppressFinalize(this);
       }
 #pragma warning disable RCS1075 // Avoid empty catch clause that catches System.Exception.

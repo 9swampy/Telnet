@@ -5,6 +5,7 @@ on:
     branches: [ "master", "release/**", "GitTag" ]
   pull_request:
     branches: [ "master", "develop" ]
+  workflow_dispatch:
 
 jobs:
 

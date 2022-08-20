@@ -2,7 +2,6 @@
 {
   using System;
   using System.Diagnostics.CodeAnalysis;
-  using System.Threading;
   using FakeItEasy;
   using FluentAssertions;
   using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -17,7 +16,7 @@
       var byteStream = A.Fake<IByteStream>();
       A.CallTo(() => byteStream.Connected).Returns(false);
       Client sut = null;
-      Action act = () => sut = new Client(byteStream, default(CancellationToken), new TimeSpan(0, 0, 0, 0, 1));
+      Action act = () => sut = new Client(byteStream, default, new TimeSpan(0, 0, 0, 0, 1));
 
       act.Should().Throw<InvalidOperationException>().WithMessage("Unable to connect to the host.");
       sut.Should().BeNull();

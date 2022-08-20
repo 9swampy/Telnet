@@ -26,9 +26,12 @@
     protected BaseClient(IByteStream byteStream, CancellationToken token)
     {
       this.byteStream = byteStream;
-      this.sendRateLimit = new SemaphoreSlim(1);
-      this.internalCancellation = new CancellationTokenSource();
-      token.Register(() => this.SendCancel());
+      sendRateLimit = new SemaphoreSlim(1);
+      internalCancellation = new CancellationTokenSource();
+      token.Register(() =>
+      {
+        SendCancel();
+      });
     }
 
     /// <summary>
@@ -38,7 +41,7 @@
     {
       get
       {
-        return this.sendRateLimit;
+        return sendRateLimit;
       }
     }
 
@@ -49,7 +52,7 @@
     {
       get
       {
-        return this.internalCancellation;
+        return internalCancellation;
       }
     }
 
@@ -60,10 +63,7 @@
     {
       try
       {
-        if (this.internalCancellation != null)
-        {
-          this.internalCancellation.Cancel();
-        }
+        internalCancellation?.Cancel();
       }
       catch (Exception ex)
       {
@@ -79,17 +79,17 @@
     {
       if (disposing)
       {
-        this.ByteStream.Close();
-        this.sendRateLimit.Dispose();
-        if (!this.internalCancellation.IsCancellationRequested)
+        ByteStream.Close();
+        sendRateLimit.Dispose();
+        if (!internalCancellation.IsCancellationRequested)
         {
-          this.SendCancel();
+          SendCancel();
         }
 
-        this.internalCancellation.Dispose();
+        internalCancellation.Dispose();
       }
 
-      var are = new System.Threading.AutoResetEvent(false);
+      var are = new AutoResetEvent(false);
       are.WaitOne(100);
     }
   }
