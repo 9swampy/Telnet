@@ -26,9 +26,12 @@
     protected BaseClient(IByteStream byteStream, CancellationToken token)
     {
       this.byteStream = byteStream;
-      this.sendRateLimit = new SemaphoreSlim(1);
-      this.internalCancellation = new CancellationTokenSource();
-      token.Register(() => this.SendCancel());
+      sendRateLimit = new SemaphoreSlim(1);
+      internalCancellation = new CancellationTokenSource();
+      token.Register(() =>
+      {
+        SendCancel();
+      });
     }
 
     /// <summary>
@@ -38,7 +41,7 @@
     {
       get
       {
-        return this.sendRateLimit;
+        return sendRateLimit;
       }
     }
 
@@ -49,7 +52,7 @@
     {
       get
       {
-        return this.internalCancellation;
+        return internalCancellation;
       }
     }
 
@@ -58,17 +61,16 @@
     /// </summary>
     protected void SendCancel()
     {
+#pragma warning disable CA1031 // Do not catch general exception types
       try
       {
-        if (this.internalCancellation != null)
-        {
-          this.internalCancellation.Cancel();
-        }
+        internalCancellation?.Cancel();
       }
       catch (Exception ex)
       {
         System.Diagnostics.Debug.WriteLine(ex.Message);
       }
+#pragma warning restore CA1031 // Do not catch general exception types
     }
 
     /// <summary>
@@ -79,18 +81,20 @@
     {
       if (disposing)
       {
-        this.ByteStream.Close();
-        this.sendRateLimit.Dispose();
-        if (!this.internalCancellation.IsCancellationRequested)
+        ByteStream.Close();
+        sendRateLimit.Dispose();
+        if (!internalCancellation.IsCancellationRequested)
         {
-          this.SendCancel();
+          SendCancel();
         }
 
-        this.internalCancellation.Dispose();
+        internalCancellation.Dispose();
       }
 
-      var are = new System.Threading.AutoResetEvent(false);
-      are.WaitOne(100);
+      using (var are = new AutoResetEvent(false))
+      {
+        are.WaitOne(100);
+      }
     }
   }
 }

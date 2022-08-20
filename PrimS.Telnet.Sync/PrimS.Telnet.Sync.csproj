@@ -12,6 +12,7 @@
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
+    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -22,6 +23,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
+    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -32,10 +34,14 @@
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Release\PrimS.Telnet.Sync.xml</DocumentationFile>
     <Prefer32Bit>false</Prefer32Bit>
+    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net461\System.ValueTuple.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -55,8 +61,14 @@
     <Compile Include="..\PrimS.Telnet.NetStandard\ByteStreamHandlerCancellable.cs">
       <Link>ByteStreamHandlerCancellable.cs</Link>
     </Compile>
+    <Compile Include="..\PrimS.Telnet.NetStandard\Client_Config.cs">
+      <Link>Client_Config.cs</Link>
+    </Compile>
     <Compile Include="..\PrimS.Telnet.NetStandard\Commands.cs">
       <Link>Commands.cs</Link>
+    </Compile>
+    <Compile Include="..\PrimS.Telnet.NetStandard\Guard.cs">
+      <Link>Guard.cs</Link>
     </Compile>
     <Compile Include="..\PrimS.Telnet.NetStandard\IByteStream.cs">
       <Link>IByteStream.cs</Link>
@@ -67,9 +79,6 @@
     <Compile Include="..\PrimS.Telnet.NetStandard\INetworkStream.cs">
       <Link>INetworkStream.cs</Link>
     </Compile>
-    <Compile Include="..\PrimS.Telnet.NetStandard\IsNotDeadCodeAttribute.cs">
-      <Link>IsNotDeadCodeAttribute.cs</Link>
-    </Compile>
     <Compile Include="..\PrimS.Telnet.NetStandard\ISocket.cs">
       <Link>ISocket.cs</Link>
     </Compile>
@@ -78,6 +87,9 @@
     </Compile>
     <Compile Include="..\PrimS.Telnet.NetStandard\Options.cs">
       <Link>Options.cs</Link>
+    </Compile>
+    <Compile Include="..\PrimS.Telnet.NetStandard\PreprocessorAsyncAdapter.cs">
+      <Link>PreprocessorAsyncAdapter.cs</Link>
     </Compile>
     <Compile Include="..\PrimS.Telnet.NetStandard\TcpByteStream.cs">
       <Link>TcpByteStream.cs</Link>

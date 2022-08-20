@@ -12,7 +12,18 @@
   /// </summary>
   public partial class ByteStreamHandler
   {
+    private readonly bool isCancellationTokenOwned;
     private readonly CancellationTokenSource internalCancellation;
+
+    /// <summary>
+    /// Initialises a new instance of the <see cref="ByteStreamHandler"/> class.
+    /// </summary>
+    /// <param name="byteStream">The byteStream to handle.</param>
+    public ByteStreamHandler(IByteStream byteStream)
+      : this(byteStream, new CancellationTokenSource(), Client.DefaultMillisecondReadDelay)
+    {
+      isCancellationTokenOwned = true;
+    }
 
     /// <summary>
     /// Initialises a new instance of the <see cref="ByteStreamHandler"/> class.
@@ -40,7 +51,7 @@
     {
       get
       {
-        return this.internalCancellation.Token.IsCancellationRequested;
+        return internalCancellation.Token.IsCancellationRequested;
       }
     }
 
@@ -60,30 +71,41 @@
     public string Read(TimeSpan timeout)
 #endif
     {
-      if (!this.byteStream.Connected || this.internalCancellation.Token.IsCancellationRequested)
+      if (!byteStream.Connected || internalCancellation.Token.IsCancellationRequested)
       {
         return string.Empty;
       }
 
       var sb = new StringBuilder();
-      this.byteStream.ReceiveTimeout = (int)timeout.TotalMilliseconds;
+      byteStream.ReceiveTimeout = (int)timeout.TotalMilliseconds;
       var endInitialTimeout = DateTime.Now.Add(timeout);
       var rollingTimeout = ExtendRollingTimeout(timeout);
       do
       {
-        if (this.RetrieveAndParseResponse(sb))
+        if (
+#if ASYNC
+         await
+#endif
+         PreprocessorAsyncAdapter.ExecuteWithConfigureAwait<bool>(() => RetrieveAndParseResponse(sb)))
         {
           rollingTimeout = ExtendRollingTimeout(timeout);
         }
       }
-      while (!this.IsCancellationRequested &&
+      while (!IsCancellationRequested &&
 #if ASYNC
-      await this.IsResponseAnticipated(IsInitialResponseReceived(sb), endInitialTimeout, rollingTimeout).ConfigureAwait(false));
+      await IsResponseAnticipated(IsInitialResponseReceived(sb), endInitialTimeout, rollingTimeout).ConfigureAwait(false));
 #else
-      this.IsResponseAnticipated(IsInitialResponseReceived(sb), endInitialTimeout, rollingTimeout));
+      IsResponseAnticipated(IsInitialResponseReceived(sb), endInitialTimeout, rollingTimeout));
 #endif
-      LogIfTimeoutExpired(rollingTimeout);
-      return sb.ToString();
+      LogIfTimeoutExpired(endInitialTimeout);
+
+      var read = sb.ToString();
+      if (Client.IsWriteConsole)
+      {
+        Console.Write(read);
+      }
+
+      return read;
     }
 
     /// <summary>
@@ -93,10 +115,7 @@
     {
       try
       {
-        if (this.internalCancellation != null)
-        {
-          this.internalCancellation.Cancel();
-        }
+        internalCancellation?.Cancel();
       }
       catch (Exception ex)
       {
@@ -104,11 +123,11 @@
       }
     }
 
-    private static void LogIfTimeoutExpired(DateTime rollingTimeout)
+    private static void LogIfTimeoutExpired(DateTime timeout)
     {
-      if (IsRollingTimeoutExpired(rollingTimeout))
+      if (IsTimeoutExpired(timeout))
       {
-        System.Diagnostics.Debug.WriteLine("RollingTimeout exceeded {0}", DateTime.Now.ToString("ss:fff"));
+        System.Diagnostics.Debug.WriteLine("Timeout exceeded {0}", DateTime.Now.ToString("ss:fff"));
       }
     }
   }

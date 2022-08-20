@@ -23,7 +23,7 @@ namespace PrimS.Telnet
     /// </summary>
     /// <param name="value">The value to write.</param>
     void WriteByte(byte value);
-    
+
 #if ASYNC
     /// <summary>
     /// Writes the specified buffer.

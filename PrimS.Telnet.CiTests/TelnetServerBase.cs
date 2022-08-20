@@ -1,4 +1,8 @@
-﻿namespace PrimS.Telnet.CiTests
+﻿#if NetStandard || NET6_0_OR_GREATER
+namespace PrimS.Telnet.CiTests
+#else
+namespace PrimS.Telnet.Sync.CiTests
+#endif
 {
   using System;
   using System.Diagnostics.CodeAnalysis;
@@ -17,20 +21,20 @@
     protected TelnetServerBase(string expectedLineFeedTerminator)
       : base(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)
     {
-      this.IsListening = true;
+      IsListening = true;
       this.expectedLineFeedTerminator = expectedLineFeedTerminator;
 
       var ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
-      this.IPAddress = ipHostInfo.AddressList.First(o => o.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork);
-      this.Port = 11000;
+      IPAddress = ipHostInfo.AddressList.First(o => o.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork);
+      Port = 11000;
 
-      this.t = new System.Threading.Thread(new System.Threading.ThreadStart(this.SpinListen));
-      this.t.Start();
+      t = new System.Threading.Thread(new System.Threading.ThreadStart(SpinListen));
+      t.Start();
     }
 
     protected override void Dispose(bool disposing)
     {
-      this.IsListening = false;
+      IsListening = false;
       base.Dispose(disposing);
       System.Threading.Thread.Sleep(10);
     }
@@ -39,10 +43,10 @@
 
     public void StopListening()
     {
-      this.IsListening = false;
+      IsListening = false;
     }
 
-    private static string data = null;
+    //private static string data = null;
     private readonly TimeSpan spinWait = TimeSpan.FromMilliseconds(10);
 
     public IPAddress IPAddress { get; private set; }
@@ -51,40 +55,40 @@
 
     private void SpinListen()
     {
+#pragma warning disable CA1031 // Do not catch general exception types
       try
       {
         // Start listening for connections.
-        var localEndPoint = new IPEndPoint(this.IPAddress, this.Port);
-        this.Bind(localEndPoint);
-        this.Listen(10);
+        var localEndPoint = new IPEndPoint(IPAddress, Port);
+        Bind(localEndPoint);
+        Listen(10);
 
-        while (this.IsListening)
+        while (IsListening)
         {
           Console.WriteLine("Waiting for a connection...");
-          var handler = this.Accept();
-          data = null;
+          var handler = Accept();
 
           Console.WriteLine("Connection made, respond with Account: prompt");
           handler.Send(Encoding.ASCII.GetBytes("Account:"));
 
-          this.WaitFor(handler, $"username{this.expectedLineFeedTerminator}");
+          WaitFor(handler, $"username{expectedLineFeedTerminator}");
 
           Console.WriteLine("Account entered, respond with Password: prompt");
           handler.Send(Encoding.ASCII.GetBytes("Password:"));
 
-          this.WaitFor(handler, $"password{this.expectedLineFeedTerminator}");
+          WaitFor(handler, $"password{expectedLineFeedTerminator}");
 
           Console.WriteLine("Password entered, respond with Command> prompt");
           handler.Send(Encoding.ASCII.GetBytes("Command >"));
 
-          this.WaitFor(handler, $"show statistic wan2{this.expectedLineFeedTerminator}");
+          WaitFor(handler, $"show statistic wan2{expectedLineFeedTerminator}");
 
           Console.WriteLine("Command entered, respond with WAN2 terminated reply");
           handler.Send(Encoding.ASCII.GetBytes("show statistic wan2\n\r WAN1 total TX: 0 Bytes ,RX: 0 Bytes \n\r WAN2 total TX: 6.3 GB ,RX: 6.9 GB \n\r WAN3 total TX: 0 Bytes ,RX: 0 Bytes \n\r WAN4 total TX: 0 Bytes ,RX: 0 Bytes \n\r WAN5 total TX: 0 Bytes ,RX: 0 Bytes \n\r>"));
 
           //handler.Send(new byte[] { (byte)PrimS.Telnet.Commands.InterpretAsCommand, (byte)PrimS.Telnet.Commands.Do });
 
-          while (this.IsListening)
+          while (IsListening)
           {
             System.Threading.Thread.Sleep(100);
           }
@@ -96,31 +100,32 @@
       {
         Console.WriteLine(e.ToString());
       }
+#pragma warning restore CA1031 // Do not catch general exception types
     }
 
     private void WaitFor(Socket handler, string awaitedResponse)
     {
-      data = string.Empty;
+      var data = string.Empty;
       while (true)
       {
-        ReceiveResponse(handler);
-        if (this.IsResponseReceived(data, awaitedResponse))
+        data += ReceiveResponse(handler);
+        if (IsResponseReceived(data, awaitedResponse))
         {
           break;
         }
       }
     }
 
-    private static void ReceiveResponse(Socket handler)
+    private static string ReceiveResponse(Socket handler)
     {
       var bytes = new byte[1024];
       var bytesRec = handler.Receive(bytes);
-      data += Encoding.ASCII.GetString(bytes, 0, bytesRec).Trim((char)255);
+      return Encoding.ASCII.GetString(bytes, 0, bytesRec).Trim((char)255);
     }
 
     private bool IsResponseReceived(string currentResponse, string responseAwaited)
     {
-#if NetStandard
+#if (NetStandard || NET6_0_OR_GREATER) && !Net48
       if (currentResponse.Contains(responseAwaited, StringComparison.InvariantCulture))
 #else
       if (currentResponse.Contains(responseAwaited))
@@ -134,7 +139,7 @@
       {
         System.Diagnostics.Debug.Print("Waiting for {1} response, received {0}", currentResponse, responseAwaited);
         Console.WriteLine("Waiting for {1} response, received {0}", currentResponse, responseAwaited);
-        System.Threading.Thread.Sleep(this.spinWait);
+        System.Threading.Thread.Sleep(spinWait);
         return false;
       }
     }

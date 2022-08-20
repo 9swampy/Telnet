@@ -1,4 +1,8 @@
-﻿namespace PrimS.Telnet.CiTests
+﻿#if NetStandard || NET6_0_OR_GREATER
+namespace PrimS.Telnet.CiTests
+#else
+namespace PrimS.Telnet.Sync.CiTests
+#endif
 {
   using System;
   using System.Diagnostics;
@@ -22,7 +26,7 @@
     public void UnconnectedByteStreamShouldReturnEmptyResponse()
 #endif
     {
-      var sut = new ByteStreamHandler(A.Fake<IByteStream>(), new CancellationTokenSource());
+      using var sut = new ByteStreamHandler(A.Fake<IByteStream>());
 #if ASYNC
       (await sut.ReadAsync(new TimeSpan()).ConfigureAwait(false)).Should().Be(string.Empty);
 #else
@@ -52,10 +56,10 @@
           }
           return 0;
         });
-        var tcpByteStream = new TcpByteStream(socket);
+        using var tcpByteStream = new TcpByteStream(socket);
         A.CallTo(() => networkStream.ReadByte()).ReturnsNextFromSequence(-1);
         tcpByteStream.Connected.Should().BeTrue();
-        var sut = new ByteStreamHandler(tcpByteStream, new CancellationTokenSource());
+        using var sut = new ByteStreamHandler(tcpByteStream);
 
 #if ASYNC
         var response = await sut.ReadAsync(TimeSpan.FromMilliseconds(10)).ConfigureAwait(false);
@@ -89,10 +93,10 @@
           }
           return 0;
         });
-        var tcpByteStream = new TcpByteStream(socket);
+        using var tcpByteStream = new TcpByteStream(socket);
         A.CallTo(() => networkStream.ReadByte()).ReturnsNextFromSequence(65);
         tcpByteStream.Connected.Should().BeTrue();
-        var sut = new ByteStreamHandler(tcpByteStream, new CancellationTokenSource());
+        using var sut = new ByteStreamHandler(tcpByteStream);
 
 #if ASYNC
         var response = await sut.ReadAsync(TimeSpan.FromMilliseconds(10)).ConfigureAwait(false);
@@ -126,10 +130,10 @@
           }
           return 0;
         });
-        var tcpByteStream = new TcpByteStream(socket);
+        using var tcpByteStream = new TcpByteStream(socket);
         A.CallTo(() => networkStream.ReadByte()).ReturnsNextFromSequence(new int[] { (int)Commands.InterpretAsCommand, (int)Commands.InterpretAsCommand });
         tcpByteStream.Connected.Should().BeTrue();
-        var sut = new ByteStreamHandler(tcpByteStream, new CancellationTokenSource());
+        using var sut = new ByteStreamHandler(tcpByteStream);
 
 #if ASYNC
         var response = await sut.ReadAsync(TimeSpan.FromMilliseconds(10)).ConfigureAwait(false);
@@ -162,10 +166,10 @@
           }
           return 0;
         });
-        var tcpByteStream = new TcpByteStream(socket);
+        using var tcpByteStream = new TcpByteStream(socket);
         A.CallTo(() => networkStream.ReadByte()).ReturnsNextFromSequence(new int[] { (int)Commands.InterpretAsCommand, -1 });
         tcpByteStream.Connected.Should().BeTrue();
-        var sut = new ByteStreamHandler(tcpByteStream, new CancellationTokenSource());
+        using var sut = new ByteStreamHandler(tcpByteStream);
 
 #if ASYNC
         var response = await sut.ReadAsync(TimeSpan.FromMilliseconds(10)).ConfigureAwait(false);
@@ -199,10 +203,10 @@
           }
           return 0;
         });
-        var tcpByteStream = new TcpByteStream(socket);
+        using var tcpByteStream = new TcpByteStream(socket);
         A.CallTo(() => networkStream.ReadByte()).ReturnsNextFromSequence(new int[] { (int)Commands.InterpretAsCommand, (int)Commands.Do, (int)Options.SuppressGoAhead });
         tcpByteStream.Connected.Should().BeTrue();
-        var sut = new ByteStreamHandler(tcpByteStream, new CancellationTokenSource());
+        using var sut = new ByteStreamHandler(tcpByteStream);
 
 #if ASYNC
         var response = await sut.ReadAsync(TimeSpan.FromMilliseconds(10)).ConfigureAwait(false);
@@ -246,7 +250,7 @@
         {
           A.CallTo(() => networkStream.ReadByte()).ReturnsNextFromSequence(new int[] { (int)Commands.InterpretAsCommand, (int)Commands.Do, 1 });
           tcpByteStream.Connected.Should().BeTrue();
-          using (var sut = new ByteStreamHandler(tcpByteStream, new CancellationTokenSource()))
+          using (var sut = new ByteStreamHandler(tcpByteStream))
           {
 #if ASYNC
             var response = await sut.ReadAsync(TimeSpan.FromMilliseconds(10)).ConfigureAwait(false);
@@ -292,7 +296,7 @@
         {
           A.CallTo(() => networkStream.ReadByte()).ReturnsNextFromSequence(new int[] { (int)Commands.InterpretAsCommand, 2 });
           tcpByteStream.Connected.Should().BeTrue();
-          using (var sut = new ByteStreamHandler(tcpByteStream, new CancellationTokenSource()))
+          using (var sut = new ByteStreamHandler(tcpByteStream))
           {
 #if ASYNC
             var response = await sut.ReadAsync(TimeSpan.FromMilliseconds(10)).ConfigureAwait(false);
@@ -333,7 +337,7 @@
         {
           A.CallTo(() => networkStream.ReadByte()).ReturnsNextFromSequence(new int[] { (int)Commands.InterpretAsCommand, (int)Commands.Dont, 1 });
           tcpByteStream.Connected.Should().BeTrue();
-          using (var sut = new ByteStreamHandler(tcpByteStream, new CancellationTokenSource()))
+          using (var sut = new ByteStreamHandler(tcpByteStream))
           {
 #if ASYNC
             var response = await sut.ReadAsync(TimeSpan.FromMilliseconds(10)).ConfigureAwait(false);
@@ -374,7 +378,7 @@
         {
           A.CallTo(() => networkStream.ReadByte()).ReturnsNextFromSequence(new int[] { (int)Commands.InterpretAsCommand, (int)Commands.Dont, (int)Options.SuppressGoAhead });
           tcpByteStream.Connected.Should().BeTrue();
-          using (var sut = new ByteStreamHandler(tcpByteStream, new CancellationTokenSource()))
+          using (var sut = new ByteStreamHandler(tcpByteStream))
           {
 #if ASYNC
             var response = await sut.ReadAsync(TimeSpan.FromMilliseconds(10)).ConfigureAwait(false);
@@ -405,27 +409,28 @@
         {
           A.CallTo(() => networkStream.ReadByte()).Returns(142);
           tcpByteStream.Connected.Should().BeTrue();
-          var cancellationToken = new CancellationTokenSource();
-
-          var stopwatch = new Stopwatch();
-          using (var sut = new ByteStreamHandler(tcpByteStream, cancellationToken))
+          using (var cancellationToken = new CancellationTokenSource())
           {
+            var stopwatch = new Stopwatch();
+            using (var sut = new ByteStreamHandler(tcpByteStream, cancellationToken))
+            {
 
 #if ASYNC
-            cancellationToken.CancelAfter(100);
-            await sut.ReadAsync(TimeSpan.FromMilliseconds(1000)).ConfigureAwait(false);
+              cancellationToken.CancelAfter(100);
+              await sut.ReadAsync(TimeSpan.FromMilliseconds(1000)).ConfigureAwait(false);
 #else
-            var t = new Thread(new ThreadStart(() =>
-            {
-              var are = new AutoResetEvent(false);
-              are.WaitOne(100);
-              cancellationToken.Cancel();
-            }));
-            t.Start();
-            sut.Read(TimeSpan.FromMilliseconds(1000));
+              var t = new Thread(new ThreadStart(() =>
+              {
+                using var are = new AutoResetEvent(false);
+                are.WaitOne(100);
+                cancellationToken.Cancel();
+              }));
+              t.Start();
+              sut.Read(TimeSpan.FromMilliseconds(1000));
 #endif
 
-            stopwatch.ElapsedMilliseconds.Should().BeLessThan(500);
+              stopwatch.ElapsedMilliseconds.Should().BeLessThan(500);
+            }
           }
         }
       }

@@ -1,4 +1,8 @@
-﻿namespace PrimS.Telnet.CiTests
+﻿#if NetStandard || NET6_0_OR_GREATER
+namespace PrimS.Telnet.CiTests
+#else
+namespace PrimS.Telnet.Sync.CiTests
+#endif
 {
   using System;
   using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -24,11 +28,12 @@
     {
       using (var server = new TelnetServer())
       {
-        TcpByteStream sut = null;
-        Action act = () => sut = new TcpByteStream(server.IPAddress.ToString(), server.Port);
+        Action act = () =>
+        {
+          using var sut = new TcpByteStream(server.IPAddress.ToString(), server.Port);
+        };
 
         act.Should().NotThrow();
-        sut.Dispose();
       }
     }
 
@@ -52,6 +57,7 @@
       {
         using (var sut = new TcpByteStream(server.IPAddress.ToString(), server.Port))
         {
+          sut.Connected.Should().BeTrue();
           Action act = () => sut.WriteByte(writtenByte);
           act.Should().NotThrow();
         }

@@ -1,9 +1,11 @@
 ﻿namespace PrimS.Telnet
 {
+  using System;
+
   /// <summary>
   /// A socket to connect to.
   /// </summary>
-  public interface ISocket
+  public interface ISocket : IDisposable
   {
     /// <summary>
     /// Gets a value indicating whether this <see cref="ISocket" /> is connected.

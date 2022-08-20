@@ -1,8 +1,7 @@
 ﻿namespace PrimS.Telnet
 {
-  [IsNotDeadCodeAttribute]
   internal enum Options
-  { 
+  {
     TransmitBinary = 0,
     Echo = 1,
     Reconnection = 2,

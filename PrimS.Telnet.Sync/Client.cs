@@ -5,17 +5,8 @@
 
   // Referencing https://support.microsoft.com/kb/231866?wa=wsignin1.0 and http://www.codeproject.com/Articles/19071/Quick-tool-A-minimalistic-Telnet-library got me started
 
-  /// <inheritdoc />
-  /// <summary>
-  /// Basic Telnet client.
-  /// </summary>
   public partial class Client : BaseClient
   {
-    /// <summary>
-    /// Gets and sets a value indicating whether the Client should write responses received by TerminatedRead out to the Console.
-    /// </summary>
-    public static bool IsWriteConsole { get; set; } = false;
-
     /// <summary>
     /// Tries to login.
     /// </summary>
@@ -29,15 +20,15 @@
     {
       try
       {
-        if (this.IsTerminatedWith(loginTimeOutMs, ":"))
+        if (IsTerminatedWith(loginTimeOutMs, ":"))
         {
-          this.WriteLine(userName, linefeed);
-          if (this.IsTerminatedWith(loginTimeOutMs, ":"))
+          WriteLine(userName, linefeed);
+          if (IsTerminatedWith(loginTimeOutMs, ":"))
           {
-            this.WriteLine(password, linefeed);
+            WriteLine(password, linefeed);
           }
 
-          return this.IsTerminatedWith(loginTimeOutMs, terminator);
+          return IsTerminatedWith(loginTimeOutMs, terminator);
         }
       }
       catch (Exception ex)
@@ -56,7 +47,7 @@
     /// <param name="linefeed">The line feed to use. Issue 38: According to RFC 854, CR+LF should be the default a client sends. For backward compatibility \n maintained.</param>
     public void WriteLine(string command, string linefeed = "\n")
     {
-      this.Write(string.Format("{0}{1}", command, linefeed));
+      Write(string.Format("{0}{1}", command, linefeed));
     }
 
     /// <summary>
@@ -65,9 +56,9 @@
     /// <param name="command">The command.</param>
     public void Write(string command)
     {
-      if (this.ByteStream.Connected)
+      if (ByteStream.Connected)
       {
-        this.ByteStream.Write(command);
+        ByteStream.Write(command);
       }
     }
 
@@ -77,7 +68,7 @@
     /// <returns>Any text read from the stream.</returns>
     public string Read()
     {
-      return this.Read(TimeSpan.FromMilliseconds(Client.DefaultTimeoutMs));
+      return Read(TimeSpan.FromMilliseconds(Client.DefaultTimeoutMs));
     }
 
     /// <summary>
@@ -87,7 +78,7 @@
     /// <returns>Any text read from the stream.</returns>
     public string TerminatedRead(string terminator)
     {
-      return this.TerminatedRead(terminator, TimeSpan.FromMilliseconds(Client.DefaultTimeoutMs));
+      return TerminatedRead(terminator, TimeSpan.FromMilliseconds(Client.DefaultTimeoutMs));
     }
 
     /// <summary>
@@ -97,7 +88,7 @@
     /// <returns>Any text read from the stream.</returns>
     public string TerminatedRead(Regex regex)
     {
-      return this.TerminatedRead(regex, TimeSpan.FromMilliseconds(Client.DefaultTimeoutMs));
+      return TerminatedRead(regex, TimeSpan.FromMilliseconds(Client.DefaultTimeoutMs));
     }
 
     /// <summary>
@@ -108,7 +99,7 @@
     /// <returns>Any text read from the stream.</returns>
     public string TerminatedRead(string terminator, TimeSpan timeout)
     {
-      return this.TerminatedRead(terminator, timeout, 1);
+      return TerminatedRead(terminator, timeout, 1);
     }
 
     /// <summary>
@@ -119,7 +110,7 @@
     /// <returns>Any text read from the stream.</returns>
     public string TerminatedRead(Regex regex, TimeSpan timeout)
     {
-      return this.TerminatedRead(regex, timeout, 1);
+      return TerminatedRead(regex, timeout, 1);
     }
 
     /// <summary>
@@ -135,14 +126,7 @@
       var s = string.Empty;
       while (!Client.IsTerminatorLocated(terminator, s) && endTimeout >= DateTime.Now)
       {
-        var read = this.Read(TimeSpan.FromMilliseconds(millisecondSpin));
-        if (IsWriteConsole)
-        {
-          Console.Write(read);
-        }
-
-        s += read;
-        s += this.Read(TimeSpan.FromMilliseconds(millisecondSpin));
+        s += Read(TimeSpan.FromMilliseconds(millisecondSpin));
       }
 
       if (!Client.IsTerminatorLocated(terminator, s))
@@ -166,7 +150,7 @@
       var s = string.Empty;
       while (!Client.IsRegexLocated(regex, s) && endTimeout >= DateTime.Now)
       {
-        s += this.Read(TimeSpan.FromMilliseconds(millisecondSpin));
+        s += Read(TimeSpan.FromMilliseconds(millisecondSpin));
       }
 
       if (!Client.IsRegexLocated(regex, s))
@@ -179,7 +163,7 @@
 
     private bool IsTerminatedWith(int loginTimeOutMs, string terminator)
     {
-      return this.TerminatedRead(terminator, TimeSpan.FromMilliseconds(loginTimeOutMs), 1).TrimEnd().EndsWith(terminator);
+      return TerminatedRead(terminator, TimeSpan.FromMilliseconds(loginTimeOutMs), 1).TrimEnd().EndsWith(terminator);
     }
   }
 }

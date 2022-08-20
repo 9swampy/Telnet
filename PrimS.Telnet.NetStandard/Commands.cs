@@ -1,6 +1,5 @@
 ﻿namespace PrimS.Telnet
 {
-  [IsNotDeadCodeAttribute]
   internal enum Commands
   {
     SubnegotiationEnd = 240,

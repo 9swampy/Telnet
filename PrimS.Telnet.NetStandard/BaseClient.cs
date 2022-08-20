@@ -38,7 +38,7 @@
     {
       get
       {
-        return this.byteStream.Connected;
+        return byteStream.Connected;
       }
     }
 
@@ -49,7 +49,7 @@
     {
       get
       {
-        return this.byteStream;
+        return byteStream;
       }
     }
 
@@ -58,17 +58,8 @@
     /// </summary>
     public void Dispose()
     {
-      try
-      {
-        this.Dispose(true);
-        GC.SuppressFinalize(this);
-      }
-#pragma warning disable RCS1075 // Avoid empty catch clause that catches System.Exception.
-      catch (Exception)
-#pragma warning restore RCS1075 // Avoid empty catch clause that catches System.Exception.
-      {
-        // NOP
-      }
+      Dispose(true);
+      GC.SuppressFinalize(this);
     }
 
     /// <summary>
@@ -84,7 +75,11 @@
         return false;
       }
 
-      return s.Contains(terminator);
+      return s.Contains(terminator
+#if NET6_0_OR_GREATER
+        , StringComparison.InvariantCulture
+#endif
+        );
     }
 
     /// <summary>

@@ -1,12 +1,18 @@
 ﻿namespace PrimS.Telnet
 {
   using System;
+#if ASYNC
+  using Microsoft.VisualStudio.Threading;
+#endif
 
   /// <summary>
   /// A TcpClient to connect to the specified socket.
   /// </summary>
-  public class TcpClient : ISocket, IDisposable
+  public class TcpClient : ISocket
   {
+#if ASYNC
+    private static readonly JoinableTaskContext joinableTaskContext = new();
+#endif
     private readonly System.Net.Sockets.TcpClient client;
 
     /// <summary>
@@ -16,10 +22,8 @@
     /// <param name="port">The port.</param>
     public TcpClient(string hostName, int port)
     {
-#if NET462
-      this.client = new System.Net.Sockets.TcpClient(hostName, port);
-#else
-      this.client = new System.Net.Sockets.TcpClient();
+#if NetStandard || NET6_0_OR_GREATER
+      client = new System.Net.Sockets.TcpClient();
       // .NetStandard does not include a synchronous constructor or Connect method.
       // This will normally not be connected by the time the constructor returns,
       // it is the responsibility of the caller to ensure that they wait for the
@@ -28,7 +32,11 @@
       // Adding something awaitable on this class to connect or wait for connection
       // would break backward compatibility and require a lot of refactoring.
       // This will do for now.
-      var nowait = this.client.ConnectAsync(hostName, port);
+#pragma warning disable VSTHRD104 // Offer async methods
+      joinableTaskContext.Factory.Run(async () => await client.ConnectAsync(hostName, port).ConfigureAwait(false));
+#pragma warning restore VSTHRD104 // Offer async methods
+#else
+      client = new System.Net.Sockets.TcpClient(hostName, port);
 #endif
     }
 
@@ -42,12 +50,12 @@
     {
       get
       {
-        return this.client.ReceiveTimeout;
+        return client.ReceiveTimeout;
       }
 
       set
       {
-        this.client.ReceiveTimeout = value;
+        client.ReceiveTimeout = value;
       }
     }
 
@@ -61,7 +69,7 @@
     {
       get
       {
-        return this.client.Connected;
+        return client.Connected;
       }
     }
 
@@ -75,7 +83,7 @@
     {
       get
       {
-        return this.client.Available;
+        return client.Available;
       }
     }
 
@@ -84,7 +92,7 @@
     /// </summary>
     public void Dispose()
     {
-      this.Dispose(true);
+      Dispose(true);
       GC.SuppressFinalize(this);
     }
 
@@ -94,9 +102,9 @@
     public void Close()
     {
 #if NET462
-      this.client.Close();
+      client.Close();
 #else
-      this.client.Dispose();
+      client.Dispose();
 #endif
     }
 
@@ -108,17 +116,18 @@
     /// </returns>
     public INetworkStream GetStream()
     {
-      return new NetworkStream(this.client.GetStream());
+      return new NetworkStream(client.GetStream());
     }
 
-    private void Dispose(bool isDisposing)
+    /// <inheritdoc/>
+    protected virtual void Dispose(bool isDisposing)
     {
       if (isDisposing)
       {
 #if NET461
         this.client.Close();
 #else
-        this.client.Dispose();
+        client.Dispose();
 #endif
       }
     }
