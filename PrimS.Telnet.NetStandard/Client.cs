@@ -169,7 +169,9 @@
     /// <returns>Any text read from the stream.</returns>
     public Task<string> ReadAsync(TimeSpan timeout)
     {
+#pragma warning disable CA2000 // Dispose objects before losing scope
       var handler = new ByteStreamHandler(ByteStream, InternalCancellation, MillisecondReadDelay);
+#pragma warning restore CA2000 // Dispose objects before losing scope
       return handler.ReadAsync(timeout);
     }
 

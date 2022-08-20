@@ -15,7 +15,7 @@
   public partial class Client
   {
 #if ASYNC
-    private static readonly JoinableTaskContext joinableTaskContext = new JoinableTaskContext();
+    private static readonly JoinableTaskContext joinableTaskContext = new();
 #endif
 
     /// <summary>
@@ -35,7 +35,7 @@
     /// <param name="byteStream">The stream served by the host connected to.</param>
     /// <param name="token">The cancellation token.</param>
     public Client(IByteStream byteStream, CancellationToken token)
-      : this(byteStream, token, new TimeSpan(0, 0, 30))
+      : this(byteStream, new TimeSpan(0, 0, 30), token)
     {
     }
 
@@ -43,17 +43,19 @@
     /// Initialises a new instance of the <see cref="Client"/> class.
     /// </summary>
     /// <param name="byteStream">The stream served by the host connected to.</param>
-    /// <param name="token">The cancellation token.</param>
     /// <param name="timeout">The timeout to wait for initial successful connection to <cref>byteStream</cref>.</param>
-    public Client(IByteStream byteStream, CancellationToken token, TimeSpan timeout)
+    /// <param name="token">The cancellation token.</param>
+    public Client(IByteStream byteStream, TimeSpan timeout, CancellationToken token)
       : base(byteStream, token)
     {
       Guard.AgainstNullArgument(nameof(byteStream), byteStream);
       var timeoutEnd = DateTime.Now.Add(timeout);
-      var are = new AutoResetEvent(false);
-      while (!ByteStream.Connected && timeoutEnd > DateTime.Now)
+      using (var are = new AutoResetEvent(false))
       {
-        are.WaitOne(2);
+        while (!ByteStream.Connected && timeoutEnd > DateTime.Now)
+        {
+          are.WaitOne(2);
+        }
       }
 
       if (!ByteStream.Connected)

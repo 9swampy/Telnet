@@ -1,4 +1,4 @@
-﻿#if NetStandard
+﻿#if NetStandard || NET6_0_OR_GREATER
 namespace PrimS.Telnet.CiTests
 #else
 namespace PrimS.Telnet.Sync.CiTests
@@ -28,11 +28,12 @@ namespace PrimS.Telnet.Sync.CiTests
     {
       using (var server = new TelnetServer())
       {
-        TcpByteStream sut = null;
-        Action act = () => sut = new TcpByteStream(server.IPAddress.ToString(), server.Port);
+        Action act = () =>
+        {
+          using var sut = new TcpByteStream(server.IPAddress.ToString(), server.Port);
+        };
 
         act.Should().NotThrow();
-        sut.Dispose();
       }
     }
 

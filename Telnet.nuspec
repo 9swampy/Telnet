@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>Telnet</id>
-    <version>0.9.1</version>
+    <version>0.10.0</version>
     <title>Telnet</title>
     <authors>Telnet contributors</authors>
     <owners>9swampy</owners>
@@ -13,30 +13,17 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>A minimal open-source C# 4.6.2/4.7.2/4.8/NetStandard2.0/NetStandard2.1 Telnet client library implementation; just enough to send simple text commands and retrieve the response.</description>
     <releaseNotes>
-      Potentially breaking changes and drops unsupported Net versions Std1.6, 3.5, 4.0, 4.5.1 (all sync)
-      while adding 4.6.2 (sync), NetStandard 4.7.2, 4.8 and Std2.1 (all async).
+      Building on 0.9.1 which introduced potentially breaking changes and dropped unsupported Net
+      versions Std1.6, 3.5, 4.0, 4.5.1 (all sync) while adding 4.6.2 (sync), NetStandard 4.7.2,
+      4.8 and Std2.1 (all async) this release additionally adds Net6.
 
-      Way back in 2018 A9G-Data-Droid proposed a PR that would introduce potentially breaking changes but,
-      he asserts, would improved compliance with standards and performance. I was reluctant to break with
-      the legacy behaviours but as his proposal has solved a few users issues since, hasn't recieved any
-      rebutals and this release makes such a big leap in Net versions anyhow I've tested with my use cases
-      and as it works this time I'll roll it in. Any problems, use the old versions 8.6 or before and/or
-      shout!
-      
-      Fixed TerminatedReadAsync to never miss the terminator.
-      Fixed the null exception on internalCancellation.Cancel.
-      Changed DONT\WONT behaviour to ignore, eliminating negotiation loops.
-      Added handlers for basic non-printable Telnet symbols.
-      Added Subnegotiation for TerminalType and TerminalSpeed.
-      Added Enough Debug writes to watch the option negotiation occur in real time.
-      Added ALL Telnet commands and options to Commands.cs Options.cs.
-      Remove erroneous token.register
-      Add cancel call to dispose
-      Increased read delay
-      Created buffered write operations for all internal functions
-      Added Window Size negotiation
-      Added proactive SGA send
-      Upgrades, sort the LiteGuard dependency issue, output received text during read to console to better facilitate debugging while using the NuGet package.
+      Note the constructor Client(IByteStream byteStream, TimeSpan timeout, CancellationToken token)
+      has been reordered to comply with best practice standards.
+
+      Lots of rework was needed on the async chains to properly integrate 0.9.1 changes, and the
+      equivalent functionality introduced has now been replicated on the sync paths as well. Test
+      coverage has been extended to cover both; which actually revealed some unintended code... that
+      has been rectified in this release.
     </releaseNotes>
     <copyright>Copyright (c) 9swampy, Telnet contributors</copyright>
     <tags>Telnet</tags>
@@ -50,6 +37,8 @@
       <group targetFramework="netstandard2.0">
       </group>
       <group targetFramework="netstandard2.1">
+      </group>
+      <group targetFramework="net6.0">
       </group>
     </dependencies>
   </metadata>
@@ -68,5 +57,7 @@
     <file src="PrimS.Telnet.NetStandard\Bin\Release\net472\PrimS.Telnet.NetStandard.xml" target="lib\net472" />
     <file src="PrimS.Telnet.NetStandard\Bin\Release\net48\PrimS.Telnet.NetStandard.dll" target="lib\net48" />
     <file src="PrimS.Telnet.NetStandard\Bin\Release\net48\PrimS.Telnet.NetStandard.xml" target="lib\net48" />
+    <file src="PrimS.Telnet\Bin\Release\net6.0\PrimS.Telnet.dll" target="lib\net6.0" />
+    <file src="PrimS.Telnet\Bin\Release\net6.0\PrimS.Telnet.xml" target="lib\net6.0" />
   </files>
 </package>
