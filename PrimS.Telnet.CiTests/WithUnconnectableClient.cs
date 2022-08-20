@@ -16,7 +16,7 @@
       var byteStream = A.Fake<IByteStream>();
       A.CallTo(() => byteStream.Connected).Returns(false);
       Client sut = null;
-      Action act = () => sut = new Client(byteStream, default, new TimeSpan(0, 0, 0, 0, 1));
+      Action act = () => sut = new Client(byteStream, new TimeSpan(0, 0, 0, 0, 1), default);
 
       act.Should().Throw<InvalidOperationException>().WithMessage("Unable to connect to the host.");
       sut.Should().BeNull();

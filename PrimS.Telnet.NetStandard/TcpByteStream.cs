@@ -16,6 +16,7 @@ namespace PrimS.Telnet
   public class TcpByteStream : IByteStream
   {
     private readonly ISocket socket;
+    private readonly bool isSocketOwned;
 
     /// <summary>
     /// Initialises a new instance of the <see cref="TcpByteStream" /> class.
@@ -25,6 +26,7 @@ namespace PrimS.Telnet
     public TcpByteStream(string hostName, int port)
       : this(new PrimS.Telnet.TcpClient(hostName, port))
     {
+      isSocketOwned = true;
     }
 
     /// <summary>
@@ -122,8 +124,9 @@ namespace PrimS.Telnet
     /// </returns>
     public Task WriteAsync(byte[] buffer, int offset, int count, System.Threading.CancellationToken cancellationToken)
     {
-      System.Diagnostics.Debug.WriteLine("SENT: " + System.Text.Encoding.UTF7.GetString(buffer));
-      return socket.GetStream().WriteAsync(buffer, offset, count, cancellationToken);
+      var result = socket.GetStream().WriteAsync(buffer, offset, count, cancellationToken);
+      System.Diagnostics.Debug.WriteLine("SENT: " + System.Text.Encoding.UTF8.GetString(buffer));
+      return result;
     }
 #else    
     /// <summary>
@@ -134,8 +137,8 @@ namespace PrimS.Telnet
     /// <param name="count">The count.</param>
     public void Write(byte[] buffer, int offset, int count)
     {
-      System.Diagnostics.Debug.WriteLine("SENT: " + System.Text.Encoding.UTF7.GetString(buffer));
       socket.GetStream().Write(buffer, offset, count);
+      System.Diagnostics.Debug.WriteLine("SENT: " + System.Text.Encoding.UTF8.GetString(buffer));
     }
 #endif
 
@@ -189,12 +192,20 @@ namespace PrimS.Telnet
       if (isDisposing)
       {
         Close();
+        if (isSocketOwned)
+        {
+          socket.Dispose();
+        }
       }
     }
 
     private static byte[] ConvertStringToByteArray(string command)
     {
-      var buffer = System.Text.ASCIIEncoding.ASCII.GetBytes(command.Replace("\0xFF", "\0xFF\0xFF"));
+      var buffer = System.Text.ASCIIEncoding.ASCII.GetBytes(command.Replace("\0xFF", "\0xFF\0xFF"
+#if NET6_0_OR_GREATER
+        , StringComparison.InvariantCulture
+#endif
+        ));
       return buffer;
     }
   }

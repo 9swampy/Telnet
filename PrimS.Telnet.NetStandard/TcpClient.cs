@@ -8,7 +8,7 @@
   /// <summary>
   /// A TcpClient to connect to the specified socket.
   /// </summary>
-  public class TcpClient : ISocket, IDisposable
+  public class TcpClient : ISocket
   {
 #if ASYNC
     private static readonly JoinableTaskContext joinableTaskContext = new JoinableTaskContext();
@@ -22,7 +22,7 @@
     /// <param name="port">The port.</param>
     public TcpClient(string hostName, int port)
     {
-#if NetStandard
+#if NetStandard || NET6_0_OR_GREATER
       client = new System.Net.Sockets.TcpClient();
       // .NetStandard does not include a synchronous constructor or Connect method.
       // This will normally not be connected by the time the constructor returns,

@@ -1,4 +1,4 @@
-﻿#if NetStandard
+﻿#if NetStandard || NET6_0_OR_GREATER
 namespace PrimS.Telnet.CiTests
 #else
 namespace PrimS.Telnet.Sync.CiTests
@@ -32,7 +32,7 @@ namespace PrimS.Telnet.Sync.CiTests
       var byteStream = A.Fake<IByteStream>();
       A.CallTo(() => byteStream.Connected).Returns(true);
 
-      using (var sut = new Client(byteStream, default, new TimeSpan(0, 0, 0, 0, 1)))
+      using (var sut = new Client(byteStream, new TimeSpan(0, 0, 0, 0, 1), default))
       {
         var start = DateTime.Now;
         var timeout = new TimeSpan(0, 0, 2);
@@ -61,7 +61,7 @@ namespace PrimS.Telnet.Sync.CiTests
       var stopwatch = new Stopwatch();
       var byteStream = ArrangeByteStreamToRespondWithTerminationOnceAfterMillisecondSpin();
 
-      using (var sut = new Client(byteStream, default, new TimeSpan(0, 0, 0, 0, 1)))
+      using (var sut = new Client(byteStream, new TimeSpan(0, 0, 0, 0, 1), default))
       {
         stopwatch.Start();
 #if ASYNC
@@ -111,7 +111,7 @@ namespace PrimS.Telnet.Sync.CiTests
       using (var cancellationToken = new CancellationTokenSource())
       {
         var stopwatch = new Stopwatch();
-        using (var sut = new Client(byteStream, default, new TimeSpan(0, 0, 0, 0, 1)))
+        using (var sut = new Client(byteStream, new TimeSpan(0, 0, 0, 0, 1), default))
         {
 #if ASYNC
           cancellationToken.CancelAfter(100);

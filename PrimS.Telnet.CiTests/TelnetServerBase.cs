@@ -1,4 +1,4 @@
-﻿#if NetStandard
+﻿#if NetStandard || NET6_0_OR_GREATER
 namespace PrimS.Telnet.CiTests
 #else
 namespace PrimS.Telnet.Sync.CiTests
@@ -46,7 +46,7 @@ namespace PrimS.Telnet.Sync.CiTests
       IsListening = false;
     }
 
-    private static string data = null;
+    //private static string data = null;
     private readonly TimeSpan spinWait = TimeSpan.FromMilliseconds(10);
 
     public IPAddress IPAddress { get; private set; }
@@ -67,7 +67,6 @@ namespace PrimS.Telnet.Sync.CiTests
         {
           Console.WriteLine("Waiting for a connection...");
           var handler = Accept();
-          data = null;
 
           Console.WriteLine("Connection made, respond with Account: prompt");
           handler.Send(Encoding.ASCII.GetBytes("Account:"));
@@ -106,10 +105,10 @@ namespace PrimS.Telnet.Sync.CiTests
 
     private void WaitFor(Socket handler, string awaitedResponse)
     {
-      data = string.Empty;
+      var data = string.Empty;
       while (true)
       {
-        ReceiveResponse(handler);
+        data += ReceiveResponse(handler);
         if (IsResponseReceived(data, awaitedResponse))
         {
           break;
@@ -117,16 +116,16 @@ namespace PrimS.Telnet.Sync.CiTests
       }
     }
 
-    private static void ReceiveResponse(Socket handler)
+    private static string ReceiveResponse(Socket handler)
     {
       var bytes = new byte[1024];
       var bytesRec = handler.Receive(bytes);
-      data += Encoding.ASCII.GetString(bytes, 0, bytesRec).Trim((char)255);
+      return Encoding.ASCII.GetString(bytes, 0, bytesRec).Trim((char)255);
     }
 
     private bool IsResponseReceived(string currentResponse, string responseAwaited)
     {
-#if NetStandard && !Net48
+#if (NetStandard || NET6_0_OR_GREATER) && !Net48
       if (currentResponse.Contains(responseAwaited, StringComparison.InvariantCulture))
 #else
       if (currentResponse.Contains(responseAwaited))

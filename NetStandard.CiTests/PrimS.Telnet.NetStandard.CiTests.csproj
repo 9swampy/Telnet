@@ -13,6 +13,7 @@
   <ItemGroup>
     <Compile Include="..\PrimS.Telnet.CiTests\AsyncTcpByteStreamTests.cs" Link="AsyncTcpByteStreamTests.cs" />
     <Compile Include="..\PrimS.Telnet.CiTests\ByteStreamHandlerTests.cs" Link="ByteStreamHandlerTests.cs" />
+    <Compile Include="..\PrimS.Telnet.CiTests\TcpByteStreamTests.cs" Link="TcpByteStreamTests.cs" />
     <Compile Include="..\PrimS.Telnet.CiTests\TelnetServer.cs" Link="TelnetServer.cs" />
     <Compile Include="..\PrimS.Telnet.CiTests\TelnetServerBase.cs" Link="TelnetServerBase.cs" />
     <Compile Include="..\PrimS.Telnet.CiTests\TelnetServerRFC854.cs" Link="TelnetServerRFC854.cs" />
