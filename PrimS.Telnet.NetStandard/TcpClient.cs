@@ -11,7 +11,7 @@
   public class TcpClient : ISocket
   {
 #if ASYNC
-    private static readonly JoinableTaskContext joinableTaskContext = new JoinableTaskContext();
+    private static readonly JoinableTaskContext joinableTaskContext = new();
 #endif
     private readonly System.Net.Sockets.TcpClient client;
 
@@ -32,7 +32,9 @@
       // Adding something awaitable on this class to connect or wait for connection
       // would break backward compatibility and require a lot of refactoring.
       // This will do for now.
+#pragma warning disable VSTHRD104 // Offer async methods
       joinableTaskContext.Factory.Run(async () => await client.ConnectAsync(hostName, port).ConfigureAwait(false));
+#pragma warning restore VSTHRD104 // Offer async methods
 #else
       client = new System.Net.Sockets.TcpClient(hostName, port);
 #endif
@@ -117,7 +119,8 @@
       return new NetworkStream(client.GetStream());
     }
 
-    private void Dispose(bool isDisposing)
+    /// <inheritdoc/>
+    protected virtual void Dispose(bool isDisposing)
     {
       if (isDisposing)
       {

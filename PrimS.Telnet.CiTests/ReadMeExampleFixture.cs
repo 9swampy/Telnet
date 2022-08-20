@@ -14,9 +14,9 @@
     [TestMethod]
     public async Task ReadMeExample()
     {
-      using (TelnetServer server = new TelnetServer())
+      using (var server = new TelnetServer())
       {
-        using (Client client = new Client(server.IPAddress.ToString(), server.Port, new System.Threading.CancellationToken()))
+        using (var client = new Client(server.IPAddress.ToString(), server.Port, new System.Threading.CancellationToken()))
         {
           client.IsConnected.Should().Be(true);
           Client.IsWriteConsole = false;
@@ -25,7 +25,7 @@
           string s = await client.TerminatedReadAsync(">", TimeSpan.FromMilliseconds(TimeoutMs));
           s.Should().Contain(">");
           s.Should().Contain("WAN2");
-          Regex regEx = new Regex("(?!WAN2 total TX: )([0-9.]*)(?! GB ,RX: )([0-9.]*)(?= GB)");
+          var regEx = new Regex("(?!WAN2 total TX: )([0-9.]*)(?! GB ,RX: )([0-9.]*)(?= GB)");
           regEx.IsMatch(s).Should().Be(true);
           MatchCollection matches = regEx.Matches(s);
           decimal tx = decimal.Parse(matches[0].Value);

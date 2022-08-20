@@ -15,6 +15,7 @@
       A minimal open-source C# 4.6.2/4.7.2/4.8/NetStandard2.0/NetStandard2.1/Net6.0 Telnet client
       library implementation; just enough to send simple text commands and retrieve the response.
     </description>
+    <readme>docs\readme.md</readme>
     <releaseNotes>
       Building on 0.9.1 which introduced potentially breaking changes and dropped unsupported Net
       versions Std1.6, 3.5, 4.0, 4.5.1 (all sync) while adding 4.6.2 (sync), NetStandard 4.7.2,
@@ -63,5 +64,6 @@
     <file src="PrimS.Telnet\Bin\Release\net6.0\PrimS.Telnet.dll" target="lib\net6.0" />
     <file src="PrimS.Telnet\Bin\Release\net6.0\PrimS.Telnet.xml" target="lib\net6.0" />
     <file src="PrimS.Telnet\Bin\Release\net6.0\PrimS.Telnet.deps.json" target="lib\net6.0" />
+    <file src="readme.md" target="docs\" />
   </files>
 </package>
