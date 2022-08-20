@@ -1,4 +1,8 @@
-﻿namespace PrimS.Telnet.CiTests
+﻿#if NetStandard
+namespace PrimS.Telnet.CiTests
+#else
+namespace PrimS.Telnet.Sync.CiTests
+#endif
 {
   public class TelnetServerRFC854 : TelnetServerBase
   {

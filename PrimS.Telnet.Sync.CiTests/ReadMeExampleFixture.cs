@@ -1,4 +1,4 @@
-﻿namespace PrimS.Telnet.CiTests
+﻿namespace PrimS.Telnet.Sync.CiTests
 {
   using FluentAssertions;
   using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -18,7 +18,7 @@
         using (Client client = new Client(server.IPAddress.ToString(), server.Port, new System.Threading.CancellationToken()))
         {
           client.IsConnected.Should().Be(true);
-          Client.IsWriteConsole = true;
+          Client.IsWriteConsole = false;
           client.TryLogin("username", "password", TimeoutMs).Should().Be(true);
           client.WriteLine("show statistic wan2");
           string s = client.TerminatedRead(">", TimeSpan.FromMilliseconds(TimeoutMs));

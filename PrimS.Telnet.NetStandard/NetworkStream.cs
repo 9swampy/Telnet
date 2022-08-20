@@ -30,7 +30,7 @@ namespace PrimS.Telnet
     /// </returns>
     public int ReadByte()
     {
-      return this.stream.ReadByte();
+      return stream.ReadByte();
     }
 
     /// <summary>
@@ -39,7 +39,7 @@ namespace PrimS.Telnet
     /// <param name="value">The value to write.</param>
     public void WriteByte(byte value)
     {
-      this.stream.WriteByte(value);
+      stream.WriteByte(value);
     }
 
 #if ASYNC    
@@ -55,7 +55,7 @@ namespace PrimS.Telnet
     /// </returns>
     public Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
     {
-      return this.stream.WriteAsync(buffer, offset, count, cancellationToken);
+      return stream.WriteAsync(buffer, offset, count, cancellationToken);
     }
 #else
     /// <summary>
@@ -66,7 +66,7 @@ namespace PrimS.Telnet
     /// <param name="size">The size.</param>
     public void Write(byte[] buffer, int offset, int size)
     {
-      this.stream.Write(buffer, offset, size);
+      stream.Write(buffer, offset, size);
     }
 #endif
 
@@ -75,7 +75,7 @@ namespace PrimS.Telnet
     /// </summary>
     public void Dispose()
     {
-      this.Dispose(true);
+      Dispose(true);
       GC.SuppressFinalize(this);
     }
 
@@ -87,7 +87,7 @@ namespace PrimS.Telnet
     {
       if (disposing)
       {
-        this.stream.Dispose();
+        stream.Dispose();
       }
     }
   }

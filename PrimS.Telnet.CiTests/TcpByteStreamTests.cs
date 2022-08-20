@@ -1,4 +1,8 @@
-﻿namespace PrimS.Telnet.CiTests
+﻿#if NetStandard
+namespace PrimS.Telnet.CiTests
+#else
+namespace PrimS.Telnet.Sync.CiTests
+#endif
 {
   using System;
   using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -52,6 +56,7 @@
       {
         using (var sut = new TcpByteStream(server.IPAddress.ToString(), server.Port))
         {
+          sut.Connected.Should().BeTrue();
           Action act = () => sut.WriteByte(writtenByte);
           act.Should().NotThrow();
         }

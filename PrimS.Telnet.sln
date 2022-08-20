@@ -18,8 +18,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionIt
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 		.gitignore = .gitignore
-		appveyor.CiBuild.yml = appveyor.CiBuild.yml
-		appveyor.Release.yml = appveyor.Release.yml
 		README.md = README.md
 		Settings.StyleCop = Settings.StyleCop
 	EndProjectSection
@@ -48,7 +46,6 @@ Global
 		{A6FFDD66-624F-421B-B402-B6F02071CC10}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A6FFDD66-624F-421B-B402-B6F02071CC10}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A6FFDD66-624F-421B-B402-B6F02071CC10}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A6FFDD66-624F-421B-B402-B6F02071CC10}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3C62B208-6588-4403-9DDA-9B833B2C123F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{3C62B208-6588-4403-9DDA-9B833B2C123F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3C62B208-6588-4403-9DDA-9B833B2C123F}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -56,7 +53,6 @@ Global
 		{C86EF0B7-4772-4B6E-876E-1A36B4259001}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C86EF0B7-4772-4B6E-876E-1A36B4259001}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C86EF0B7-4772-4B6E-876E-1A36B4259001}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C86EF0B7-4772-4B6E-876E-1A36B4259001}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E99132BB-F35D-44FB-885C-CCB4AEC1CF34}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E99132BB-F35D-44FB-885C-CCB4AEC1CF34}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E99132BB-F35D-44FB-885C-CCB4AEC1CF34}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -64,7 +60,6 @@ Global
 		{C06628AF-EC29-42D9-A445-8F32FC949C11}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C06628AF-EC29-42D9-A445-8F32FC949C11}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C06628AF-EC29-42D9-A445-8F32FC949C11}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C06628AF-EC29-42D9-A445-8F32FC949C11}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
