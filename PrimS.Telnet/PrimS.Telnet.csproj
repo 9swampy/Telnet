@@ -1,20 +1,16 @@
-<Project Sdk="Microsoft.NET.Sdk">
-
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
   </PropertyGroup>
-
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DefineConstants>$(DefineConstants);ASYNC</DefineConstants>
   </PropertyGroup>
-
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DefineConstants>$(DefineConstants);ASYNC</DefineConstants>
   </PropertyGroup>
-
   <ItemGroup>
     <Compile Include="..\PrimS.Telnet.NetStandard\BaseClient.cs" Link="BaseClient.cs" />
     <Compile Include="..\PrimS.Telnet.NetStandard\BaseClientCancellable.cs" Link="BaseClientCancellable.cs" />
@@ -34,10 +30,8 @@
     <Compile Include="..\PrimS.Telnet.NetStandard\TcpByteStream.cs" Link="TcpByteStream.cs" />
     <Compile Include="..\PrimS.Telnet.NetStandard\TcpClient.cs" Link="TcpClient.cs" />
   </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.2.0" />
     <PackageReference Include="Microsoft.VisualStudio.Threading" Version="17.3.44" />
   </ItemGroup>
-
 </Project>
