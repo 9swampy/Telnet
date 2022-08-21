@@ -4,13 +4,12 @@
   using System.Diagnostics.CodeAnalysis;
   using FakeItEasy;
   using FluentAssertions;
-  using Microsoft.VisualStudio.TestTools.UnitTesting;
+  using Xunit;
 
   [ExcludeFromCodeCoverage]
-  [TestClass]
   public class WithUnconnectableClient
   {
-    [TestMethod]
+    [Fact]
     public void ShouldTimeoutOnCtor()
     {
       var byteStream = A.Fake<IByteStream>();

@@ -101,15 +101,24 @@
 #endif
       ProactiveOptionNegotiation()
     {
-      var supressGoAhead = new byte[3];
-      supressGoAhead[0] = (byte)Commands.InterpretAsCommand;
-      supressGoAhead[1] = (byte)Commands.Do;
-      supressGoAhead[2] = (byte)Options.SuppressGoAhead;
+      var supressGoAhead = SuppressGoAheadBuffer;
 #if ASYNC
       return ByteStream.WriteAsync(supressGoAhead, 0, supressGoAhead.Length, InternalCancellation.Token);
 #else
       ByteStream.Write(supressGoAhead, 0, supressGoAhead.Length);
 #endif
+    }
+
+    internal static byte[] SuppressGoAheadBuffer
+    {
+      get
+      {
+        var supressGoAhead = new byte[3];
+        supressGoAhead[0] = (byte)Commands.InterpretAsCommand;
+        supressGoAhead[1] = (byte)Commands.Do;
+        supressGoAhead[2] = (byte)Options.SuppressGoAhead;
+        return supressGoAhead;
+      }
     }
   }
 }

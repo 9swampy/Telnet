@@ -3,11 +3,10 @@
   using System;
   using System.Text.RegularExpressions;
   using System.Threading.Tasks;
-  using Microsoft.VisualStudio.Threading;
 
   // Referencing https://support.microsoft.com/kb/231866?wa=wsignin1.0 and http://www.codeproject.com/Articles/19071/Quick-tool-A-minimalistic-Telnet-library got me started
 
-  public partial class Client : BaseClient
+  public partial class Client : BaseClient, IClient
   {
     /// <summary>
     /// Tries to login asynchronously, passing in a default LineTerminator of ">".

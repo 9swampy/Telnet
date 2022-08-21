@@ -1,31 +1,30 @@
-<Project Sdk="Microsoft.NET.Sdk">
-
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
   </PropertyGroup>
-
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DefineConstants>$(DefineConstants);ASYNC</DefineConstants>
   </PropertyGroup>
-
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DefineConstants>$(DefineConstants);ASYNC</DefineConstants>
   </PropertyGroup>
-
   <ItemGroup>
     <Compile Include="..\PrimS.Telnet.NetStandard\BaseClient.cs" Link="BaseClient.cs" />
     <Compile Include="..\PrimS.Telnet.NetStandard\BaseClientCancellable.cs" Link="BaseClientCancellable.cs" />
     <Compile Include="..\PrimS.Telnet.NetStandard\ByteStreamHandler.cs" Link="ByteStreamHandler.cs" />
     <Compile Include="..\PrimS.Telnet.NetStandard\ByteStreamHandlerCancellable.cs" Link="ByteStreamHandlerCancellable.cs" />
+    <Compile Include="..\PrimS.Telnet.NetStandard\ByteStringConverter.cs" Link="ByteStringConverter.cs" />
     <Compile Include="..\PrimS.Telnet.NetStandard\Client.cs" Link="Client.cs" />
     <Compile Include="..\PrimS.Telnet.NetStandard\Client_Config.cs" Link="Client_Config.cs" />
     <Compile Include="..\PrimS.Telnet.NetStandard\Commands.cs" Link="Commands.cs" />
     <Compile Include="..\PrimS.Telnet.NetStandard\Guard.cs" Link="Guard.cs" />
+    <Compile Include="..\PrimS.Telnet.NetStandard\IBaseClient.cs" Link="IBaseClient.cs" />
     <Compile Include="..\PrimS.Telnet.NetStandard\IByteStream.cs" Link="IByteStream.cs" />
     <Compile Include="..\PrimS.Telnet.NetStandard\IByteStreamHandler.cs" Link="IByteStreamHandler.cs" />
+    <Compile Include="..\PrimS.Telnet.NetStandard\IClient.cs" Link="IClient.cs" />
     <Compile Include="..\PrimS.Telnet.NetStandard\INetworkStream.cs" Link="INetworkStream.cs" />
     <Compile Include="..\PrimS.Telnet.NetStandard\ISocket.cs" Link="ISocket.cs" />
     <Compile Include="..\PrimS.Telnet.NetStandard\NetworkStream.cs" Link="NetworkStream.cs" />
@@ -34,9 +33,8 @@
     <Compile Include="..\PrimS.Telnet.NetStandard\TcpByteStream.cs" Link="TcpByteStream.cs" />
     <Compile Include="..\PrimS.Telnet.NetStandard\TcpClient.cs" Link="TcpClient.cs" />
   </ItemGroup>
-
   <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.2.0" />
     <PackageReference Include="Microsoft.VisualStudio.Threading" Version="17.3.44" />
   </ItemGroup>
-
 </Project>

@@ -5,16 +5,46 @@ namespace PrimS.Telnet.Sync.CiTests
 #endif
 {
   using System;
-  using Microsoft.VisualStudio.TestTools.UnitTesting;
+  using Xunit;
   using FluentAssertions;
+  using FakeItEasy;
+#if ASYNC
+  using System.Threading.Tasks;
+  using System.Threading;
+#endif
 
-  [TestClass]
   public class TcpByteStreamTests
   {
-    [TestMethod]
+    [Fact]
+    public void ShouldConstructWithAFakedSocket()
+    {
+      var socket = A.Fake<ISocket>();
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
+      TcpByteStream sut = null;
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
+      Action act = () => sut = new TcpByteStream(socket);
+      act.Should().NotThrow();
+      sut.Should().NotBeNull();
+      sut?.Dispose();
+    }
+
+    [Fact]
+    public void GivenAFakedSocketACallToReadByteShouldBeRelayed()
+    {
+      var socket = A.Fake<ISocket>();
+      var stream = A.Fake<INetworkStream>();
+      A.CallTo(() => socket.GetStream()).Returns(stream);
+      using var sut = new TcpByteStream(socket);
+
+      sut.ReadByte();
+
+      A.CallTo(() => stream.ReadByte()).MustHaveHappened();
+    }
+
+    [Fact]
     public void TcpByteStreamShouldTerminateAndReleaseDebuggingContext()
     {
-      using (var server = new TelnetServer())
+      using (var server = new DummyTelnetServer())
       {
         using (var sut = new TcpByteStream(server.IPAddress.ToString(), server.Port))
         {
@@ -23,10 +53,10 @@ namespace PrimS.Telnet.Sync.CiTests
       }
     }
 
-    [TestMethod]
+    [Fact]
     public void TcpByteStreamShouldConstruct()
     {
-      using (var server = new TelnetServer())
+      using (var server = new DummyTelnetServer())
       {
         Action act = () =>
         {
@@ -37,10 +67,10 @@ namespace PrimS.Telnet.Sync.CiTests
       }
     }
 
-    [TestMethod]
+    [Fact]
     public void ReceiveTimeoutShouldBeDefaultTo0()
     {
-      using (var server = new TelnetServer())
+      using (var server = new DummyTelnetServer())
       {
         using (var sut = new TcpByteStream(server.IPAddress.ToString(), server.Port))
         {
@@ -49,19 +79,84 @@ namespace PrimS.Telnet.Sync.CiTests
       }
     }
 
-    [TestMethod]
-    public void WriteByteShouldNotThrow()
+    [Fact]
+    public
+#if ASYNC
+      async Task
+#else
+      void
+#endif
+      WriteByteShouldNotThrow()
     {
       var writtenByte = new byte();
-      using (var server = new TelnetServer())
+      using (var server = new DummyTelnetServer())
       {
         using (var sut = new TcpByteStream(server.IPAddress.ToString(), server.Port))
         {
           sut.Connected.Should().BeTrue();
+#if ASYNC
+          Func<Task> act = async () => await sut.WriteByteAsync(writtenByte, A.Dummy<CancellationToken>()).ConfigureAwait(false);
+          await act.Should().NotThrowAsync();
+#else
           Action act = () => sut.WriteByte(writtenByte);
           act.Should().NotThrow();
+#endif
         }
       }
+    }
+
+    [Fact]
+    public
+#if ASYNC
+      async Task
+#else
+      void
+#endif
+      GivenAFakedSocketACallToWriteShouldBeRelayed()
+    {
+      var writtenString = Guid.NewGuid().ToString();
+      var socket = A.Fake<ISocket>();
+      var stream = A.Fake<INetworkStream>();
+      A.CallTo(() => socket.GetStream()).Returns(stream);
+      using var sut = new TcpByteStream(socket);
+
+#if ASYNC
+      var cancellationToken = A.Dummy<CancellationToken>();
+      await sut.WriteAsync(writtenString, cancellationToken);
+
+      A.CallTo(() => stream.WriteAsync(A<byte[]>.Ignored, 0, writtenString.Length, cancellationToken)).MustHaveHappened();
+#else
+      sut.Write(writtenString);
+
+      A.CallTo(() => stream.Write(A<byte[]>.Ignored, 0, writtenString.Length)).MustHaveHappened();
+#endif
+    }
+
+    [Fact]
+    public
+#if ASYNC
+      async Task
+#else
+      void
+#endif
+      GivenAFakedSocketACallToWriteByteShouldBeRelayed()
+    {
+      var writtenByte = new byte();
+      var socket = A.Fake<ISocket>();
+      var stream = A.Fake<INetworkStream>();
+      A.CallTo(() => socket.GetStream()).Returns(stream);
+      using var sut = new TcpByteStream(socket);
+
+#if ASYNC
+      var cancellationToken = A.Dummy<CancellationToken>();
+      await sut.WriteByteAsync(writtenByte, cancellationToken);
+
+      A.CallTo(() => stream.WriteByteAsync(writtenByte, cancellationToken)).MustHaveHappened();
+#else
+      sut.WriteByte(writtenByte);
+
+      A.CallTo(() => stream.WriteByte(writtenByte)).MustHaveHappened();
+#endif
     }
   }
 }

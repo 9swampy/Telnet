@@ -5,13 +5,12 @@
   using System.Threading;
   using System.Threading.Tasks;
   using FakeItEasy;
-  using Microsoft.VisualStudio.TestTools.UnitTesting;
+  using Xunit;
 
   [ExcludeFromCodeCoverage]
-  [TestClass]
   public class AsyncTcpByteStreamTests
   {
-    [TestMethod]
+    [Fact]
     public async Task GivenAFakedSocketACallToWriteShouldBeRelayed()
     {
       var writtenString = Guid.NewGuid().ToString();
