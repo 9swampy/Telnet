@@ -13,13 +13,12 @@ namespace PrimS.Telnet.Sync.CiTests
 #endif
   using FakeItEasy;
   using FluentAssertions;
-  using Microsoft.VisualStudio.TestTools.UnitTesting;
+  using Xunit;
 
   [ExcludeFromCodeCoverage]
-  [TestClass]
   public class ByteStreamHandlerTests
   {
-    [TestMethod]
+    [Fact]
 #if ASYNC
     public async Task UnconnectedByteStreamShouldReturnEmptyResponse()
 #else
@@ -34,7 +33,7 @@ namespace PrimS.Telnet.Sync.CiTests
 #endif
     }
 
-    [TestMethod]
+    [Fact]
 #if ASYNC
     public async Task ByteStreamShouldReturnEmptyResponse()
 #else
@@ -71,7 +70,7 @@ namespace PrimS.Telnet.Sync.CiTests
       }
     }
 
-    [TestMethod]
+    [Fact]
 #if ASYNC
     public async Task ByteStreamShouldReturnCharA()
 #else
@@ -108,7 +107,7 @@ namespace PrimS.Telnet.Sync.CiTests
       }
     }
 
-    [TestMethod]
+    [Fact]
 #if ASYNC
     public async Task ByteStreamShouldReturnEscapedIac()
 #else
@@ -144,7 +143,7 @@ namespace PrimS.Telnet.Sync.CiTests
       }
     }
 
-    [TestMethod]
+    [Fact]
 #if ASYNC
     public async Task ByteStreamShouldReturnEmpty()
 #else
@@ -181,7 +180,7 @@ namespace PrimS.Telnet.Sync.CiTests
       }
     }
 
-    [TestMethod]
+    [Fact]
 #if ASYNC
     public async Task WhenIacDoSgaByteStreamShouldReturnEmptyAndReplyIacWill()
 #else
@@ -224,7 +223,7 @@ namespace PrimS.Telnet.Sync.CiTests
       }
     }
 
-    [TestMethod]
+    [Fact]
 #if ASYNC
     public async Task WhenIacDo1ByteStreamShouldReturnEmptyAndReplyIacWont()
 #else
@@ -270,7 +269,7 @@ namespace PrimS.Telnet.Sync.CiTests
       }
     }
 
-    [TestMethod]
+    [Fact]
 #if ASYNC
     public async Task WhenIac2ByteStreamShouldReturnEmptyAndNotReply()
 #else
@@ -311,7 +310,7 @@ namespace PrimS.Telnet.Sync.CiTests
       }
     }
 
-    [TestMethod]
+    [Fact]
 #if ASYNC
     public async Task WhenIacDont1ByteStreamShouldReturnEmptyAndNotReply()
 #else
@@ -352,7 +351,7 @@ namespace PrimS.Telnet.Sync.CiTests
       }
     }
 
-    [TestMethod]
+    [Fact]
 #if ASYNC
     public async Task WhenIacDontSgaByteStreamShouldReturnEmptyAndNotReply()
 #else
@@ -392,7 +391,7 @@ namespace PrimS.Telnet.Sync.CiTests
       }
     }
 
-    [TestMethod]
+    [Fact]
 #if ASYNC
     public async Task ByteStreamShouldReturnUponCancellation()
 #else

@@ -1,20 +1,19 @@
 ﻿namespace PrimS.Telnet.Sync.CiTests
 {
   using FluentAssertions;
-  using Microsoft.VisualStudio.TestTools.UnitTesting;
+  using Xunit;
   using System;
   using System.Diagnostics.CodeAnalysis;
 
   [ExcludeFromCodeCoverage]
-  [TestClass]
   public class WithClient
   {
     private const int timeoutMs = 500;
 
-    [TestMethod]
+    [Fact]
     public void ShouldConnect()
     {
-      using (var server = new TelnetServer())
+      using (var server = new DummyTelnetServer())
       {
         using (var client = new Client(server.IPAddress.ToString(), server.Port, new System.Threading.CancellationToken()))
         {
@@ -23,10 +22,10 @@
       }
     }
 
-    [TestMethod, Timeout(2000)]
+    [Fact(Timeout = 2000)]
     public void ShouldTerminateWithAColon()
     {
-      using (var server = new TelnetServer())
+      using (var server = new DummyTelnetServer())
       {
         using (var client = new Client(server.IPAddress.ToString(), server.Port, new System.Threading.CancellationToken()))
         {
@@ -36,10 +35,10 @@
       }
     }
 
-    [TestMethod, Timeout(2000)]
+    [Fact(Timeout = 2000)]
     public void ShouldBePromptingForAccount()
     {
-      using (var server = new TelnetServer())
+      using (var server = new DummyTelnetServer())
       {
         using (var client = new Client(server.IPAddress.ToString(), server.Port, new System.Threading.CancellationToken()))
         {
@@ -50,10 +49,10 @@
       }
     }
 
-    [TestMethod, Timeout(2000)]
+    [Fact(Timeout = 2000)]
     public void ShouldBePromptingForPassword()
     {
-      using (var server = new TelnetServer())
+      using (var server = new DummyTelnetServer())
       {
         using (var client = new Client(server.IPAddress.ToString(), server.Port, new System.Threading.CancellationToken()))
         {
@@ -66,10 +65,10 @@
       }
     }
 
-    [TestMethod, Timeout(3000)]
+    [Fact(Timeout = 3000)]
     public void ShouldPromptForInput()
     {
-      using (var server = new TelnetServer())
+      using (var server = new DummyTelnetServer())
       {
         using (var client = new Client(server.IPAddress.ToString(), server.Port, new System.Threading.CancellationToken()))
         {
@@ -83,10 +82,10 @@
       }
     }
 
-    [TestMethod, Timeout(5000)]
+    [Fact(Timeout = 5000)]
     public void ShouldRespondWithWan2Info()
     {
-      using (var server = new TelnetServer())
+      using (var server = new DummyTelnetServer())
       {
         using (var client = new Client(server.IPAddress.ToString(), server.Port, new System.Threading.CancellationToken()))
         {
@@ -100,10 +99,10 @@
       }
     }
 
-    [TestMethod, Timeout(5000)]
+    [Fact(Timeout = 5000)]
     public void ShouldRespondWithWan2InfoCrLf()
     {
-      using (var server = new TelnetServerRFC854())
+      using (var server = new DummyTelnetServerRFC854())
       {
         using (var client = new Client(server.IPAddress.ToString(), server.Port, new System.Threading.CancellationToken()))
         {
@@ -117,10 +116,10 @@
       }
     }
 
-    [TestMethod, Timeout(5000)]
+    [Fact(Timeout = 5000)]
     public void ShouldLogin()
     {
-      using (var server = new TelnetServer())
+      using (var server = new DummyTelnetServer())
       {
         using (var client = new Client(server.IPAddress.ToString(), server.Port, new System.Threading.CancellationToken()))
         {
@@ -130,10 +129,10 @@
       }
     }
 
-    [TestMethod, Timeout(5000)]
+    [Fact(Timeout = 5000)]
     public void ShouldLoginCrLf()
     {
-      using (var server = new TelnetServerRFC854())
+      using (var server = new DummyTelnetServerRFC854())
       {
         using (var client = new Client(server.IPAddress.ToString(), server.Port, new System.Threading.CancellationToken()))
         {

@@ -4,14 +4,13 @@
 #if ASYNC
   using System.Threading;
 #endif
-  using Microsoft.VisualStudio.TestTools.UnitTesting;
+  using Xunit;
   using FluentAssertions;
   using FakeItEasy;
 
-  [TestClass]
   public class ExtendedTcpByteStreamTests
   {
-    [TestMethod]
+    [Fact]
     public void ShouldConstructWithAFakedSocket()
     {
       var socket = A.Fake<ISocket>();
@@ -22,7 +21,7 @@
       sut.Dispose();
     }
 
-    [TestMethod]
+    [Fact]
     public void GivenAFakedSocketACallToWriteByteShouldBeRelayed()
     {
       var writtenByte = new byte();
@@ -36,7 +35,7 @@
       A.CallTo(() => stream.WriteByte(writtenByte)).MustHaveHappened();
     }
 
-    [TestMethod]
+    [Fact]
     public void GivenAFakedSocketACallToReadByteShouldBeRelayed()
     {
       var socket = A.Fake<ISocket>();

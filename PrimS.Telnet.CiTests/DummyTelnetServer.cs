@@ -7,9 +7,9 @@ namespace PrimS.Telnet.Sync.CiTests
   using System.Diagnostics.CodeAnalysis;
 
   [ExcludeFromCodeCoverage]
-  public class TelnetServer : TelnetServerBase
+  public class DummyTelnetServer : DummyTelnetServerBase
   {
-    public TelnetServer()
+    public DummyTelnetServer()
       : base("\n")
     { }
   }

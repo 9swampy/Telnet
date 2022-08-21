@@ -4,12 +4,12 @@ namespace PrimS.Telnet.CiTests
 namespace PrimS.Telnet.Sync.CiTests
 #endif
 {
-  public class TelnetServerRFC854 : TelnetServerBase
+  public class DummyTelnetServerRFC854 : DummyTelnetServerBase
   {
-    public TelnetServerRFC854()
+    public DummyTelnetServerRFC854()
       : base("\r\n")
     {
-      
+
     }
   }
 }

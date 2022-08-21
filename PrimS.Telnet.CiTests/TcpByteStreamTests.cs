@@ -5,16 +5,15 @@ namespace PrimS.Telnet.Sync.CiTests
 #endif
 {
   using System;
-  using Microsoft.VisualStudio.TestTools.UnitTesting;
+  using Xunit;
   using FluentAssertions;
 
-  [TestClass]
   public class TcpByteStreamTests
   {
-    [TestMethod]
+    [Fact]
     public void TcpByteStreamShouldTerminateAndReleaseDebuggingContext()
     {
-      using (var server = new TelnetServer())
+      using (var server = new DummyTelnetServer())
       {
         using (var sut = new TcpByteStream(server.IPAddress.ToString(), server.Port))
         {
@@ -23,10 +22,10 @@ namespace PrimS.Telnet.Sync.CiTests
       }
     }
 
-    [TestMethod]
+    [Fact]
     public void TcpByteStreamShouldConstruct()
     {
-      using (var server = new TelnetServer())
+      using (var server = new DummyTelnetServer())
       {
         Action act = () =>
         {
@@ -37,10 +36,10 @@ namespace PrimS.Telnet.Sync.CiTests
       }
     }
 
-    [TestMethod]
+    [Fact]
     public void ReceiveTimeoutShouldBeDefaultTo0()
     {
-      using (var server = new TelnetServer())
+      using (var server = new DummyTelnetServer())
       {
         using (var sut = new TcpByteStream(server.IPAddress.ToString(), server.Port))
         {
@@ -49,11 +48,11 @@ namespace PrimS.Telnet.Sync.CiTests
       }
     }
 
-    [TestMethod]
+    [Fact]
     public void WriteByteShouldNotThrow()
     {
       var writtenByte = new byte();
-      using (var server = new TelnetServer())
+      using (var server = new DummyTelnetServer())
       {
         using (var sut = new TcpByteStream(server.IPAddress.ToString(), server.Port))
         {

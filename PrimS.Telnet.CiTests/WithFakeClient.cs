@@ -13,13 +13,12 @@ namespace PrimS.Telnet.Sync.CiTests
 #endif
   using FakeItEasy;
   using FluentAssertions;
-  using Microsoft.VisualStudio.TestTools.UnitTesting;
+  using Xunit;
 
   [ExcludeFromCodeCoverage]
-  [TestClass]
   public class WithFakeClient
   {
-    [TestMethod]
+    [Fact]
     public
 #if ASYNC
       async Task
@@ -46,7 +45,7 @@ namespace PrimS.Telnet.Sync.CiTests
       }
     }
 
-    [TestMethod]
+    [Fact]
     public
 #if ASYNC
       async Task
@@ -99,7 +98,7 @@ namespace PrimS.Telnet.Sync.CiTests
       }
     }
 
-    [TestMethod]
+    [Fact]
 #if ASYNC
     public async Task ClientShouldReturnUponCancellation()
 #else
