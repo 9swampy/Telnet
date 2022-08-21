@@ -16,20 +16,26 @@
     <Compile Include="..\PrimS.Telnet.CiTests\DummyTelnetServerBase.cs" Link="DummyTelnetServerBase.cs" />
     <Compile Include="..\PrimS.Telnet.CiTests\DummyTelnetServerRFC854.cs" Link="DummyTelnetServerRFC854.cs" />
     <Compile Include="..\PrimS.Telnet.CiTests\DummyTelnetServerTests.cs" Link="DummyTelnetServerTests.cs" />
-    <Compile Include="..\PrimS.Telnet.CiTests\WithClient.cs" Link="WithClient.cs" />
+    <Compile Include="..\PrimS.Telnet.CiTests\WithDummyByteStream.cs" Link="WithDummyByteStream.cs" />
     <Compile Include="..\PrimS.Telnet.CiTests\WithFakeClient.cs" Link="WithFakeClient.cs" />
     <Compile Include="..\PrimS.Telnet.CiTests\WithUnconnectableClient.cs" Link="WithUnconnectableClient.cs" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Appveyor.TestLogger" Version="2.0.0" />
     <PackageReference Include="FakeItEasy" Version="7.3.1" />
     <PackageReference Include="FluentAssertions" Version="6.7.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.2.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.0" />
+    <PackageReference Include="MSTest.TestAdapter" Version="2.2.10" />
+    <PackageReference Include="MSTest.TestFramework" Version="2.2.10" />
     <PackageReference Include="coverlet.collector" Version="3.1.2">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.2.0" />
     <PackageReference Include="xunit" Version="2.4.2" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PrimS.Telnet.NetStandard\PrimS.Telnet.NetStandard.csproj" />

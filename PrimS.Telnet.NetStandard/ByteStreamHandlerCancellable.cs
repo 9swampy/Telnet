@@ -113,6 +113,7 @@
     /// </summary>
     protected void SendCancel()
     {
+#pragma warning disable CA1031 // Do not catch general exception types
       try
       {
         internalCancellation?.Cancel();
@@ -121,6 +122,7 @@
       {
         System.Diagnostics.Debug.WriteLine(ex.Message);
       }
+#pragma warning restore CA1031 // Do not catch general exception types
     }
 
     private static void LogIfTimeoutExpired(DateTime timeout)

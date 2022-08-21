@@ -1,4 +1,4 @@
-namespace PrimS.Telnet
+﻿namespace PrimS.Telnet
 {
   using System;
 #if ASYNC
@@ -33,37 +33,28 @@ namespace PrimS.Telnet
       return stream.ReadByte();
     }
 
-    /// <summary>
-    /// Writes the byte.
-    /// </summary>
-    /// <param name="value">The value to write.</param>
+#if ASYNC
+    /// <inheritdoc/>
+    public Task WriteByteAsync(byte value, CancellationToken cancellationToken)
+    {
+      return stream.WriteAsync(new byte[] { value }, 0, 1, cancellationToken);
+    }
+#else
+    /// <inheritdoc/>
     public void WriteByte(byte value)
     {
       stream.WriteByte(value);
     }
+#endif
 
-#if ASYNC    
-    /// <summary>
-    /// Writes the specified buffer.
-    /// </summary>
-    /// <param name="buffer">The buffer.</param>
-    /// <param name="offset">The offset.</param>
-    /// <param name="count">The count.</param>
-    /// <param name="cancellationToken">The cancellationToken.</param>
-    /// <returns>
-    /// An awaitable task.
-    /// </returns>
+#if ASYNC
+    /// <inheritdoc/>
     public Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
     {
       return stream.WriteAsync(buffer, offset, count, cancellationToken);
     }
 #else
-    /// <summary>
-    /// Writes the specified buffer.
-    /// </summary>
-    /// <param name="buffer">The buffer.</param>
-    /// <param name="offset">The offset.</param>
-    /// <param name="size">The size.</param>
+    /// <inheritdoc/>
     public void Write(byte[] buffer, int offset, int size)
     {
       stream.Write(buffer, offset, size);

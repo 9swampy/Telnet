@@ -103,7 +103,16 @@
       return action();
     }
 
-    //internal async static Task<TOut> ExecuteWithConfigureAwait<TOut>(Func<TOut> value)
+    /// <summary>
+    /// The Execute which awaits the task internally with .ConfigureAwait(false). Prefer Execute which just returns the Task.
+    /// Add:
+    /// #if ASYNC
+    ///     await
+    /// #endif
+    /// before the call.
+    /// </summary>
+    /// <param name="action">The action to execute.</param>
+    /// <returns></returns>
     internal static
 #if ASYNC
     async Task<TOut>
