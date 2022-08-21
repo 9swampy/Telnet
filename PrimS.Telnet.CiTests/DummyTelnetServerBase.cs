@@ -12,13 +12,13 @@ namespace PrimS.Telnet.Sync.CiTests
   using System.Text;
 
   [ExcludeFromCodeCoverage]
-  public abstract class TelnetServerBase : System.Net.Sockets.Socket
+  public abstract class DummyTelnetServerBase : System.Net.Sockets.Socket
   {
     private readonly System.Threading.Thread t;
 
     private readonly string expectedLineFeedTerminator;
 
-    protected TelnetServerBase(string expectedLineFeedTerminator)
+    protected DummyTelnetServerBase(string expectedLineFeedTerminator)
       : base(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)
     {
       IsListening = true;

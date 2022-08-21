@@ -4,17 +4,16 @@ namespace PrimS.Telnet.CiTests
 namespace PrimS.Telnet.Sync.CiTests
 #endif
 {
-  using Microsoft.VisualStudio.TestTools.UnitTesting;
+  using Xunit;
   using FluentAssertions;
 
-  [TestClass]
-  public class TelnetServerTests
+  public class DummyTelnetServerTests
   {
-    [TestMethod]
+    [Fact]
     public void TelnetServerShouldTerminateAndReleaseDebuggingContext()
     {
-      TelnetServer server;
-      using (server = new TelnetServer())
+      DummyTelnetServer server;
+      using (server = new DummyTelnetServer())
       {
       }
       server.IsListening.Should().BeFalse();

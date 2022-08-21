@@ -2,12 +2,11 @@
 {
   using System;
   using FakeItEasy;
-  using Microsoft.VisualStudio.TestTools.UnitTesting;
+  using Xunit;
 
-  [TestClass]
   public class SyncTcpByteStreamTests
   {
-    [TestMethod]
+    [Fact]
     public void GivenAFakedSocketACallToWriteShouldBeRelayed()
     {
       var writtenString = Guid.NewGuid().ToString();

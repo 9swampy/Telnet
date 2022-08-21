@@ -1,19 +1,19 @@
 ﻿namespace PrimS.Telnet.Sync.CiTests
 {
   using FluentAssertions;
-  using Microsoft.VisualStudio.TestTools.UnitTesting;
+  using Xunit;
   using System;
   using System.Text.RegularExpressions;
 
-  [TestClass]
   public class ReadMeExampleFixture
   {
+    public const string Pattern = "(?:WAN2 total TX: )([0-9.]*) ((?:[KMG]B)|(?:Bytes))(?:[, ]*RX: )([0-9.]*) ((?:[KMG]B)|(?:Bytes))";
     private const int TimeoutMs = 5000;
 
-    [TestMethod]
+    [Fact]
     public void ReadMeExample()
     {
-      using (TelnetServer server = new TelnetServer())
+      using (var server = new DummyTelnetServer())
       {
         using (Client client = new Client(server.IPAddress.ToString(), server.Port, new System.Threading.CancellationToken()))
         {
@@ -24,13 +24,17 @@
           string s = client.TerminatedRead(">", TimeSpan.FromMilliseconds(TimeoutMs));
           s.Should().Contain(">");
           s.Should().Contain("WAN2");
-          Regex regEx = new Regex("(?!WAN2 total TX: )([0-9.]*)(?! GB ,RX: )([0-9.]*)(?= GB)");
+          Regex regEx = new Regex(Pattern);
           regEx.IsMatch(s).Should().Be(true);
           MatchCollection matches = regEx.Matches(s);
-          decimal tx = decimal.Parse(matches[0].Value);
-          decimal rx = decimal.Parse(matches[1].Value);
-          (tx + rx).Should().BeGreaterThan(0);
-          (tx + rx).Should().BeLessThan(50);
+          matches.Count.Should().Be(1);
+          matches[0].Captures.Count.Should().Be(1);
+          matches[0].Groups.Count.Should().Be(5);
+          matches[0].Groups[0].Value.Should().Be("WAN2 total TX: 6.3 GB ,RX: 6.9 GB");
+          matches[0].Groups[1].Value.Should().Be("6.3");
+          matches[0].Groups[2].Value.Should().Be("GB");
+          matches[0].Groups[3].Value.Should().Be("6.9");
+          matches[0].Groups[4].Value.Should().Be("GB");
         }
       }
     }
