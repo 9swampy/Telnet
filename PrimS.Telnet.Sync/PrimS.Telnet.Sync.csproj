@@ -95,6 +95,9 @@
     <Compile Include="..\PrimS.Telnet.NetStandard\ByteStreamHandlerCancellable.cs">
       <Link>ByteStreamHandlerCancellable.cs</Link>
     </Compile>
+    <Compile Include="..\PrimS.Telnet.NetStandard\ByteStringConverter.cs">
+      <Link>ByteStringConverter.cs</Link>
+    </Compile>
     <Compile Include="..\PrimS.Telnet.NetStandard\Client_Config.cs">
       <Link>Client_Config.cs</Link>
     </Compile>
@@ -103,6 +106,9 @@
     </Compile>
     <Compile Include="..\PrimS.Telnet.NetStandard\Guard.cs">
       <Link>Guard.cs</Link>
+    </Compile>
+    <Compile Include="..\PrimS.Telnet.NetStandard\IBaseClient.cs">
+      <Link>IBaseClient.cs</Link>
     </Compile>
     <Compile Include="..\PrimS.Telnet.NetStandard\IByteStream.cs">
       <Link>IByteStream.cs</Link>
@@ -133,6 +139,7 @@
     </Compile>
     <Compile Include="Client.cs" />
     <Compile Include="ClientCancellable.cs" />
+    <Compile Include="IClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

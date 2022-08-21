@@ -16,12 +16,15 @@
     <Compile Include="..\PrimS.Telnet.NetStandard\BaseClientCancellable.cs" Link="BaseClientCancellable.cs" />
     <Compile Include="..\PrimS.Telnet.NetStandard\ByteStreamHandler.cs" Link="ByteStreamHandler.cs" />
     <Compile Include="..\PrimS.Telnet.NetStandard\ByteStreamHandlerCancellable.cs" Link="ByteStreamHandlerCancellable.cs" />
+    <Compile Include="..\PrimS.Telnet.NetStandard\ByteStringConverter.cs" Link="ByteStringConverter.cs" />
     <Compile Include="..\PrimS.Telnet.NetStandard\Client.cs" Link="Client.cs" />
     <Compile Include="..\PrimS.Telnet.NetStandard\Client_Config.cs" Link="Client_Config.cs" />
     <Compile Include="..\PrimS.Telnet.NetStandard\Commands.cs" Link="Commands.cs" />
     <Compile Include="..\PrimS.Telnet.NetStandard\Guard.cs" Link="Guard.cs" />
+    <Compile Include="..\PrimS.Telnet.NetStandard\IBaseClient.cs" Link="IBaseClient.cs" />
     <Compile Include="..\PrimS.Telnet.NetStandard\IByteStream.cs" Link="IByteStream.cs" />
     <Compile Include="..\PrimS.Telnet.NetStandard\IByteStreamHandler.cs" Link="IByteStreamHandler.cs" />
+    <Compile Include="..\PrimS.Telnet.NetStandard\IClient.cs" Link="IClient.cs" />
     <Compile Include="..\PrimS.Telnet.NetStandard\INetworkStream.cs" Link="INetworkStream.cs" />
     <Compile Include="..\PrimS.Telnet.NetStandard\ISocket.cs" Link="ISocket.cs" />
     <Compile Include="..\PrimS.Telnet.NetStandard\NetworkStream.cs" Link="NetworkStream.cs" />

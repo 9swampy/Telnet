@@ -304,7 +304,13 @@ namespace PrimS.Telnet.Sync.CiTests
 #endif
 
             response.Should().BeEmpty();
-            A.CallTo(() => networkStream.WriteByte(A<byte>.Ignored)).MustNotHaveHappened();
+            A.CallTo(() => networkStream
+#if ASYNC
+                .WriteByteAsync(A<byte>._, A<CancellationToken>._)
+#else
+                .WriteByte(A<byte>.Ignored)
+#endif
+            ).MustNotHaveHappened();
           }
         }
       }
@@ -345,7 +351,13 @@ namespace PrimS.Telnet.Sync.CiTests
 #endif
 
             response.Should().BeEmpty();
-            A.CallTo(() => networkStream.WriteByte(A<byte>.Ignored)).MustNotHaveHappened();
+            A.CallTo(() => networkStream
+#if ASYNC
+                .WriteByteAsync(A<byte>._, A<CancellationToken>._)
+#else
+                .WriteByte(A<byte>.Ignored)
+#endif
+                ).MustNotHaveHappened();
           }
         }
       }
@@ -385,7 +397,13 @@ namespace PrimS.Telnet.Sync.CiTests
             var response = sut.Read(TimeSpan.FromMilliseconds(10));
 #endif
             response.Should().BeEmpty();
-            A.CallTo(() => networkStream.WriteByte(A<byte>.Ignored)).MustNotHaveHappened();
+            A.CallTo(() => networkStream
+#if ASYNC
+                .WriteByteAsync(A<byte>._, A<CancellationToken>._)
+#else
+                .WriteByte(A<byte>.Ignored)
+#endif
+                ).MustNotHaveHappened();
           }
         }
       }

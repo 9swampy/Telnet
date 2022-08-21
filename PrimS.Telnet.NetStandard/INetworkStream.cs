@@ -1,4 +1,4 @@
-namespace PrimS.Telnet
+﻿namespace PrimS.Telnet
 {
   using System;
 
@@ -18,11 +18,21 @@ namespace PrimS.Telnet
     /// <returns>The next byte read.</returns>
     int ReadByte();
 
+#if ASYNC
+    /// <summary>
+    /// Writes the byte.
+    /// </summary>
+    /// <param name="value">The value to write.</param>
+    /// <param name="cancellationToken">The cancellationToken.</param>
+    /// <returns>An awaitable task.</returns>
+    Task WriteByteAsync(byte value, CancellationToken cancellationToken);
+#else
     /// <summary>
     /// Writes the byte.
     /// </summary>
     /// <param name="value">The value to write.</param>
     void WriteByte(byte value);
+#endif
 
 #if ASYNC
     /// <summary>

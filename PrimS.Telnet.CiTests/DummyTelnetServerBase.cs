@@ -86,12 +86,11 @@ namespace PrimS.Telnet.Sync.CiTests
           Console.WriteLine("Command entered, respond with WAN2 terminated reply");
           handler.Send(Encoding.ASCII.GetBytes("show statistic wan2\n\r WAN1 total TX: 0 Bytes ,RX: 0 Bytes \n\r WAN2 total TX: 6.3 GB ,RX: 6.9 GB \n\r WAN3 total TX: 0 Bytes ,RX: 0 Bytes \n\r WAN4 total TX: 0 Bytes ,RX: 0 Bytes \n\r WAN5 total TX: 0 Bytes ,RX: 0 Bytes \n\r>"));
 
-          //handler.Send(new byte[] { (byte)PrimS.Telnet.Commands.InterpretAsCommand, (byte)PrimS.Telnet.Commands.Do });
-
           while (IsListening)
           {
             System.Threading.Thread.Sleep(100);
           }
+
           handler.Shutdown(SocketShutdown.Both);
           handler.Close();
         }

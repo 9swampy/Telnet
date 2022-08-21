@@ -6,7 +6,7 @@
   /// <summary>
   /// The base class for Clients.
   /// </summary>
-  public abstract partial class BaseClient : IDisposable
+  public abstract partial class BaseClient : IBaseClient
   {
     /// <summary>
     /// The default time out ms.
@@ -23,17 +23,10 @@
     /// </summary>
     private readonly IByteStream byteStream;
 
-    /// <summary>
-    /// The read delay ms.
-    /// </summary>
+    /// <inheritdoc/>
     public int MillisecondReadDelay { get; set; } = DefaultMillisecondReadDelay;
 
-    /// <summary>
-    /// Gets a value indicating whether this instance is connected.
-    /// </summary>
-    /// <value>
-    /// <c>true</c> if this instance is connected; otherwise, <c>false</c>.
-    /// </value>
+    /// <inheritdoc/>
     public bool IsConnected
     {
       get

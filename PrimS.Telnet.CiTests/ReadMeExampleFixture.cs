@@ -11,7 +11,9 @@
     public const string Pattern = "(?:WAN2 total TX: )([0-9.]*) ((?:[KMG]B)|(?:Bytes))(?:[, ]*RX: )([0-9.]*) ((?:[KMG]B)|(?:Bytes))";
     private const int TimeoutMs = 5000;
 
+#if NCRUNCH
     [Fact]
+#endif
     public async Task ReadMeExample()
     {
       using (var server = new DummyTelnetServer())

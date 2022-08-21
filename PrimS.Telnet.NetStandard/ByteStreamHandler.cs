@@ -141,7 +141,11 @@
             sb.Append("^D");
             break;
           case 5: // Enquiry
+#if ASYNC
+            await byteStream.WriteByteAsync(6, internalCancellation.Token); // Send ACK
+#else
             byteStream.WriteByte(6); // Send ACK
+#endif
             break;
           case 6: // Acknowledge
             // We got an ACK

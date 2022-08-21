@@ -1,7 +1,8 @@
 ﻿using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("PrimS.Telnet.NetStandard.CiTests")]
 [assembly: InternalsVisibleTo("PrimS.Telnet.CiTests")]
+[assembly: InternalsVisibleTo("PrimS.Telnet.48.CiTests")]
+[assembly: InternalsVisibleTo("PrimS.Telnet.NetStandard.CiTests")]
 
 namespace PrimS.Telnet
 {
@@ -101,6 +102,16 @@ namespace PrimS.Telnet
       return socket.GetStream().ReadByte();
     }
 
+#if ASYNC
+    /// <summary>
+    /// Writes a byte to the current position in the stream and advances the position within the stream by one byte.
+    /// </summary>
+    /// <param name="value">The byte to write to the stream.</param>
+    /// <param name="cancellationToken">The token to monitor for cancellation requests. The default value is System.Threading.CancellationToken.None.</param>
+    public async Task WriteByteAsync(byte value, System.Threading.CancellationToken cancellationToken)
+    {
+      await socket.GetStream().WriteByteAsync(value, cancellationToken).ConfigureAwait(false);
+#else
     /// <summary>
     /// Writes a byte to the current position in the stream and advances the position within the stream by one byte.
     /// </summary>
@@ -108,6 +119,7 @@ namespace PrimS.Telnet
     public void WriteByte(byte value)
     {
       socket.GetStream().WriteByte(value);
+#endif
       System.Diagnostics.Debug.WriteLine("SENT: " + (char)value);
     }
 
@@ -151,7 +163,7 @@ namespace PrimS.Telnet
     /// <returns>A task representing the asynchronous action.</returns>
     public Task WriteAsync(string value, System.Threading.CancellationToken cancellationToken)
     {
-      var buffer = ConvertStringToByteArray(value);
+      var buffer = ByteStringConverter.ConvertStringToByteArray(value);
       return socket.GetStream().WriteAsync(buffer, 0, buffer.Length, cancellationToken);
     }
 #else    
@@ -160,8 +172,8 @@ namespace PrimS.Telnet
     /// </summary>
     /// <param name="value">The command.</param>
     public void Write(string value)
-    {        
-      var buffer = ConvertStringToByteArray(value);
+    {
+      var buffer = ByteStringConverter.ConvertStringToByteArray(value);
       socket.GetStream().Write(buffer, 0, buffer.Length);
     }
 #endif
@@ -197,16 +209,6 @@ namespace PrimS.Telnet
           socket.Dispose();
         }
       }
-    }
-
-    private static byte[] ConvertStringToByteArray(string command)
-    {
-      var buffer = System.Text.ASCIIEncoding.ASCII.GetBytes(command.Replace("\0xFF", "\0xFF\0xFF"
-#if NET6_0_OR_GREATER
-        , StringComparison.InvariantCulture
-#endif
-        ));
-      return buffer;
     }
   }
 }

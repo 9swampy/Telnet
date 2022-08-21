@@ -43,13 +43,16 @@ jobs:
       uses: darenm/Setup-VSTest@v1
       
     - name: Telnet.CiTests
-      run: vstest.console.exe **\bin\**\PrimS.Telnet.CiTests.dll
+      run: vstest.console.exe **\bin\Debug\**\PrimS.Telnet.CiTests.dll
+
+    - name: Telnet.48.CiTests
+      run: vstest.console.exe **\bin\Debug\**\PrimS.Telnet.48.CiTests.dll
 
     - name: Telnet.Sync.CiTests
-      run: vstest.console.exe **\bin\**\PrimS.Telnet.Sync.CiTests.dll
+      run: vstest.console.exe **\bin\Debug\**\PrimS.Telnet.Sync.CiTests.dll
 
     - name: Telnet.NetStandard.CiTests
-      run: vstest.console.exe **\bin\**\PrimS.Telnet.NetStandard.CiTests.dll
+      run: vstest.console.exe **\bin\Debug\**\PrimS.Telnet.NetStandard.CiTests.dll
 
     - name: GitVersion
       run: dotnet tool install --global GitVersion.Tool

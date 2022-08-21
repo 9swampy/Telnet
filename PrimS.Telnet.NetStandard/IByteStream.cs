@@ -50,6 +50,17 @@
     /// <exception cref="System.ObjectDisposedException">Methods were called after the stream was closed.</exception>
     int ReadByte();
 
+#if ASYNC
+    /// <summary>
+    /// Writes a byte to the current position in the stream and advances the position within the stream by one byte.
+    /// </summary>
+    /// <param name="value">The byte to write to the stream.</param>
+    /// <param name="cancellationToken">The token to monitor for cancellation requests. The default value is System.Threading.CancellationToken.None.</param>
+    /// <exception cref="System.IO.IOException">An I/O error occurs.</exception>
+    /// <exception cref="System.NotSupportedException">The stream does not support writing, or the stream is already closed.</exception>
+    /// <exception cref="System.ObjectDisposedException">Methods were called after the stream was closed.</exception>
+    Task WriteByteAsync(byte value, CancellationToken cancellationToken);
+#else
     /// <summary>
     /// Writes a byte to the current position in the stream and advances the position within the stream by one byte.
     /// </summary>
@@ -58,6 +69,7 @@
     /// <exception cref="System.NotSupportedException">The stream does not support writing, or the stream is already closed.</exception>
     /// <exception cref="System.ObjectDisposedException">Methods were called after the stream was closed.</exception>
     void WriteByte(byte value);
+#endif
 
 #if ASYNC
     /// <summary>
