@@ -2,7 +2,7 @@ name: Build, Publish, Tag
 
 on:
   push:
-    branches: [ "master", "release/**", "GitTag" ]
+    branches: [ "master", "release/**" ]
   pull_request:
     branches: [ "master", "develop" ]
   workflow_dispatch:
@@ -90,6 +90,7 @@ jobs:
       uses: fregante/setup-git-user@v1.1.0
 
     - name: Git tag
+      if: github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/heads/release/')
       run: |
         git tag v$Env:FullSemVer
         git push origin v$Env:FullSemVer
