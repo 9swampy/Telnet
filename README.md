@@ -21,7 +21,8 @@ code should be minimal, but be prepared to test thoroughly. Please raise an Issu
 it'll help others with the same problems and we'll see what we can do to accomodate your use cases.
 
 Usage:
-```C# Sync
+```csharp
+    //Sync Example
     namespace PrimS.Telnet.CiTests
     {
       using FluentAssertions;
@@ -60,8 +61,10 @@ Usage:
         }
       }
     }
+```
 
-```C# Async
+```csharp
+    // Async Example
     namespace PrimS.Telnet.CiTests
     {
       using System;
@@ -105,8 +108,10 @@ Usage:
         }
       }
     }
+```
 
-```VB.NET
+```vbnet
+    // VB.NET Example
     Private Async Function RunRemoteScript(commandLine As String) As Task(Of Boolean)
         Using telnet = New Client("HostName", 23, _cancellationSource.Token)
             If Not telnet.IsConnected Then Return False
