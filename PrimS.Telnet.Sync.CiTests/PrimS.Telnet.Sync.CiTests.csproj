@@ -160,6 +160,9 @@
     <Compile Include="..\PrimS.Telnet.CiTests\ByteStreamHandlerTests.cs">
       <Link>ByteStreamHandlerTests.cs</Link>
     </Compile>
+    <Compile Include="..\PrimS.Telnet.CiTests\DummyByteStream.cs">
+      <Link>DummyByteStream.cs</Link>
+    </Compile>
     <Compile Include="..\PrimS.Telnet.CiTests\TcpByteStreamTests.cs">
       <Link>TcpByteStreamTests.cs</Link>
     </Compile>
@@ -180,6 +183,12 @@
     </Compile>
     <Compile Include="..\PrimS.Telnet.CiTests\WithFakeClient.cs">
       <Link>WithFakeClient.cs</Link>
+    </Compile>
+    <Compile Include="..\PrimS.Telnet.CiTests\WriteHandler.cs">
+      <Link>WriteHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\PrimS.Telnet.CiTests\WriteHandlerBase.cs">
+      <Link>WriteHandlerBase.cs</Link>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReadMeExampleFixture.cs" />

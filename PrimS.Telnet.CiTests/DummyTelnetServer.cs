@@ -10,7 +10,7 @@ namespace PrimS.Telnet.Sync.CiTests
   public class DummyTelnetServer : DummyTelnetServerBase
   {
     public DummyTelnetServer()
-      : base("\n")
+      : base(Client.LegacyLineFeed)
     { }
   }
 }

@@ -20,14 +20,14 @@
 
     Task<string> TerminatedReadAsync(string terminator, TimeSpan timeout, int millisecondSpin);
 
-    Task<bool> TryLoginAsync(string userName, string password, int loginTimeoutMs, string linefeed = "\n");
+    Task<bool> TryLoginAsync(string userName, string password, int loginTimeoutMs, string lineFeed = Client.LegacyLineFeed);
 
-    Task<bool> TryLoginAsync(string userName, string password, int loginTimeoutMs, string terminator, string linefeed = "\n");
+    Task<bool> TryLoginAsync(string userName, string password, int loginTimeoutMs, string terminator, string lineFeed = Client.LegacyLineFeed);
 
     Task WriteAsync(byte[] data);
 
     Task WriteAsync(string command);
 
-    Task WriteLineAsync(string command, string linefeed = "\n");
+    Task WriteLineAsync(string command, string lineFeed = Client.LegacyLineFeed);
   }
 }

@@ -158,6 +158,9 @@
     <Compile Include="..\PrimS.Telnet.CiTests\ByteStreamHandlerTests.cs">
       <Link>ByteStreamHandlerTests.cs</Link>
     </Compile>
+    <Compile Include="..\PrimS.Telnet.CiTests\DummyByteStream.cs">
+      <Link>DummyByteStream.cs</Link>
+    </Compile>
     <Compile Include="..\PrimS.Telnet.CiTests\ReadMeExampleFixture.cs">
       <Link>ReadMeExampleFixture.cs</Link>
     </Compile>
@@ -184,6 +187,12 @@
     </Compile>
     <Compile Include="..\PrimS.Telnet.CiTests\WithUnconnectableClient.cs">
       <Link>WithUnconnectableClient.cs</Link>
+    </Compile>
+    <Compile Include="..\PrimS.Telnet.CiTests\WriteHandler.cs">
+      <Link>WriteHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\PrimS.Telnet.CiTests\WriteHandlerBase.cs">
+      <Link>WriteHandlerBase.cs</Link>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
