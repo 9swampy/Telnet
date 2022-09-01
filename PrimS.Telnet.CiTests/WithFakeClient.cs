@@ -27,14 +27,14 @@ namespace PrimS.Telnet.Sync.CiTests
 #endif
       GivenByteStreamWillNeverRespondWhenTerminatedReadShouldWaitRoughlyOneTimeout()
     {
-      var millisecondTolerance = 30;
+      var millisecondTolerance = 250;
       var byteStream = A.Fake<IByteStream>();
       A.CallTo(() => byteStream.Connected).Returns(true);
 
       using (var sut = new Client(byteStream, new TimeSpan(0, 0, 0, 0, 1), default))
       {
         var start = DateTime.Now;
-        var timeout = new TimeSpan(0, 0, 2);
+        var timeout = new TimeSpan(0, 0, 3);
         sut.MillisecondReadDelay = 1;
 #if ASYNC
         await sut.TerminatedReadAsync(".", timeout, 1).ConfigureAwait(false);
