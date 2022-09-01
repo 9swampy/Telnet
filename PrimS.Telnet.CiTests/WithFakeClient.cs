@@ -27,7 +27,11 @@ namespace PrimS.Telnet.Sync.CiTests
 #endif
       GivenByteStreamWillNeverRespondWhenTerminatedReadShouldWaitRoughlyOneTimeout()
     {
+#if NCRUNCH
+      var millisecondTolerance = 30;
+#else
       var millisecondTolerance = 250;
+#endif
       var byteStream = A.Fake<IByteStream>();
       A.CallTo(() => byteStream.Connected).Returns(true);
 

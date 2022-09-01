@@ -41,6 +41,7 @@ namespace PrimS.Telnet.Sync.CiTests
       A.CallTo(() => stream.ReadByte()).MustHaveHappened();
     }
 
+#if NCRUNCH
     [Fact]
     public void TcpByteStreamShouldTerminateAndReleaseDebuggingContext()
     {
@@ -78,6 +79,7 @@ namespace PrimS.Telnet.Sync.CiTests
         }
       }
     }
+#endif
 
     [Fact]
     public
