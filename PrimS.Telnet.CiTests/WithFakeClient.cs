@@ -28,9 +28,11 @@ namespace PrimS.Telnet.Sync.CiTests
       GivenByteStreamWillNeverRespondWhenTerminatedReadShouldWaitRoughlyOneTimeout()
     {
 #if NCRUNCH
+      var timeout = new TimeSpan(0, 0, 3);
       var millisecondTolerance = 30;
 #else
-      var millisecondTolerance = 250;
+      var timeout = new TimeSpan(0, 0, 6);
+      var millisecondTolerance = 750;
 #endif
       var byteStream = A.Fake<IByteStream>();
       A.CallTo(() => byteStream.Connected).Returns(true);
@@ -38,7 +40,6 @@ namespace PrimS.Telnet.Sync.CiTests
       using (var sut = new Client(byteStream, new TimeSpan(0, 0, 0, 0, 1), default))
       {
         var start = DateTime.Now;
-        var timeout = new TimeSpan(0, 0, 3);
         sut.MillisecondReadDelay = 1;
 #if ASYNC
         await sut.TerminatedReadAsync(".", timeout, 1).ConfigureAwait(false);
@@ -58,8 +59,13 @@ namespace PrimS.Telnet.Sync.CiTests
 #endif
       ShouldWaitRoughlyOneMillisecondSpin()
     {
+#if NCRUNCH
       var millisecondsSpin = 1500;
       var millisecondTolerance = 300;
+#else
+      var millisecondsSpin = 5000;
+      var millisecondTolerance = 750;
+#endif
       var hasResponded = false;
       var stopwatch = new Stopwatch();
       var byteStream = ArrangeByteStreamToRespondWithTerminationOnceAfterMillisecondSpin();
