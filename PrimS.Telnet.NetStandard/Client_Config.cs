@@ -17,10 +17,6 @@
     public const string LegacyLineFeed = "\n";
     public const string Rfc854LineFeed = "\r\n";
 
-#if ASYNC
-    private static readonly JoinableTaskContext joinableTaskContext = new();
-#endif
-
     /// <summary>
     /// Initialises a new instance of the <see cref="Client"/> class.
     /// </summary>
@@ -68,10 +64,10 @@
       else
       {
 #if ASYNC
-#pragma warning disable VSTHRD104 // Offer async methods
+#pragma warning disable VSTHRD002 // Avoid problematic synchronous waits
         // https://stackoverflow.com/questions/70964917/optimising-an-asynchronous-call-in-a-constructor-using-joinabletaskfactory-run
-        joinableTaskContext.Factory.Run(async () => await ProactiveOptionNegotiation().ConfigureAwait(false));
-#pragma warning restore VSTHRD104 // Offer async methods
+        Task.Run(async () => await ProactiveOptionNegotiation().ConfigureAwait(false)).Wait();
+#pragma warning restore VSTHRD002 // Avoid problematic synchronous waits
 #else
         ProactiveOptionNegotiation();
 #endif
