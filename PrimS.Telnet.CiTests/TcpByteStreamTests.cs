@@ -41,6 +41,7 @@ namespace PrimS.Telnet.Sync.CiTests
       A.CallTo(() => stream.ReadByte()).MustHaveHappened();
     }
 
+#if NCRUNCH
     [Fact]
     public void TcpByteStreamShouldTerminateAndReleaseDebuggingContext()
     {
@@ -78,32 +79,7 @@ namespace PrimS.Telnet.Sync.CiTests
         }
       }
     }
-
-    [Fact]
-    public
-#if ASYNC
-      async Task
-#else
-      void
 #endif
-      WriteByteShouldNotThrow()
-    {
-      var writtenByte = new byte();
-      using (var server = new DummyTelnetServer())
-      {
-        using (var sut = new TcpByteStream(server.IPAddress.ToString(), server.Port))
-        {
-          sut.Connected.Should().BeTrue();
-#if ASYNC
-          Func<Task> act = async () => await sut.WriteByteAsync(writtenByte, A.Dummy<CancellationToken>()).ConfigureAwait(false);
-          await act.Should().NotThrowAsync();
-#else
-          Action act = () => sut.WriteByte(writtenByte);
-          act.Should().NotThrow();
-#endif
-        }
-      }
-    }
 
     [Fact]
     public

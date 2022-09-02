@@ -35,14 +35,18 @@
       <group targetFramework="net462">
       </group>
       <group targetFramework="net472">
+        <dependency id="System.Memory" version="4.0.1.2" />
+        <dependency id="Microsoft.VisualStudio.Threading" version="17.3.0.0" />
       </group>
       <group targetFramework="net48">
+        <dependency id="Microsoft.VisualStudio.Threading" version="17.3.0.0" />
       </group>
       <group targetFramework="netstandard2.0">
       </group>
       <group targetFramework="netstandard2.1">
       </group>
       <group targetFramework="net6.0">
+        <dependency id="Microsoft.VisualStudio.Threading" version="17.3.0.0" />
       </group>
     </dependencies>
   </metadata>

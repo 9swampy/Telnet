@@ -7,7 +7,7 @@ namespace PrimS.Telnet.Sync.CiTests
   public class DummyTelnetServerRFC854 : DummyTelnetServerBase
   {
     public DummyTelnetServerRFC854()
-      : base("\r\n")
+      : base(Client.Rfc854LineFeed)
     {
 
     }
