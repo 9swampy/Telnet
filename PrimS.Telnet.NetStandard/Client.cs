@@ -14,11 +14,11 @@
     /// <param name="userName">The user name.</param>
     /// <param name="password">The password.</param>
     /// <param name="loginTimeoutMs">The login time out ms.</param>
-    /// <param name="linefeed">The line feed to use. Issue 38: According to RFC 854, CR+LF should be the default a client sends. For backward compatibility \n maintained.</param>
+    /// <param name="lineFeed">The line feed to use. Issue 38: According to RFC 854, CR+LF should be the default a client sends. For backward compatibility \n maintained.</param>
     /// <returns>True if successful.</returns>
-    public Task<bool> TryLoginAsync(string userName, string password, int loginTimeoutMs, string linefeed = "\n")
+    public Task<bool> TryLoginAsync(string userName, string password, int loginTimeoutMs, string lineFeed = LegacyLineFeed)
     {
-      return TryLoginAsync(userName, password, loginTimeoutMs, ">", linefeed);
+      return TryLoginAsync(userName, password, loginTimeoutMs, ">", lineFeed);
     }
 
     /// <summary>
@@ -27,12 +27,12 @@
     /// <param name="userName">The user name.</param>
     /// <param name="password">The password.</param>
     /// <param name="loginTimeoutMs">The login time out ms.</param>
-    /// <param name="terminator">The terminator.</param>
-    /// <param name="linefeed">The line feed to use. Issue 38: According to RFC 854, CR+LF should be the default a client sends. For backward compatibility \n maintained.</param>
+    /// <param name="terminator">The prompt terminator to anticipate.</param>
+    /// <param name="lineFeed">The line feed to use. Issue 38: According to RFC 854, CR+LF should be the default a client sends. For backward compatibility \n maintained.</param>
     /// <returns>True if successful.</returns>
-    public async Task<bool> TryLoginAsync(string userName, string password, int loginTimeoutMs, string terminator, string linefeed = "\n")
+    public async Task<bool> TryLoginAsync(string userName, string password, int loginTimeoutMs, string terminator, string lineFeed = LegacyLineFeed)
     {
-      var result = await TrySendUsernameAndPasswordAsync(userName, password, loginTimeoutMs, linefeed).ConfigureAwait(false);
+      var result = await TrySendUsernameAndPasswordAsync(userName, password, loginTimeoutMs, lineFeed).ConfigureAwait(false);
       if (result)
       {
         result = await IsTerminatedWithAsync(loginTimeoutMs, terminator).ConfigureAwait(false);
@@ -45,11 +45,31 @@
     /// Writes the line to the server.
     /// </summary>
     /// <param name="command">The command.</param>
-    /// <param name="linefeed">The type of linefeed to use.</param>
     /// <returns>An awaitable Task.</returns>
-    public Task WriteLineAsync(string command, string linefeed = "\n")
+    public Task WriteLineAsync(string command)
     {
-      return WriteAsync(string.Format("{0}{1}", command, linefeed));
+      return WriteAsync(string.Format("{0}{1}", command, LegacyLineFeed));
+    }
+
+    /// <summary>
+    /// Writes the line to the server.
+    /// </summary>
+    /// <param name="command">The command.</param>
+    /// <returns>An awaitable Task.</returns>
+    public Task WriteLineRfc854Async(string command)
+    {
+      return WriteAsync(string.Format("{0}{1}", command, Rfc854LineFeed));
+    }
+
+    /// <summary>
+    /// Writes the line to the server.
+    /// </summary>
+    /// <param name="command">The command.</param>
+    /// <param name="lineFeed">The type of lineFeed to use. For legacy reasons the default "\n" is supplied, but to be RFC854 compliant "\r\n" should be supplied.</param>
+    /// <returns>An awaitable Task.</returns>
+    public Task WriteLineAsync(string command, string lineFeed = LegacyLineFeed)
+    {
+      return WriteAsync(string.Format("{0}{1}", command, lineFeed));
     }
 
     /// <summary>
@@ -174,23 +194,23 @@
       return handler.ReadAsync(timeout);
     }
 
-    private async Task<bool> TrySendUsernameAndPasswordAsync(string userName, string password, int loginTimeoutMs, string linefeed)
+    private async Task<bool> TrySendUsernameAndPasswordAsync(string userName, string password, int loginTimeoutMs, string lineFeed)
     {
-      var result = await TryAwaitTerminatorThenSendAsync(userName, loginTimeoutMs, linefeed).ConfigureAwait(false);
+      var result = await TryAwaitTerminatorThenSendAsync(userName, loginTimeoutMs, lineFeed).ConfigureAwait(false);
       if (result)
       {
-        result = await TryAwaitTerminatorThenSendAsync(password, loginTimeoutMs, linefeed).ConfigureAwait(false);
+        result = await TryAwaitTerminatorThenSendAsync(password, loginTimeoutMs, lineFeed).ConfigureAwait(false);
       }
 
       return result;
     }
 
-    private async Task<bool> TryAwaitTerminatorThenSendAsync(string value, int loginTimeoutMs, string linefeed)
+    private async Task<bool> TryAwaitTerminatorThenSendAsync(string value, int loginTimeoutMs, string lineFeed)
     {
       var isTerminated = await IsTerminatedWithAsync(loginTimeoutMs, ":").ConfigureAwait(false);
       if (isTerminated)
       {
-        await WriteLineAsync(value, linefeed).ConfigureAwait(false);
+        await WriteLineAsync(value, lineFeed).ConfigureAwait(false);
       }
 
       return isTerminated;

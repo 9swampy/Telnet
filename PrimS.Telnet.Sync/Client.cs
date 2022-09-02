@@ -4,6 +4,8 @@
   using System.Text.RegularExpressions;
 
   // Referencing https://support.microsoft.com/kb/231866?wa=wsignin1.0 and http://www.codeproject.com/Articles/19071/Quick-tool-A-minimalistic-Telnet-library got me started
+  // Rfc854 Spec https://tools.ietf.org/html/rfc854
+  // Rfc1123 Telnet End-Of-Line Convention https://www.freesoft.org/CIE/RFC/1123/31.htm
 
   public partial class Client : BaseClient, IClient
   {
@@ -13,19 +15,19 @@
     /// <param name="userName">The user name.</param>
     /// <param name="password">The password.</param>
     /// <param name="loginTimeOutMs">The login time out ms.</param>
-    /// <param name="terminator">The terminator.</param>
-    /// <param name="linefeed">The line feed to use. Issue 38: According to RFC 854, CR+LF should be the default a client sends. For backward compatibility \n maintained.</param>
+    /// <param name="terminator">The prompt terminator to anticipate.</param>
+    /// <param name="lineFeed">The line feed to use. Issue 38: According to RFC 854, CR+LF should be the default a client sends. For backward compatibility \n maintained.</param>
     /// <returns>True if successful.</returns>
-    public bool TryLogin(string userName, string password, int loginTimeOutMs, string terminator = ">", string linefeed = "\n")
+    public bool TryLogin(string userName, string password, int loginTimeOutMs, string terminator = ">", string lineFeed = LegacyLineFeed)
     {
       try
       {
         if (IsTerminatedWith(loginTimeOutMs, ":"))
         {
-          WriteLine(userName, linefeed);
+          WriteLine(userName, lineFeed);
           if (IsTerminatedWith(loginTimeOutMs, ":"))
           {
-            WriteLine(password, linefeed);
+            WriteLine(password, lineFeed);
           }
 
           return IsTerminatedWith(loginTimeOutMs, terminator);
@@ -44,10 +46,28 @@
     /// Writes the line to the server.
     /// </summary>
     /// <param name="command">The command.</param>
-    /// <param name="linefeed">The line feed to use. Issue 38: According to RFC 854, CR+LF should be the default a client sends. For backward compatibility \n maintained.</param>
-    public void WriteLine(string command, string linefeed = "\n")
+    public void WriteLine(string command)
     {
-      Write(string.Format("{0}{1}", command, linefeed));
+      Write(string.Format("{0}{1}", command, LegacyLineFeed));
+    }
+
+    /// <summary>
+    /// Writes the line to the server.
+    /// </summary>
+    /// <param name="command">The command.</param>
+    public void WriteLineRfc854(string command)
+    {
+      Write(string.Format("{0}{1}", command, Rfc854LineFeed));
+    }
+
+    /// <summary>
+    /// Writes the line to the server.
+    /// </summary>
+    /// <param name="command">The command.</param>
+    /// <param name="lineFeed">The line feed to use. Issue 38: According to RFC 854, CR+LF should be the default a client sends. For backward compatibility \n maintained.</param>
+    public void WriteLine(string command, string lineFeed = LegacyLineFeed)
+    {
+      Write(string.Format("{0}{1}", command, lineFeed));
     }
 
     /// <summary>

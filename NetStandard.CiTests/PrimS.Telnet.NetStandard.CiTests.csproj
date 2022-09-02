@@ -11,6 +11,7 @@
   <ItemGroup>
     <Compile Include="..\PrimS.Telnet.CiTests\AsyncTcpByteStreamTests.cs" Link="AsyncTcpByteStreamTests.cs" />
     <Compile Include="..\PrimS.Telnet.CiTests\ByteStreamHandlerTests.cs" Link="ByteStreamHandlerTests.cs" />
+    <Compile Include="..\PrimS.Telnet.CiTests\DummyByteStream.cs" Link="DummyByteStream.cs" />
     <Compile Include="..\PrimS.Telnet.CiTests\TcpByteStreamTests.cs" Link="TcpByteStreamTests.cs" />
     <Compile Include="..\PrimS.Telnet.CiTests\DummyTelnetServer.cs" Link="DummyTelnetServer.cs" />
     <Compile Include="..\PrimS.Telnet.CiTests\DummyTelnetServerBase.cs" Link="DummyTelnetServerBase.cs" />
@@ -19,6 +20,8 @@
     <Compile Include="..\PrimS.Telnet.CiTests\WithDummyByteStream.cs" Link="WithDummyByteStream.cs" />
     <Compile Include="..\PrimS.Telnet.CiTests\WithFakeClient.cs" Link="WithFakeClient.cs" />
     <Compile Include="..\PrimS.Telnet.CiTests\WithUnconnectableClient.cs" Link="WithUnconnectableClient.cs" />
+    <Compile Include="..\PrimS.Telnet.CiTests\WriteHandler.cs" Link="WriteHandler.cs" />
+    <Compile Include="..\PrimS.Telnet.CiTests\WriteHandlerBase.cs" Link="WriteHandlerBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="FakeItEasy" Version="7.3.1" />

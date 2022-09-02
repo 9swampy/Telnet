@@ -14,6 +14,9 @@
   /// </summary>
   public partial class Client
   {
+    public const string LegacyLineFeed = "\n";
+    public const string Rfc854LineFeed = "\r\n";
+
 #if ASYNC
     private static readonly JoinableTaskContext joinableTaskContext = new();
 #endif

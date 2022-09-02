@@ -33,29 +33,47 @@ Usage:
       [TestClass]
       public class ReadMeExampleFixture
       {
+        public const string Pattern =
+          "(?:WAN2 total TX: )([0-9.]*) " +
+          "((?:[KMG]B)|(?:Bytes))" +
+          "(?:[, ]*RX: )([0-9.]*) " +
+          "((?:[KMG]B)|(?:Bytes))";
         private const int TimeoutMs = 5000;
 
         [Fact]
         public void ReadMeExample()
         {
-          using (TelnetServer server = new TelnetServer())
+          using (var server = new DummyTelnetServer())
           {
-            using (Client client = new Client(server.IPAddress.ToString(), server.Port, new System.Threading.CancellationToken()))
+            using (var client = new Client(
+              server.IPAddress.ToString(),
+              server.Port,
+              new CancellationToken()))
             {
               client.IsConnected.Should().Be(true);
-              Client.IsWriteConsole = true;
-              client.TryLogin("username", "password", TimeoutMs).Should().Be(true);
+              Client.IsWriteConsole = false;
+              client.TryLogin(
+                "username",
+                "password",
+                TimeoutMs).Should().Be(true);
               client.WriteLine("show statistic wan2");
-              string s = client.TerminatedRead(">", TimeSpan.FromMilliseconds(TimeoutMs));
+              string s = client.TerminatedRead(
+                ">",
+                TimeSpan.FromMilliseconds(TimeoutMs));
               s.Should().Contain(">");
               s.Should().Contain("WAN2");
-              Regex regEx = new Regex("(?!WAN2 total TX: )([0-9.]*)(?! GB ,RX: )([0-9.]*)(?= GB)");
+              var regEx = new Regex(Pattern);
               regEx.IsMatch(s).Should().Be(true);
               MatchCollection matches = regEx.Matches(s);
-              decimal tx = decimal.Parse(matches[0].Value);
-              decimal rx = decimal.Parse(matches[1].Value);
-              (tx + rx).Should().BeGreaterThan(0);
-              (tx + rx).Should().BeLessThan(50);
+              matches.Count.Should().Be(1);
+              matches[0].Captures.Count.Should().Be(1);
+              matches[0].Groups.Count.Should().Be(5);
+              matches[0].Groups[0].Value.Should().Be(
+                "WAN2 total TX: 6.3 GB ,RX: 6.9 GB");
+              matches[0].Groups[1].Value.Should().Be("6.3");
+              matches[0].Groups[2].Value.Should().Be("GB");
+              matches[0].Groups[3].Value.Should().Be("6.9");
+              matches[0].Groups[4].Value.Should().Be("GB");
             }
           }
         }
@@ -69,13 +87,18 @@ Usage:
     {
       using System;
       using FluentAssertions;
+      using System.Threading;
       using System.Threading.Tasks;
       using System.Text.RegularExpressions;
       using Xunit;
 
       public class ReadMeExampleFixture
       {
-        public const string Pattern = "(?:WAN2 total TX: )([0-9.]*) ((?:[KMG]B)|(?:Bytes))(?:[, ]*RX: )([0-9.]*) ((?:[KMG]B)|(?:Bytes))";
+        public const string Pattern =
+          "(?:WAN2 total TX: )([0-9.]*) " +
+          "((?:[KMG]B)|(?:Bytes))" +
+          "(?:[, ]*RX: )([0-9.]*) " +
+          "((?:[KMG]B)|(?:Bytes))";
         private const int TimeoutMs = 5000;
 
         [Fact]
@@ -83,13 +106,21 @@ Usage:
         {
           using (var server = new DummyTelnetServer())
           {
-            using (var client = new Client(server.IPAddress.ToString(), server.Port, new System.Threading.CancellationToken()))
+            using (var client = new Client(
+              server.IPAddress.ToString(),
+              server.Port,
+              new CancellationToken()))
             {
               client.IsConnected.Should().Be(true);
               Client.IsWriteConsole = false;
-              (await client.TryLoginAsync("username", "password", TimeoutMs)).Should().Be(true);
+              (await client.TryLoginAsync(
+                "username",
+                "password",
+                TimeoutMs)).Should().Be(true);
               await client.WriteLineAsync("show statistic wan2");
-              string s = await client.TerminatedReadAsync(">", TimeSpan.FromMilliseconds(TimeoutMs));
+              string s = await client.TerminatedReadAsync(
+                ">",
+                TimeSpan.FromMilliseconds(TimeoutMs));
               s.Should().Contain(">");
               s.Should().Contain("WAN2");
               var regEx = new Regex(Pattern);
@@ -98,7 +129,8 @@ Usage:
               matches.Count.Should().Be(1);
               matches[0].Captures.Count.Should().Be(1);
               matches[0].Groups.Count.Should().Be(5);
-              matches[0].Groups[0].Value.Should().Be("WAN2 total TX: 6.3 GB ,RX: 6.9 GB");
+              matches[0].Groups[0].Value.Should().Be(
+                "WAN2 total TX: 6.3 GB ,RX: 6.9 GB");
               matches[0].Groups[1].Value.Should().Be("6.3");
               matches[0].Groups[2].Value.Should().Be("GB");
               matches[0].Groups[3].Value.Should().Be("6.9");
@@ -112,16 +144,26 @@ Usage:
 
 ```vbnet
     // VB.NET Example
-    Private Async Function RunRemoteScript(commandLine As String) As Task(Of Boolean)
-        Using telnet = New Client("HostName", 23, _cancellationSource.Token)
+    Private Async Function RunRemoteScript(
+      commandLine As String) As Task(Of Boolean)
+        Using telnet = New Client(
+          "HostName",
+          23,
+          _cancellationSource.Token)
             If Not telnet.IsConnected Then Return False
-            Dim loggedOn = Await telnet.TryLoginAsync("username", "password", SocketTimeout, "#"))
+            Dim loggedOn = Await telnet.TryLoginAsync(
+              "username",
+              "password",
+              SocketTimeout, "#"))
             If Not loggedOn Then Return False
             Await telnet.WriteLine(commandLine)
-            Dim serverResponse = Await telnet.TerminatedReadAsync("#", TimeSpan.FromMilliseconds(SocketTimeout))
+            Dim serverResponse = Await telnet.TerminatedReadAsync(
+              "#",
+              TimeSpan.FromMilliseconds(SocketTimeout))
             Debug.Print(serverResponse)
             Await telnet.WriteLine("exit")
-            Dim logoutMessage = Await telnet.ReadAsync(New TimeSpan(100))
+            Dim logoutMessage = Await telnet.ReadAsync(
+              New TimeSpan(100))
             Debug.Print(logoutMessage)
         End Using
         Return True  ' If we got this far; celebrate

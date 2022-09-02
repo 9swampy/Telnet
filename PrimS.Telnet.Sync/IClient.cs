@@ -21,10 +21,10 @@
 
     string TerminatedRead(string terminator, TimeSpan timeout, int millisecondSpin);
 
-    bool TryLogin(string userName, string password, int loginTimeOutMs, string terminator = ">", string linefeed = "\n");
+    bool TryLogin(string userName, string password, int loginTimeOutMs, string terminator = ">", string lineFeed = Client.LegacyLineFeed);
 
     void Write(string command);
 
-    void WriteLine(string command, string linefeed = "\n");
+    void WriteLine(string command, string lineFeed = Client.LegacyLineFeed);
   }
 }
