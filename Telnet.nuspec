@@ -17,17 +17,21 @@
     </description>
     <readme>docs\README.md</readme>
     <releaseNotes>
-      Building on 0.9.1 which introduced potentially breaking changes and dropped unsupported Net
-      versions Std1.6, 3.5, 4.0, 4.5.1 (all sync) while adding 4.6.2 (sync), NetStandard 4.7.2,
-      4.8 and Std2.1 (all async) this release additionally adds Net6.
+      Minor signature changes highlighting the Rfc854 fixes dedicated overloads.
 
-      Note the constructor Client(IByteStream byteStream, TimeSpan timeout, CancellationToken token)
-      has been reordered to comply with best practice standards.
+https://github.com/9swampy/Telnet/issues/69
+V0.10 releases unintentionally introduced an external dependency on
+Microsoft.VisualStudio.Threading (Net 4.7.2, 4.8, 6) and System.Memory (4.7.2).
+https://github.com/Wumpf/IncludeToolbox/issues/73 - essentially same problem was observed here.
+Known issue with MS](https://developercommunity.visualstudio.com/t/joinabletaskfactoryswitchtomainthreadasync-when-bu/662084) - appears to be a known issue that MS closed as low priority
 
-      Lots of rework was needed on the async chains to properly integrate 0.9.1 changes, and the
-      equivalent functionality introduced has now been replicated on the sync paths as well. Test
-      coverage has been extended to cover both; which actually revealed some unintended code... that
-      has been rectified in this release.
+Release 0.11.0 was a kneejerk fix explicitly adding the unintended dependencies.
+
+Looking in to it further... release 0.11.1 reverted in part back to
+[Point 2 - Warning not applicable to .NET Core](https://stackoverflow.com/questions/70964917/optimising-an-asynchronous-call-in-a-constructor-using-joinabletaskfactory-run) instead of accepting the [VSTHRD102 warning](https://github.com/microsoft/vs-threading/blob/main/doc/analyzers/VSTHRD102.md)
+but missed some references.
+
+0.11.2 tidies up the whole reference issue and accordingly drops the dependencies again.
     </releaseNotes>
     <copyright>Copyright (c) 9swampy, Telnet contributors</copyright>
     <tags>Telnet</tags>
@@ -35,18 +39,14 @@
       <group targetFramework="net462">
       </group>
       <group targetFramework="net472">
-        <dependency id="System.Memory" version="4.0.1.2" />
-        <dependency id="Microsoft.VisualStudio.Threading" version="17.3.0.0" />
       </group>
       <group targetFramework="net48">
-        <dependency id="Microsoft.VisualStudio.Threading" version="17.3.0.0" />
       </group>
       <group targetFramework="netstandard2.0">
       </group>
       <group targetFramework="netstandard2.1">
       </group>
       <group targetFramework="net6.0">
-        <dependency id="Microsoft.VisualStudio.Threading" version="17.3.0.0" />
       </group>
     </dependencies>
   </metadata>

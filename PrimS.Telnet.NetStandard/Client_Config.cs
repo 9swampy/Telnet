@@ -4,7 +4,6 @@
   using System.Threading;
 #if ASYNC
   using System.Threading.Tasks;
-  using Microsoft.VisualStudio.Threading;
 #endif
 
   /// <summary>
@@ -14,12 +13,15 @@
   /// </summary>
   public partial class Client
   {
+    /// <summary>
+    /// Prior to v0.9.0 LegacyLineFeed was the default. To be Rfc854 compliant you should prefer Rfc854LineFeed.
+    /// </summary>
     public const string LegacyLineFeed = "\n";
-    public const string Rfc854LineFeed = "\r\n";
 
-#if ASYNC
-    private static readonly JoinableTaskContext joinableTaskContext = new();
-#endif
+    /// <summary>
+    /// Post to v0.9.0 LegacyLineFeed has been retained as the default, but to be Rfc854 compliant you should prefer this.
+    /// </summary>
+    public const string Rfc854LineFeed = "\r\n";
 
     /// <summary>
     /// Initialises a new instance of the <see cref="Client"/> class.
@@ -68,10 +70,10 @@
       else
       {
 #if ASYNC
-#pragma warning disable VSTHRD104 // Offer async methods
+#pragma warning disable VSTHRD002 // Avoid problematic synchronous waits
         // https://stackoverflow.com/questions/70964917/optimising-an-asynchronous-call-in-a-constructor-using-joinabletaskfactory-run
-        joinableTaskContext.Factory.Run(async () => await ProactiveOptionNegotiation().ConfigureAwait(false));
-#pragma warning restore VSTHRD104 // Offer async methods
+        Task.Run(async () => await ProactiveOptionNegotiation().ConfigureAwait(false)).Wait();
+#pragma warning restore VSTHRD002 // Avoid problematic synchronous waits
 #else
         ProactiveOptionNegotiation();
 #endif

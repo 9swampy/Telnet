@@ -9,7 +9,7 @@
   using System.Threading.Tasks;
 #endif
 
-  public class DummyByteStream : IByteStream
+  public sealed class DummyByteStream : IByteStream
   {
     private readonly Queue<byte> buffer = new Queue<byte>();
     private bool isErrored = false;
