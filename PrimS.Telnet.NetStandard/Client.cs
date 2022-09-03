@@ -8,28 +8,13 @@
 
   public partial class Client : BaseClient, IClient
   {
-    /// <summary>
-    /// Tries to login asynchronously, passing in a default LineTerminator of ">".
-    /// </summary>
-    /// <param name="userName">The user name.</param>
-    /// <param name="password">The password.</param>
-    /// <param name="loginTimeoutMs">The login time out ms.</param>
-    /// <param name="lineFeed">The line feed to use. Issue 38: According to RFC 854, CR+LF should be the default a client sends. For backward compatibility \n maintained.</param>
-    /// <returns>True if successful.</returns>
+    /// <inheritdoc/>
     public Task<bool> TryLoginAsync(string userName, string password, int loginTimeoutMs, string lineFeed = LegacyLineFeed)
     {
       return TryLoginAsync(userName, password, loginTimeoutMs, ">", lineFeed);
     }
 
-    /// <summary>
-    /// Tries to login asynchronously.
-    /// </summary>
-    /// <param name="userName">The user name.</param>
-    /// <param name="password">The password.</param>
-    /// <param name="loginTimeoutMs">The login time out ms.</param>
-    /// <param name="terminator">The prompt terminator to anticipate.</param>
-    /// <param name="lineFeed">The line feed to use. Issue 38: According to RFC 854, CR+LF should be the default a client sends. For backward compatibility \n maintained.</param>
-    /// <returns>True if successful.</returns>
+    /// <inheritdoc/>
     public async Task<bool> TryLoginAsync(string userName, string password, int loginTimeoutMs, string terminator, string lineFeed = LegacyLineFeed)
     {
       var result = await TrySendUsernameAndPasswordAsync(userName, password, loginTimeoutMs, lineFeed).ConfigureAwait(false);
@@ -41,42 +26,25 @@
       return result;
     }
 
-    /// <summary>
-    /// Writes the line to the server.
-    /// </summary>
-    /// <param name="command">The command.</param>
-    /// <returns>An awaitable Task.</returns>
+    /// <inheritdoc/>
     public Task WriteLineAsync(string command)
     {
       return WriteAsync(string.Format("{0}{1}", command, LegacyLineFeed));
     }
 
-    /// <summary>
-    /// Writes the line to the server.
-    /// </summary>
-    /// <param name="command">The command.</param>
-    /// <returns>An awaitable Task.</returns>
+    /// <inheritdoc/>
     public Task WriteLineRfc854Async(string command)
     {
       return WriteAsync(string.Format("{0}{1}", command, Rfc854LineFeed));
     }
 
-    /// <summary>
-    /// Writes the line to the server.
-    /// </summary>
-    /// <param name="command">The command.</param>
-    /// <param name="lineFeed">The type of lineFeed to use. For legacy reasons the default "\n" is supplied, but to be RFC854 compliant "\r\n" should be supplied.</param>
-    /// <returns>An awaitable Task.</returns>
+    /// <inheritdoc/>
     public Task WriteLineAsync(string command, string lineFeed = LegacyLineFeed)
     {
       return WriteAsync(string.Format("{0}{1}", command, lineFeed));
     }
 
-    /// <summary>
-    /// Writes the specified command to the server.
-    /// </summary>
-    /// <param name="command">The command.</param>
-    /// <returns>An awaitable Task.</returns>
+    /// <inheritdoc/>
     public async Task WriteAsync(string command)
     {
       if (ByteStream.Connected && !InternalCancellation.Token.IsCancellationRequested)
@@ -87,11 +55,7 @@
       }
     }
 
-    /// <summary>
-    /// Writes the specified <paramref name="data"/> to the server.
-    /// </summary>
-    /// <param name="data">The byte array to send.</param>
-    /// <returns>An awaitable Task.</returns>
+    /// <inheritdoc/>
     public async Task WriteAsync(byte[] data)
     {
       if (ByteStream.Connected && !InternalCancellation.Token.IsCancellationRequested)
@@ -102,45 +66,25 @@
       }
     }
 
-    /// <summary>
-    /// Reads asynchronously from the stream, terminating as soon as the <paramref name="terminator"/> is located.
-    /// </summary>
-    /// <param name="terminator">The terminator.</param>
-    /// <returns>Any text read from the stream.</returns>
+    /// <inheritdoc/>
     public Task<string> TerminatedReadAsync(string terminator)
     {
       return TerminatedReadAsync(terminator, TimeSpan.FromMilliseconds(Client.DefaultTimeoutMs));
     }
 
-    /// <summary>
-    /// Reads asynchronously from the stream, terminating as soon as the <paramref name="terminator"/> is located.
-    /// </summary>
-    /// <param name="terminator">The terminator.</param>
-    /// <param name="timeout">The timeout.</param>
-    /// <returns>Any text read from the stream.</returns>
+    /// <inheritdoc/>
     public Task<string> TerminatedReadAsync(string terminator, TimeSpan timeout)
     {
       return TerminatedReadAsync(terminator, timeout, 1);
     }
 
-    /// <summary>
-    /// Reads asynchronously from the stream, terminating as soon as the <paramref name="regex"/> is located.
-    /// </summary>
-    /// <param name="regex">The terminator.</param>
-    /// <param name="timeout">The timeout.</param>
-    /// <returns>Any text read from the stream.</returns>
+    /// <inheritdoc/>
     public Task<string> TerminatedReadAsync(Regex regex, TimeSpan timeout)
     {
       return TerminatedReadAsync(regex, timeout, 1);
     }
 
-    /// <summary>
-    /// Reads asynchronously from the stream, terminating as soon as the <paramref name="terminator"/> is located.
-    /// </summary>
-    /// <param name="terminator">The terminator.</param>
-    /// <param name="timeout">The maximum time to wait.</param>
-    /// <param name="millisecondSpin">The millisecond spin between each read from the stream.</param>
-    /// <returns>Any text read from the stream.</returns>
+    /// <inheritdoc/>
     public async Task<string> TerminatedReadAsync(string terminator, TimeSpan timeout, int millisecondSpin)
     {
       bool isTerminated(string x) => Client.IsTerminatorLocated(terminator, x);
@@ -153,13 +97,7 @@
       return s;
     }
 
-    /// <summary>
-    /// Reads asynchronously from the stream, terminating as soon as the <paramref name="regex"/> is matched.
-    /// </summary>
-    /// <param name="regex">The regex to match.</param>
-    /// <param name="timeout">The maximum time to wait.</param>
-    /// <param name="millisecondSpin">The millisecond spin between each read from the stream.</param>
-    /// <returns>Any text read from the stream.</returns>
+    /// <inheritdoc/>
     public async Task<string> TerminatedReadAsync(Regex regex, TimeSpan timeout, int millisecondSpin)
     {
       bool isTerminated(string x) => Client.IsRegexLocated(regex, x);
@@ -172,20 +110,13 @@
       return s;
     }
 
-    /// <summary>
-    /// Reads asynchronously from the stream.
-    /// </summary>
-    /// <returns>Any text read from the stream.</returns>
+    /// <inheritdoc/>
     public Task<string> ReadAsync()
     {
       return ReadAsync(TimeSpan.FromMilliseconds(Client.DefaultTimeoutMs));
     }
 
-    /// <summary>
-    /// Reads asynchronously from the stream.
-    /// </summary>
-    /// <param name="timeout">The timeout.</param>
-    /// <returns>Any text read from the stream.</returns>
+    /// <inheritdoc/>
     public Task<string> ReadAsync(TimeSpan timeout)
     {
 #pragma warning disable CA2000 // Dispose objects before losing scope

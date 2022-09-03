@@ -2,6 +2,9 @@
 {
   using System;
 
+  /// <summary>
+  /// Base client behaviour.
+  /// </summary>
   public interface IBaseClient : IDisposable
   {
     /// <summary>
