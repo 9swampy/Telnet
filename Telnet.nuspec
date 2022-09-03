@@ -17,19 +17,21 @@
     </description>
     <readme>docs\README.md</readme>
     <releaseNotes>
-      Minor signature changes highlighting the Rfc854 fixes dedicated overloads. 
+      Minor signature changes highlighting the Rfc854 fixes dedicated overloads.
 
-      https://github.com/9swampy/Telnet/issues/69
-      V0.10 releases unintentionally introduced an external dependency on
-      Microsoft.VisualStudio.Threading (Net 4.7.2, 4.8, 6) and System.Memory (4.7.2).
-      https://github.com/Wumpf/IncludeToolbox/issues/73 - essentially same problem was observed here.
-      [Known issue with MS](https://developercommunity.visualstudio.com/t/joinabletaskfactoryswitchtomainthreadasync-when-bu/662084) - appears to be a known issue that MS closed as low priority
+https://github.com/9swampy/Telnet/issues/69
+V0.10 releases unintentionally introduced an external dependency on
+Microsoft.VisualStudio.Threading (Net 4.7.2, 4.8, 6) and System.Memory (4.7.2).
+https://github.com/Wumpf/IncludeToolbox/issues/73 - essentially same problem was observed here.
+Known issue with MS](https://developercommunity.visualstudio.com/t/joinabletaskfactoryswitchtomainthreadasync-when-bu/662084) - appears to be a known issue that MS closed as low priority
 
-      Release 0.11.0 was a kneejerk fix explicitly adding the unintended dependencies.
+Release 0.11.0 was a kneejerk fix explicitly adding the unintended dependencies.
 
-      Looking in to it further... release 0.11.1 reverts back to
-      [Point 2 - Warning not applicable to .NET Core](https://stackoverflow.com/questions/70964917/optimising-an-asynchronous-call-in-a-constructor-using-joinabletaskfactory-run) instead of accepting the [VSTHRD102 warning](https://github.com/microsoft/vs-threading/blob/main/doc/analyzers/VSTHRD102.md)
-      and accordingly drops the dependencies again.
+Looking in to it further... release 0.11.1 reverted in part back to
+[Point 2 - Warning not applicable to .NET Core](https://stackoverflow.com/questions/70964917/optimising-an-asynchronous-call-in-a-constructor-using-joinabletaskfactory-run) instead of accepting the [VSTHRD102 warning](https://github.com/microsoft/vs-threading/blob/main/doc/analyzers/VSTHRD102.md)
+but missed some references.
+
+0.11.2 tidies up the whole reference issue and accordingly drops the dependencies again.
     </releaseNotes>
     <copyright>Copyright (c) 9swampy, Telnet contributors</copyright>
     <tags>Telnet</tags>
