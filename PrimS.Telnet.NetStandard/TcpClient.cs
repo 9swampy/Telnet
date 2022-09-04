@@ -112,7 +112,7 @@
     {
       if (isDisposing)
       {
-#if NET461
+#if NET462
         this.client.Close();
 #else
         client.Dispose();
