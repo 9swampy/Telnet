@@ -20,66 +20,11 @@ v0.9 introduced a significant bump to Net versions and some potentially breaking
 code should be minimal, but be prepared to test thoroughly. Please raise an Issue if you encounter any problems; in part
 it'll help others with the same problems and we'll see what we can do to accomodate your use cases.
 
+v0.10 introduced an unintended dependency that's removed as of 0.11.2.
+
 Usage:
-```csharp
-    //Sync Example
-    namespace PrimS.Telnet.CiTests
-    {
-      using FluentAssertions;
-      using Xunit;
-      using System;
-      using System.Text.RegularExpressions;
 
-      [TestClass]
-      public class ReadMeExampleFixture
-      {
-        public const string Pattern =
-          "(?:WAN2 total TX: )([0-9.]*) " +
-          "((?:[KMG]B)|(?:Bytes))" +
-          "(?:[, ]*RX: )([0-9.]*) " +
-          "((?:[KMG]B)|(?:Bytes))";
-        private const int TimeoutMs = 5000;
-
-        [Fact]
-        public void ReadMeExample()
-        {
-          using (var server = new DummyTelnetServer())
-          {
-            using (var client = new Client(
-              server.IPAddress.ToString(),
-              server.Port,
-              new CancellationToken()))
-            {
-              client.IsConnected.Should().Be(true);
-              Client.IsWriteConsole = false;
-              client.TryLogin(
-                "username",
-                "password",
-                TimeoutMs).Should().Be(true);
-              client.WriteLine("show statistic wan2");
-              string s = client.TerminatedRead(
-                ">",
-                TimeSpan.FromMilliseconds(TimeoutMs));
-              s.Should().Contain(">");
-              s.Should().Contain("WAN2");
-              var regEx = new Regex(Pattern);
-              regEx.IsMatch(s).Should().Be(true);
-              MatchCollection matches = regEx.Matches(s);
-              matches.Count.Should().Be(1);
-              matches[0].Captures.Count.Should().Be(1);
-              matches[0].Groups.Count.Should().Be(5);
-              matches[0].Groups[0].Value.Should().Be(
-                "WAN2 total TX: 6.3 GB ,RX: 6.9 GB");
-              matches[0].Groups[1].Value.Should().Be("6.3");
-              matches[0].Groups[2].Value.Should().Be("GB");
-              matches[0].Groups[3].Value.Should().Be("6.9");
-              matches[0].Groups[4].Value.Should().Be("GB");
-            }
-          }
-        }
-      }
-    }
-```
+.NET Fiddle https://dotnetfiddle.net/S9Ii6n
 
 ```csharp
     // Async Example
@@ -119,6 +64,66 @@ Usage:
                 TimeoutMs)).Should().Be(true);
               await client.WriteLineAsync("show statistic wan2");
               string s = await client.TerminatedReadAsync(
+                ">",
+                TimeSpan.FromMilliseconds(TimeoutMs));
+              s.Should().Contain(">");
+              s.Should().Contain("WAN2");
+              var regEx = new Regex(Pattern);
+              regEx.IsMatch(s).Should().Be(true);
+              MatchCollection matches = regEx.Matches(s);
+              matches.Count.Should().Be(1);
+              matches[0].Captures.Count.Should().Be(1);
+              matches[0].Groups.Count.Should().Be(5);
+              matches[0].Groups[0].Value.Should().Be(
+                "WAN2 total TX: 6.3 GB ,RX: 6.9 GB");
+              matches[0].Groups[1].Value.Should().Be("6.3");
+              matches[0].Groups[2].Value.Should().Be("GB");
+              matches[0].Groups[3].Value.Should().Be("6.9");
+              matches[0].Groups[4].Value.Should().Be("GB");
+            }
+          }
+        }
+      }
+    }
+```
+
+```csharp
+    //Sync Example
+    namespace PrimS.Telnet.CiTests
+    {
+      using FluentAssertions;
+      using Xunit;
+      using System;
+      using System.Text.RegularExpressions;
+
+      [TestClass]
+      public class ReadMeExampleFixture
+      {
+        public const string Pattern =
+          "(?:WAN2 total TX: )([0-9.]*) " +
+          "((?:[KMG]B)|(?:Bytes))" +
+          "(?:[, ]*RX: )([0-9.]*) " +
+          "((?:[KMG]B)|(?:Bytes))";
+        private const int TimeoutMs = 5000;
+
+        [Fact]
+        public void ReadMeExample()
+        {
+          using (var server = new DummyTelnetServer())
+          {
+            using (var client = new Client(
+              server.IPAddress.ToString(),
+              server.Port,
+              new CancellationToken()))
+            {
+              client.IsConnected.Should().Be(true);
+              Client.IsWriteConsole = false;
+              client.TryLogin(
+                "username",
+                "password",
+                TimeoutMs).Should().Be(true);
+              client.WriteLine("show statistic wan2");
+              string s = client.TerminatedRead(
                 ">",
                 TimeSpan.FromMilliseconds(TimeoutMs));
               s.Should().Contain(">");

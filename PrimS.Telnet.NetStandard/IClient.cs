@@ -64,7 +64,11 @@
     Task<string> TerminatedReadAsync(string terminator, TimeSpan timeout, int millisecondSpin);
 
     /// <summary>
-    /// Tries to login asynchronously, passing in a default LineTerminator of ">".
+    /// Syntactic sugar; tries to login asynchronously, passing in a default LineTerminator of ">".
+    /// Anticipates a terminator (TerminatedRead); responds with username (WriteLine).
+    /// Anticipates another terminator (TerminatedRead); responds with password (WriteLine).
+    /// This is just a proxy for common Telnet behavour, but of course it relies on the Server implementing the expected behaviour.
+    /// If the server you're connecting to does anything different, just use custom TerminatedReads followed by WriteLines.
     /// </summary>
     /// <param name="userName">The user name.</param>
     /// <param name="password">The password.</param>
@@ -74,7 +78,11 @@
     Task<bool> TryLoginAsync(string userName, string password, int loginTimeoutMs, string lineFeed = Client.LegacyLineFeed);
 
     /// <summary>
-    /// Tries to login asynchronously.
+    /// Syntactic sugar; tries to login asynchronously. 
+    /// Anticipates a terminator (TerminatedRead); responds with username (WriteLine).
+    /// Anticipates another terminator (TerminatedRead); responds with password (WriteLine).
+    /// This is just a proxy for common Telnet behavour, but of course it relies on the Server implementing the expected behaviour.
+    /// If the server you're connecting to does anything different, just use custom TerminatedReads followed by WriteLines.
     /// </summary>
     /// <param name="userName">The user name.</param>
     /// <param name="password">The password.</param>

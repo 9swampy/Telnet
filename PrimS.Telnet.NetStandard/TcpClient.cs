@@ -1,9 +1,6 @@
 ﻿namespace PrimS.Telnet
 {
   using System;
-#if ASYNC
-  using System.Threading.Tasks;
-#endif
 
   /// <summary>
   /// A TcpClient to connect to the specified socket.
@@ -18,22 +15,17 @@
     /// <param name="hostName">The host name.</param>
     /// <param name="port">The port.</param>
     public TcpClient(string hostName, int port)
+      : this(GetConnectedClient(hostName, port))
     {
-#if NetStandard || NET6_0_OR_GREATER
-      client = new System.Net.Sockets.TcpClient();
-      // .NetStandard does not include a synchronous constructor or Connect method.
-      // This will normally not be connected by the time the constructor returns,
-      // it is the responsibility of the caller to ensure that they wait for the
-      // connection to complete or fail, using this.Connected.
-      // The PrimS.Telnet.Client constructor does this.
-      // Adding something awaitable on this class to connect or wait for connection
-      // would break backward compatibility and require a lot of refactoring.
-      // This will do for now.
-      // https://stackoverflow.com/questions/70964917/optimising-an-asynchronous-call-in-a-constructor-using-joinabletaskfactory-run
-      Task.Run(async () => await client.ConnectAsync(hostName, port).ConfigureAwait(false)).Wait();
-#else
-      client = new System.Net.Sockets.TcpClient(hostName, port);
-#endif
+    }
+
+    /// <summary>
+    /// Initialises a new instance of the <see cref="TcpClient"/> class.
+    /// </summary>
+    /// <param name="client">The <see cref="System.Net.Sockets.TcpClient"/> instance to wrap.</param>
+    public TcpClient(System.Net.Sockets.TcpClient client)
+    {
+      this.client = client;
     }
 
     /// <summary>
@@ -120,12 +112,19 @@
     {
       if (isDisposing)
       {
-#if NET461
+#if NET462
         this.client.Close();
 #else
         client.Dispose();
 #endif
       }
+    }
+
+    private static System.Net.Sockets.TcpClient GetConnectedClient(string hostName, int port)
+    {
+      var client = new System.Net.Sockets.TcpClient();
+      client.Connect(hostName, port);
+      return client;
     }
   }
 }

@@ -1,5 +1,8 @@
 ﻿<ProjectConfiguration>
   <Settings>
     <IgnoreThisComponentCompletely>False</IgnoreThisComponentCompletely>
+    <RequiredCapabilities>
+      <Value>Net462</Value>
+    </RequiredCapabilities>
   </Settings>
 </ProjectConfiguration>
