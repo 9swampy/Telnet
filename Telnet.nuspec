@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>Telnet</id>
-    <version>0.10.0</version>
+    <version>0.11.3</version>
     <title>Telnet</title>
     <authors>Telnet contributors</authors>
     <owners>9swampy</owners>
@@ -17,21 +17,8 @@
     </description>
     <readme>docs\README.md</readme>
     <releaseNotes>
-      Minor signature changes highlighting the Rfc854 fixes dedicated overloads.
-
-https://github.com/9swampy/Telnet/issues/69
-V0.10 releases unintentionally introduced an external dependency on
-Microsoft.VisualStudio.Threading (Net 4.7.2, 4.8, 6) and System.Memory (4.7.2).
-https://github.com/Wumpf/IncludeToolbox/issues/73 - essentially same problem was observed here.
-Known issue with MS](https://developercommunity.visualstudio.com/t/joinabletaskfactoryswitchtomainthreadasync-when-bu/662084) - appears to be a known issue that MS closed as low priority
-
-Release 0.11.0 was a kneejerk fix explicitly adding the unintended dependencies.
-
-Looking in to it further... release 0.11.1 reverted in part back to
-[Point 2 - Warning not applicable to .NET Core](https://stackoverflow.com/questions/70964917/optimising-an-asynchronous-call-in-a-constructor-using-joinabletaskfactory-run) instead of accepting the [VSTHRD102 warning](https://github.com/microsoft/vs-threading/blob/main/doc/analyzers/VSTHRD102.md)
-but missed some references.
-
-0.11.2 tidies up the whole reference issue and accordingly drops the dependencies again.
+      0.11.3 exposes the TcpByteStream(ISocket) and TcpClient(System.Net.Sockets.TcpClient) ctors
+      allowing more open access to creating a viable client than (string hostName, int port).
     </releaseNotes>
     <copyright>Copyright (c) 9swampy, Telnet contributors</copyright>
     <tags>Telnet</tags>

@@ -34,11 +34,10 @@ namespace PrimS.Telnet
     /// Initialises a new instance of the <see cref="TcpByteStream" /> class.
     /// </summary>
     /// <param name="tcpSocket">The TCP socket.</param>
-    internal TcpByteStream(ISocket tcpSocket)
+    public TcpByteStream(ISocket tcpSocket)
     {
       socket = tcpSocket;
-#if ASYNC
-#else
+#if !ASYNC
       var are = new System.Threading.AutoResetEvent(false);
       are.WaitOne(20);
 #endif
