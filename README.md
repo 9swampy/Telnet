@@ -22,12 +22,12 @@ it'll help others with the same problems and we'll see what we can do to accomod
 
 v0.10 introduced an unintended dependency that's removed as of 0.11.2.
 
-## Most common functions in C# nuGet
-Depending which version of this library you use, you may or may not have access to synchronous versions.
+## Most common functions in C# NuGet
+Depending on which version of this library you use, you may or may not have access to asynchronous functionality. Wherever possible we would recommend using the async overloads.
  - Client - ```var client = new Client(\<ip string>, \<port#>, new CancellationToken()));```
     + Needed to setup the connection 
  - TryLogin - ```bool result = await client.TryLoginAsync(\<username>, \<password>, \<Timout ms>,  \<lineFeed default='\\n'>)```
-    + Most telnet connections are required to login, this function handles that and lets you know if it was successful.
+    + Most Telnet connections are required to login; this function handles that and lets you know if it was successful. Please note it is just a wrapper for Read and Write calls to cover the most common scenario. If it doesn't work, roll your own TerminatedReads and Writes to service your specific UseCase.
       - Try login uses a 'terminator' (the character after which you start writing commands) to detect if the login was successful (default is ```>```).         The terminator character is found after login and you can begin entering commands, for example, ```> configure``` - '>' is the terminator.  
         If the terminator/linestarter is different to '>', you will need to specify it as a extra parameter. ```client.TryLoginAsync(\<username>, \<password>, \<Timout ms>, \<terminator>, \<lineFeed default='\\n'>)```  
  - TerminatedRead - ```string s = await client.TerminatedReadAsync(\<value>, \<Timeout ms>)```
@@ -44,7 +44,6 @@ Filter recording entries by 'telnet'.
 
 ### Asynchronous C#
 ```csharp
-    // Async Example
     namespace PrimS.Telnet.CiTests
     {
       using System;
@@ -105,7 +104,6 @@ Filter recording entries by 'telnet'.
 ```
 ### Synchronous C#
 ```csharp
-    //Sync Example
     namespace PrimS.Telnet.CiTests
     {
       using FluentAssertions;
@@ -166,7 +164,6 @@ Filter recording entries by 'telnet'.
 
 ### Visual Basic
 ```vbnet
-    // VB.NET Example
     Private Async Function RunRemoteScript(
       commandLine As String) As Task(Of Boolean)
         Using telnet = New Client(
