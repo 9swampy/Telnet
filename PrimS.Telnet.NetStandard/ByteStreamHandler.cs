@@ -205,8 +205,10 @@
           // Only reply on state change. This helps avoid loops.
           // See RFC1143: https://tools.ietf.org/html/rfc1143
 #if ASYNC
-          return Task.CompletedTask;
-#else
+          return
+#endif
+          PreprocessorAsyncAdapter.Execute(() => ConsumeCommand(inputVerb));
+#if !ASYNC
           break;
 #endif
         case (int)Commands.Do:
@@ -369,6 +371,29 @@
           SendNegotiation(inputOption, clientNAWS);
         }
       }
+    }
+
+    /// <summary>
+    /// Consumes TELNET command by reading Option.
+    /// </summary>
+    /// <param name="inputVerb">The TELNET command we received.</param>
+    private
+#if ASYNC
+      async Task
+#else
+      void
+#endif
+      ConsumeCommand(int inputVerb)
+    {
+      var inputOption = byteStream.ReadByte();
+      if (IsCommand(inputOption))
+      {
+        System.Diagnostics.Debug.WriteLine("Received Command [" + (Commands) inputVerb + "] with Option " + Enum.GetName(typeof(Options), inputOption));
+      }
+#if ASYNC
+      return Task.CompletedTask;
+#endif
+
     }
 
     private static bool IsCommand(int inputOption)
