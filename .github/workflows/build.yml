@@ -72,8 +72,12 @@ jobs:
         Write-Host $semVer
         Write-Host $fullSemVer
         Write-Host $nuGetVersionV2
-        Write-Host ${nuGetVersionV2}${buildMetaDataPadded}
+        if (${buildMetaDataPadded} = "0000") {
+          ${buildMetaDataPadded} = ''
+        }
 
+        Write-Host ${nuGetVersionV2}${buildMetaDataPadded}
+        
         echo "FullSemVer=$fullSemVer" | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf8 -Append
         echo "SemVer=$semVer" | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf8 -Append
         echo "NuGetVersionV2=$nuGetVersionV2" | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf8 -Append
