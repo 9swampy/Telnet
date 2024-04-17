@@ -12,13 +12,12 @@
     <icon>images\Ptelnet128x600.png</icon>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>
-      A minimal open-source C# 4.6.2/4.7.2/4.8/NetStandard2.0/NetStandard2.1/Net6.0 Telnet client
+      A minimal open-source C# 4.6.2/4.7.2/4.8/NetStandard2.0/NetStandard2.1/Net6.0/Net8.0 Telnet client
       library implementation; just enough to send simple text commands and retrieve the response.
     </description>
     <readme>docs\README.md</readme>
     <releaseNotes>
-      0.11.3 exposes the TcpByteStream(ISocket) and TcpClient(System.Net.Sockets.TcpClient) ctors
-      allowing more open access to creating a viable client than (string hostName, int port).
+      0.12 adds a Net8.0 target.
     </releaseNotes>
     <copyright>Copyright (c) 9swampy, Telnet contributors</copyright>
     <tags>Telnet</tags>
@@ -34,6 +33,8 @@
       <group targetFramework="netstandard2.1">
       </group>
       <group targetFramework="net6.0">
+      </group>
+      <group targetFramework="net8.0">
       </group>
     </dependencies>
   </metadata>
@@ -55,6 +56,9 @@
     <file src="PrimS.Telnet\Bin\Release\net6.0\PrimS.Telnet.dll" target="lib\net6.0" />
     <file src="PrimS.Telnet\Bin\Release\net6.0\PrimS.Telnet.xml" target="lib\net6.0" />
     <file src="PrimS.Telnet\Bin\Release\net6.0\PrimS.Telnet.deps.json" target="lib\net6.0" />
+    <file src="PrimS.Telnet\Bin\Release\net8.0\PrimS.Telnet.dll" target="lib\net8.0" />
+    <file src="PrimS.Telnet\Bin\Release\net8.0\PrimS.Telnet.xml" target="lib\net8.0" />
+    <file src="PrimS.Telnet\Bin\Release\net8.0\PrimS.Telnet.deps.json" target="lib\net8.0" />
     <file src="readme.md" target="docs\" />
   </files>
 </package>
