@@ -29,6 +29,7 @@
     /// <param name="hostname">The hostname.</param>
     /// <param name="port">The port.</param>
     /// <param name="token">The cancellation token.</param>
+    [Obsolete("Prefer overload that accepts new TcpByteStream(hostname, port) and dispose it properly.")]
     public Client(string hostname, int port, CancellationToken token)
       : this(new TcpByteStream(hostname, port), token)
     {
@@ -48,9 +49,20 @@
     /// Initialises a new instance of the <see cref="Client"/> class.
     /// </summary>
     /// <param name="byteStream">The stream served by the host connected to.</param>
-    /// <param name="timeout">The timeout to wait for initial successful connection to <cref>byteStream</cref>.</param>
+    /// <param name="timeout">The timeout to wait for initial successful connection to <cref>byteStream</cref>. Other overloads default to new TimeSpan(0, 0, 30).</param>
     /// <param name="token">The cancellation token.</param>
     public Client(IByteStream byteStream, TimeSpan timeout, CancellationToken token)
+      : this(byteStream, timeout, token, Array.Empty<(Commands Command, Options Option)>())
+    { }
+
+    /// <summary>
+    /// Initialises a new instance of the <see cref="Client"/> class.
+    /// </summary>
+    /// <param name="byteStream">The stream served by the host connected to.</param>
+    /// <param name="timeout">The timeout to wait for initial successful connection to <cref>byteStream</cref>.</param>
+    /// <param name="token">The cancellation token.</param>
+    /// <param name="options">Additional options to send during negotiation.</param>
+    public Client(IByteStream byteStream, TimeSpan timeout, CancellationToken token, (Commands Command, Options Option)[] options)
       : base(byteStream, token)
     {
       Guard.AgainstNullArgument(nameof(byteStream), byteStream);
@@ -73,9 +85,17 @@
 #pragma warning disable VSTHRD002 // Avoid problematic synchronous waits
         // https://stackoverflow.com/questions/70964917/optimising-an-asynchronous-call-in-a-constructor-using-joinabletaskfactory-run
         Task.Run(async () => await ProactiveOptionNegotiation().ConfigureAwait(false)).Wait();
+        foreach (var option in options)
+        {
+          Task.Run(async () => await NegotiateOption(option.Command, option.Option).ConfigureAwait(false)).Wait();
+        }
 #pragma warning restore VSTHRD002 // Avoid problematic synchronous waits
 #else
         ProactiveOptionNegotiation();
+        foreach (var option in options)
+        {
+          NegotiateOption(option.Command, option.Option);
+        }
 #endif
       }
     }
@@ -94,6 +114,18 @@
     /// Gets and sets the TerminalSpeed to negotiate.
     /// </summary>
     public static string TerminalSpeed { get; set; } = "19200,19200";
+
+    internal static byte[] SuppressGoAheadBuffer
+    {
+      get
+      {
+        var supressGoAhead = new byte[3];
+        supressGoAhead[0] = (byte)Commands.InterpretAsCommand;
+        supressGoAhead[1] = (byte)Commands.Do;
+        supressGoAhead[2] = (byte)Options.SuppressGoAhead;
+        return supressGoAhead;
+      }
+    }
 
     /// <summary>
     /// Sending <see cref="Commands.Do"/> <see cref="Options.SuppressGoAhead"/> up front will get us to the logon prompt faster.
@@ -114,16 +146,23 @@
 #endif
     }
 
-    internal static byte[] SuppressGoAheadBuffer
+    /// <summary>
+    /// Negotiate Option specified.
+    /// </summary>
+    private
+#if ASYNC
+      Task
+#else
+      void
+#endif
+      NegotiateOption(Commands command, Options option)
     {
-      get
-      {
-        var supressGoAhead = new byte[3];
-        supressGoAhead[0] = (byte)Commands.InterpretAsCommand;
-        supressGoAhead[1] = (byte)Commands.Do;
-        supressGoAhead[2] = (byte)Options.SuppressGoAhead;
-        return supressGoAhead;
-      }
+      var buffer = new byte[] { (byte)Commands.InterpretAsCommand, (byte)command, (byte)option };
+#if ASYNC
+      return ByteStream.WriteAsync(buffer, 0, buffer.Length, InternalCancellation.Token);
+#else
+      ByteStream.Write(buffer, 0, buffer.Length);
+#endif
     }
   }
 }

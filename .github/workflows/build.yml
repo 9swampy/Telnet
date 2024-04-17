@@ -2,7 +2,7 @@ name: Build, Publish, Tag
 
 on:
   push:
-    branches: [ "master", "release/**" ]
+    branches: [ "master", "release/**", "features/**" ]
   pull_request:
     branches: [ "master", "develop" ]
   workflow_dispatch:
@@ -18,17 +18,19 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         fetch-depth: 0
 
     - name: Install .NET Core
-      uses: actions/setup-dotnet@v2
+      uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 6.0.x
+        dotnet-version:  | 
+            6.0.x
+            8.0.x
 
     - name: Setup MSBuild.exe
-      uses: microsoft/setup-msbuild@v1.0.2
+      uses: microsoft/setup-msbuild@v2
 
     - name: Install nuget
       run: Invoke-WebRequest https://dist.nuget.org/win-x86-commandline/latest/nuget.exe -OutFile Nuget.exe
@@ -39,20 +41,20 @@ jobs:
     - name: Build Debug
       run: msbuild $env:Solution_Name /p:Configuration=Debug /p:Platform="Any CPU"
 
-    - name: Setup VSTest.console.exe
-      uses: darenm/Setup-VSTest@v1
-      
     - name: Telnet.CiTests
-      run: vstest.console.exe **\bin\Debug\**\PrimS.Telnet.CiTests.dll
+      uses: microsoft/vstest-action@v1.0.0
+      with:
+        testAssembly: PrimS.Telnet.CiTests.dll
+        searchFolder: ./**/bin/Debug/**/
+        runInParallel: true
 
-    - name: Telnet.48.CiTests
-      run: vstest.console.exe **\bin\Debug\**\PrimS.Telnet.48.CiTests.dll
-
-    - name: Telnet.Sync.CiTests
-      run: vstest.console.exe **\bin\Debug\**\PrimS.Telnet.Sync.CiTests.dll
-
-    - name: Telnet.NetStandard.CiTests
-      run: vstest.console.exe **\bin\Debug\**\PrimS.Telnet.NetStandard.CiTests.dll
+    # Can't apparently run both full fat and core test suites together.'
+    - name: Telnet.*.CiTests
+      uses: microsoft/vstest-action@v1.0.0
+      with:
+        testAssembly: PrimS.Telnet.*.CiTests.dll
+        searchFolder: ./**/bin/Debug/**/
+        runInParallel: true
 
     - name: GitVersion
       run: dotnet tool install --global GitVersion.Tool
@@ -64,27 +66,44 @@ jobs:
         $semVer = $json.SemVer
         $fullSemVer = $json.FullSemVer
         $nuGetVersionV2 = $json.NuGetVersionV2
+        $buildMetaDataPadded = $json.BuildMetaDataPadded
 
+        Write-Host $json
         Write-Host $semVer
         Write-Host $fullSemVer
         Write-Host $nuGetVersionV2
+        if (${buildMetaDataPadded} = "0000") {
+          ${buildMetaDataPadded} = ''
+        }
 
+        Write-Host ${nuGetVersionV2}${buildMetaDataPadded}
+        
         echo "FullSemVer=$fullSemVer" | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf8 -Append
         echo "SemVer=$semVer" | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf8 -Append
         echo "NuGetVersionV2=$nuGetVersionV2" | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf8 -Append
+        echo "NuGetVersionV2ext=${nuGetVersionV2}${buildMetaDataPadded}" | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf8 -Append
 
     - name: Build Release
       run: msbuild $env:Solution_Name /p:Configuration=Release /p:Platform="Any CPU"
 
     - name: Nuget pack
-      run: nuget pack Telnet.nuspec -Version $Env:NuGetVersionV2
+      run: nuget pack Telnet.nuspec -Version $Env:NuGetVersionV2ext
 
+      # Navigate to repo->Settings->Actions and check PUBLISH_TO_GITHUB_PACKAGES
+      # https://github.com/settings/tokens to create a new classic token, permission write:packages, name & copy paste to PUBLISH_TO_GITHUB_PACKAGES
     - name: Publish to GitHub
-      run: dotnet nuget push "Telnet.$Env:NuGetVersionV2.nupkg" --api-key ${{ secrets.PUBLISH_TO_GITHUB_PACKAGES }}  --source "https://nuget.pkg.github.com/9swampy/index.json"
+      run: dotnet nuget push "Telnet.$Env:NuGetVersionV2ext.nupkg" --api-key ${{ secrets.PUBLISH_TO_GITHUB_PACKAGES }}  --source "https://nuget.pkg.github.com/9swampy/index.json"
 
+      # Login to Nuget 9swampy->Api Keys and regenerate, copy to NUGET_APIKEY
     - name: Publish to Nuget
       if: github.ref == 'refs/heads/master'
-      run: nuget push "Telnet.$Env:NuGetVersionV2.nupkg" ${{ secrets.NUGET_APIKEY }} -source https://api.nuget.org/v3/index.json
+      run: nuget push "Telnet.$Env:NuGetVersionV2ext.nupkg" ${{ secrets.NUGET_APIKEY }} -source https://api.nuget.org/v3/index.json
+
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v2
+      with: 
+        name: published-nuget-package
+        path: Telnet.*.nupkg
       
     - name: Setup Git User
       uses: fregante/setup-git-user@v1.1.0

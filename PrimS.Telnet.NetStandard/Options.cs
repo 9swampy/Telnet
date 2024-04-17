@@ -1,6 +1,6 @@
 ﻿namespace PrimS.Telnet
 {
-  internal enum Options
+  public enum Options
   {
     TransmitBinary = 0,
     Echo = 1,
