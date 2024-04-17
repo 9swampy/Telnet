@@ -1,6 +1,6 @@
 ﻿namespace PrimS.Telnet
 {
-  internal enum Commands
+  public enum Commands
   {
     SubnegotiationEnd = 240,
     NoOperation = 241,
