@@ -17,7 +17,7 @@
     </description>
     <readme>docs\README.md</readme>
     <releaseNotes>
-      0.12 adds a Net8.0 target.
+      0.12 adds a Net8.0 target and extends the Client ctor to additionally accept options to send during negotiation.
     </releaseNotes>
     <copyright>Copyright (c) 9swampy, Telnet contributors</copyright>
     <tags>Telnet</tags>
