@@ -42,7 +42,7 @@ jobs:
       run: msbuild $env:Solution_Name /p:Configuration=Debug /p:Platform="Any CPU"
 
     - name: Telnet.CiTests
-      uses: microsoft/vstest-action@v1.0.0
+      uses: rusty-bender/vstest-action@main 
       with:
         testAssembly: PrimS.Telnet.CiTests.dll
         searchFolder: ./**/bin/Debug/**/
@@ -50,7 +50,7 @@ jobs:
 
     # Can't apparently run both full fat and core test suites together.'
     - name: Telnet.*.CiTests
-      uses: microsoft/vstest-action@v1.0.0
+      uses: rusty-bender/vstest-action@main
       with:
         testAssembly: PrimS.Telnet.*.CiTests.dll
         searchFolder: ./**/bin/Debug/**/
