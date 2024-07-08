@@ -89,12 +89,14 @@ jobs:
     - name: Nuget pack
       run: nuget pack Telnet.nuspec -Version $Env:NuGetVersionV2ext
 
-      # Navigate to repo->Settings->Actions and check PUBLISH_TO_GITHUB_PACKAGES
+      # Navigate to https://github.com/settings/tokens and check to see if the old token has expired
       # https://github.com/settings/tokens to create a new classic token, permission write:packages, name & copy paste to PUBLISH_TO_GITHUB_PACKAGES
+      # Navigate to repo->Settings->Secrets and variables->Actions and check PUBLISH_TO_GITHUB_PACKAGES
     - name: Publish to GitHub
       run: dotnet nuget push "Telnet.$Env:NuGetVersionV2ext.nupkg" --api-key ${{ secrets.PUBLISH_TO_GITHUB_PACKAGES }}  --source "https://nuget.pkg.github.com/9swampy/index.json"
 
-      # Login to Nuget 9swampy->Api Keys and regenerate, copy to NUGET_APIKEY
+      # Login to Nuget 9swampy->Api Keys and regenerate, copy to...
+      # GitHub navigate to repo->Settings->Secrets and variables->Actions and set NUGET_APIKEY
     - name: Publish to Nuget
       if: github.ref == 'refs/heads/master'
       run: nuget push "Telnet.$Env:NuGetVersionV2ext.nupkg" ${{ secrets.NUGET_APIKEY }} -source https://api.nuget.org/v3/index.json
