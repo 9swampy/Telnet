@@ -24,6 +24,11 @@
     public const string Rfc854LineFeed = "\r\n";
 
     /// <summary>
+    /// Due to https://github.com/9swampy/Telnet/issues/79 allow skip SkipProactiveOptionNegotiation.
+    /// </summary>
+    public static bool SkipProactiveOptionNegotiation { get; set; } = false;
+
+    /// <summary>
     /// Initialises a new instance of the <see cref="Client"/> class.
     /// </summary>
     /// <param name="hostname">The hostname.</param>
@@ -84,14 +89,22 @@
 #if ASYNC
 #pragma warning disable VSTHRD002 // Avoid problematic synchronous waits
         // https://stackoverflow.com/questions/70964917/optimising-an-asynchronous-call-in-a-constructor-using-joinabletaskfactory-run
-        Task.Run(async () => await ProactiveOptionNegotiation().ConfigureAwait(false)).Wait();
+        if (!SkipProactiveOptionNegotiation)
+        {
+          Task.Run(async () => await ProactiveOptionNegotiation().ConfigureAwait(false)).Wait();
+        }
+
         foreach (var option in options)
         {
           Task.Run(async () => await NegotiateOption(option.Command, option.Option).ConfigureAwait(false)).Wait();
         }
 #pragma warning restore VSTHRD002 // Avoid problematic synchronous waits
 #else
-        ProactiveOptionNegotiation();
+        if (!SkipProactiveOptionNegotiation)
+        {
+          ProactiveOptionNegotiation();
+        }
+
         foreach (var option in options)
         {
           NegotiateOption(option.Command, option.Option);
@@ -142,7 +155,7 @@
 #if ASYNC
       return ByteStream.WriteAsync(supressGoAhead, 0, supressGoAhead.Length, InternalCancellation.Token);
 #else
-      ByteStream.Write(supressGoAhead, 0, supressGoAhead.Length);
+        ByteStream.Write(supressGoAhead, 0, supressGoAhead.Length);
 #endif
     }
 
