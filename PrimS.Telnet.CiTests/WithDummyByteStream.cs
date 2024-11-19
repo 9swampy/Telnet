@@ -256,9 +256,9 @@
         {
           client.IsConnected.Should().Be(true);
 #if ASYNC
-          (await client.TryLoginAsync("username", "password", 1500).ConfigureAwait(false)).Should().Be(true);
-          await client.WriteLineAsync("show statistic wan2").ConfigureAwait(false);
-          var s = await client.TerminatedReadAsync(new Regex(".*>$"), TimeSpan.FromMilliseconds(timeoutMs)).ConfigureAwait(false);
+          (await client.TryLoginAsync("username", "password", 1500)).Should().Be(true);
+          await client.WriteLineAsync("show statistic wan2");
+          var s = await client.TerminatedReadAsync(new Regex(".*>$"), TimeSpan.FromMilliseconds(timeoutMs));
 #else
           client.TryLogin("username", "password", 1500).Should().Be(true);
           client.WriteLine("show statistic wan2");

@@ -1,5 +1,6 @@
 ﻿namespace PrimS.Telnet
 {
+#pragma warning disable 1591
   public enum Options
   {
     TransmitBinary = 0,
@@ -56,4 +57,5 @@
     PRAGMA_HEARTBEAT = 140,
     ExtendedOptions = 255
   }
+#pragma warning restore 1591
 }

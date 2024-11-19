@@ -13,18 +13,20 @@ insert_final_newline = true
 trim_trailing_whitespace = true
 csharp_indent_labels = one_less_than_current
 csharp_using_directive_placement = inside_namespace:error
-csharp_prefer_simple_using_statement = false:suggestion
+csharp_prefer_simple_using_statement = false:error
 csharp_prefer_braces = true:silent
 csharp_style_namespace_declarations = block_scoped:silent
 csharp_style_prefer_method_group_conversion = true:silent
 csharp_style_expression_bodied_methods = false:none
 csharp_style_expression_bodied_constructors = false:none
 csharp_style_expression_bodied_operators = false:none
-csharp_style_expression_bodied_properties = true:suggestion
+csharp_style_expression_bodied_properties = true:none
 csharp_style_expression_bodied_indexers = true:none
 csharp_style_expression_bodied_accessors = true:none
 csharp_style_expression_bodied_lambdas = true:silent
 csharp_style_expression_bodied_local_functions = false:silent
+csharp_style_prefer_top_level_statements = true:silent
+csharp_style_prefer_primary_constructors = true:suggestion
 
 # Code files
 [*.{cs,csx,vb,vbx}]
@@ -369,3 +371,4 @@ dotnet_diagnostic.xUnit1004.severity = warning
 
 # VSTHRD200: Use "Async" suffix for async methods
 dotnet_diagnostic.VSTHRD200.severity = suggestion
+dotnet_style_prefer_simplified_boolean_expressions = true:suggestion

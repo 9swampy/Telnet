@@ -1,6 +1,9 @@
 ﻿
 namespace PrimS.Telnet
 {
+#if NET6_0_OR_GREATER
+  using System;
+#endif
   using System.Text;
 
   internal static class ByteStringConverter
