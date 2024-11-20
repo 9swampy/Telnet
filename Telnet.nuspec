@@ -17,7 +17,7 @@
     </description>
     <readme>docs\README.md</readme>
     <releaseNotes>
-      0.12 adds a Net8.0 target and extends the Client ctor to additionally accept options to send during negotiation.
+      0.13 extends the Client with a static flag SkipProactiveOptionNegotiation due to https://github.com/9swampy/Telnet/issues/79.
     </releaseNotes>
     <copyright>Copyright (c) 9swampy, Telnet contributors</copyright>
     <tags>Telnet</tags>
