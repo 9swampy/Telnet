@@ -17,6 +17,7 @@
       "((?:[KMG]B)|(?:Bytes))";
     private const int TimeoutMs = 5000;
 
+#pragma warning disable CS0618 // Type or member is obsolete
 #if NCRUNCH
     [Fact]
 #endif
@@ -56,5 +57,6 @@
         }
       }
     }
+#pragma warning restore CS0618 // Type or member is obsolete
   }
 }

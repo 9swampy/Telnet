@@ -17,7 +17,7 @@
     </description>
     <readme>docs\README.md</readme>
     <releaseNotes>
-      0.13 extends the Client with a static flag SkipProactiveOptionNegotiation due to https://github.com/9swampy/Telnet/issues/79.
+      0.13.1 bumps Nuget dependencies.
     </releaseNotes>
     <copyright>Copyright (c) 9swampy, Telnet contributors</copyright>
     <tags>Telnet</tags>

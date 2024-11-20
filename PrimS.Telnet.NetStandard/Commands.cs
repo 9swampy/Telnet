@@ -1,5 +1,6 @@
 ﻿namespace PrimS.Telnet
 {
+#pragma warning disable 1591
   public enum Commands
   {
     SubnegotiationEnd = 240,
@@ -20,3 +21,4 @@
     InterpretAsCommand = 255
   }
 }
+#pragma warning restore 1591

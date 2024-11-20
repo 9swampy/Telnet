@@ -25,7 +25,11 @@
       }
     }
 
+#if ASYNC
     [Fact(Timeout = 2000)]
+#else
+    [Fact]
+#endif
     public
 #if ASYNC
       async Task
@@ -49,7 +53,11 @@
       }
     }
 
+#if ASYNC
     [Fact(Timeout = 2000)]
+#else
+    [Fact]
+#endif
     public
 #if ASYNC
       async Task
@@ -74,7 +82,11 @@
       }
     }
 
+#if ASYNC
     [Fact(Timeout = 2000)]
+#else
+    [Fact]
+#endif
     public
 #if ASYNC
       async Task
@@ -105,7 +117,11 @@
       }
     }
 
+#if ASYNC
     [Fact(Timeout = 3000)]
+#else
+    [Fact]
+#endif
     public
 #if ASYNC
       async Task
@@ -136,7 +152,11 @@
       }
     }
 
+#if ASYNC
     [Fact(Timeout = 5000)]
+#else
+    [Fact]
+#endif
     public
 #if ASYNC
       async Task
@@ -165,7 +185,11 @@
       }
     }
 
+#if ASYNC
     [Fact(Timeout = 5000)]
+#else
+    [Fact]
+#endif
     public
 #if ASYNC
       async Task
@@ -194,7 +218,11 @@
       }
     }
 
+#if ASYNC
     [Fact(Timeout = 5000)]
+#else
+    [Fact]
+#endif
     public
 #if ASYNC
       async Task
@@ -217,7 +245,11 @@
       }
     }
 
+#if ASYNC
     [Fact(Timeout = 5000)]
+#else
+    [Fact]
+#endif
     public
 #if ASYNC
       async Task
@@ -256,9 +288,9 @@
         {
           client.IsConnected.Should().Be(true);
 #if ASYNC
-          (await client.TryLoginAsync("username", "password", 1500).ConfigureAwait(false)).Should().Be(true);
-          await client.WriteLineAsync("show statistic wan2").ConfigureAwait(false);
-          var s = await client.TerminatedReadAsync(new Regex(".*>$"), TimeSpan.FromMilliseconds(timeoutMs)).ConfigureAwait(false);
+          (await client.TryLoginAsync("username", "password", 1500)).Should().Be(true);
+          await client.WriteLineAsync("show statistic wan2");
+          var s = await client.TerminatedReadAsync(new Regex(".*>$"), TimeSpan.FromMilliseconds(timeoutMs));
 #else
           client.TryLogin("username", "password", 1500).Should().Be(true);
           client.WriteLine("show statistic wan2");

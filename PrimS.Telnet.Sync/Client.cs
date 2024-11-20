@@ -9,15 +9,7 @@
 
   public partial class Client : BaseClient, IClient
   {
-    /// <summary>
-    /// Tries to login.
-    /// </summary>
-    /// <param name="userName">The user name.</param>
-    /// <param name="password">The password.</param>
-    /// <param name="loginTimeOutMs">The login time out ms.</param>
-    /// <param name="terminator">The prompt terminator to anticipate.</param>
-    /// <param name="lineFeed">The line feed to use. Issue 38: According to RFC 854, CR+LF should be the default a client sends. For backward compatibility \n maintained.</param>
-    /// <returns>True if successful.</returns>
+    /// <inheritdoc/>
     public bool TryLogin(string userName, string password, int loginTimeOutMs, string terminator = ">", string lineFeed = LegacyLineFeed)
     {
       try
@@ -60,20 +52,13 @@
       Write(string.Format("{0}{1}", command, Rfc854LineFeed));
     }
 
-    /// <summary>
-    /// Writes the line to the server.
-    /// </summary>
-    /// <param name="command">The command.</param>
-    /// <param name="lineFeed">The line feed to use. Issue 38: According to RFC 854, CR+LF should be the default a client sends. For backward compatibility \n maintained.</param>
+    /// <inheritdoc/>
     public void WriteLine(string command, string lineFeed = LegacyLineFeed)
     {
       Write(string.Format("{0}{1}", command, lineFeed));
     }
 
-    /// <summary>
-    /// Writes the specified command to the server.
-    /// </summary>
-    /// <param name="command">The command.</param>
+    /// <inheritdoc/>
     public void Write(string command)
     {
       if (ByteStream.Connected)
@@ -82,64 +67,37 @@
       }
     }
 
-    /// <summary>
-    /// Reads asynchronously from the stream.
-    /// </summary>
-    /// <returns>Any text read from the stream.</returns>
+    /// <inheritdoc/>
     public string Read()
     {
       return Read(TimeSpan.FromMilliseconds(Client.DefaultTimeoutMs));
     }
 
-    /// <summary>
-    /// Reads asynchronously from the stream, terminating as soon as the <paramref name="terminator"/> is located.
-    /// </summary>
-    /// <param name="terminator">The terminator.</param>
-    /// <returns>Any text read from the stream.</returns>
+    /// <inheritdoc/>
     public string TerminatedRead(string terminator)
     {
       return TerminatedRead(terminator, TimeSpan.FromMilliseconds(Client.DefaultTimeoutMs));
     }
 
-    /// <summary>
-    /// Reads asynchronously from the stream, terminating as soon as the <paramref name="regex"/> is matched.
-    /// </summary>
-    /// <param name="regex">The regex to match.</param>
-    /// <returns>Any text read from the stream.</returns>
+    /// <inheritdoc/>
     public string TerminatedRead(Regex regex)
     {
       return TerminatedRead(regex, TimeSpan.FromMilliseconds(Client.DefaultTimeoutMs));
     }
 
-    /// <summary>
-    /// Reads synchronously from the stream, terminating as soon as the <paramref name="terminator"/> is located.
-    /// </summary>
-    /// <param name="terminator">The terminator.</param>
-    /// <param name="timeout">The timeout.</param>
-    /// <returns>Any text read from the stream.</returns>
+    /// <inheritdoc/>
     public string TerminatedRead(string terminator, TimeSpan timeout)
     {
       return TerminatedRead(terminator, timeout, 1);
     }
 
-    /// <summary>
-    /// Reads synchronously from the stream, terminating as soon as the <paramref name="regex"/> is located.
-    /// </summary>
-    /// <param name="regex">The terminator.</param>
-    /// <param name="timeout">The timeout.</param>
-    /// <returns>Any text read from the stream.</returns>
+    /// <inheritdoc/>
     public string TerminatedRead(Regex regex, TimeSpan timeout)
     {
       return TerminatedRead(regex, timeout, 1);
     }
 
-    /// <summary>
-    /// Reads synchronously from the stream, terminating as soon as the <paramref name="terminator"/> is located.
-    /// </summary>
-    /// <param name="terminator">The terminator.</param>
-    /// <param name="timeout">The maximum time to wait.</param>
-    /// <param name="millisecondSpin">The millisecond spin between each read from the stream.</param>
-    /// <returns>Any text read from the stream.</returns>
+    /// <inheritdoc/>
     public string TerminatedRead(string terminator, TimeSpan timeout, int millisecondSpin)
     {
       var endTimeout = DateTime.Now.Add(timeout);
@@ -157,13 +115,7 @@
       return s;
     }
 
-    /// <summary>
-    /// Reads synchronously from the stream, terminating as soon as the <paramref name="regex"/> is matched.
-    /// </summary>
-    /// <param name="regex">The regex to match.</param>
-    /// <param name="timeout">The maximum time to wait.</param>
-    /// <param name="millisecondSpin">The millisecond spin between each read from the stream.</param>
-    /// <returns>Any text read from the stream.</returns>
+    /// <inheritdoc/>
     public string TerminatedRead(Regex regex, TimeSpan timeout, int millisecondSpin)
     {
       var endTimeout = DateTime.Now.Add(timeout);

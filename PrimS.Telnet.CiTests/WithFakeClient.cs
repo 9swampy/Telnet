@@ -42,7 +42,7 @@ namespace PrimS.Telnet.Sync.CiTests
         var start = DateTime.Now;
         sut.MillisecondReadDelay = 1;
 #if ASYNC
-        await sut.TerminatedReadAsync(".", timeout, 1).ConfigureAwait(false);
+        await sut.TerminatedReadAsync(".", timeout, 1);
 #else
         sut.TerminatedRead(".", timeout, 1);
 #endif
@@ -74,7 +74,7 @@ namespace PrimS.Telnet.Sync.CiTests
       {
         stopwatch.Start();
 #if ASYNC
-        await sut.TerminatedReadAsync(".", new TimeSpan(0, 0, 0, 3), millisecondsSpin).ConfigureAwait(false);
+        await sut.TerminatedReadAsync(".", new TimeSpan(0, 0, 0, 3), millisecondsSpin);
 #else
         sut.TerminatedRead(".", new TimeSpan(0, 0, 0, 3), millisecondsSpin);
 #endif
@@ -124,7 +124,7 @@ namespace PrimS.Telnet.Sync.CiTests
         {
 #if ASYNC
           cancellationToken.CancelAfter(100);
-          await sut.ReadAsync(TimeSpan.FromMilliseconds(1000)).ConfigureAwait(false);
+          await sut.ReadAsync(TimeSpan.FromMilliseconds(1000));
 #else
           var t = new Thread(new ThreadStart(() =>
           {
@@ -158,7 +158,7 @@ namespace PrimS.Telnet.Sync.CiTests
 
 #if ASYNC
               cancellationToken.CancelAfter(100);
-              await sut.ReadAsync(TimeSpan.FromMilliseconds(1000)).ConfigureAwait(false);
+              await sut.ReadAsync(TimeSpan.FromMilliseconds(1000));
 #else
               var t = new Thread(new ThreadStart(() =>
               {

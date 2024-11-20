@@ -58,6 +58,8 @@
     /// <inheritdoc/>
     public async Task WriteAsync(byte[] data)
     {
+      data = data ?? throw new ArgumentNullException(nameof(data));
+
       if (ByteStream.Connected && !InternalCancellation.Token.IsCancellationRequested)
       {
         await SendRateLimit.WaitAsync(InternalCancellation.Token).ConfigureAwait(false);
@@ -100,6 +102,8 @@
     /// <inheritdoc/>
     public async Task<string> TerminatedReadAsync(Regex regex, TimeSpan timeout, int millisecondSpin)
     {
+      regex = regex ?? throw new ArgumentNullException(nameof(regex));
+
       bool isTerminated(string x) => Client.IsRegexLocated(regex, x);
       var s = await TerminatedReadAsync(isTerminated, timeout, millisecondSpin).ConfigureAwait(false);
       if (!isTerminated(s))

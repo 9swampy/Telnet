@@ -2,10 +2,12 @@
 {
   using System;
   using FluentAssertions;
+#if NCRUNCH
 #if Net48
   using System.Threading;
 #endif
   using System.Threading.Tasks;
+#endif
   using System.Text.RegularExpressions;
   using Xunit;
 
@@ -16,11 +18,11 @@
       "((?:[KMG]B)|(?:Bytes))" +
       "(?:[, ]*RX: )([0-9.]*) " +
       "((?:[KMG]B)|(?:Bytes))";
+#pragma warning disable CS0618 // Type or member is obsolete
+#if NCRUNCH
     private const int TimeoutMs = 5000;
 
-#if NCRUNCH
     [Fact]
-#endif
     public async Task ReadMeExample()
     {
       using (var server = new DummyTelnetServer())
@@ -64,6 +66,8 @@
         }
       }
     }
+#endif
+#pragma warning restore CS0618 // Type or member is obsolete
 
     [Theory]
     [InlineData("WAN2 total TX: 2 MB, RX: 9 MB", 2, "MB", 9, "MB", 0.011)]

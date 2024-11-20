@@ -27,7 +27,7 @@ namespace PrimS.Telnet.Sync.CiTests
     {
       using var sut = new ByteStreamHandler(A.Fake<IByteStream>());
 #if ASYNC
-      (await sut.ReadAsync(new TimeSpan()).ConfigureAwait(false)).Should().Be(string.Empty);
+      (await sut.ReadAsync(new TimeSpan())).Should().Be(string.Empty);
 #else
       sut.Read(new TimeSpan()).Should().Be(string.Empty);
 #endif
@@ -61,7 +61,7 @@ namespace PrimS.Telnet.Sync.CiTests
         using var sut = new ByteStreamHandler(tcpByteStream);
 
 #if ASYNC
-        var response = await sut.ReadAsync(TimeSpan.FromMilliseconds(10)).ConfigureAwait(false);
+        var response = await sut.ReadAsync(TimeSpan.FromMilliseconds(10));
 #else
         var response = sut.Read(TimeSpan.FromMilliseconds(10));
 #endif
@@ -98,7 +98,7 @@ namespace PrimS.Telnet.Sync.CiTests
         using var sut = new ByteStreamHandler(tcpByteStream);
 
 #if ASYNC
-        var response = await sut.ReadAsync(TimeSpan.FromMilliseconds(10)).ConfigureAwait(false);
+        var response = await sut.ReadAsync(TimeSpan.FromMilliseconds(10));
 #else
         var response = sut.Read(TimeSpan.FromMilliseconds(10));
 #endif
@@ -135,7 +135,7 @@ namespace PrimS.Telnet.Sync.CiTests
         using var sut = new ByteStreamHandler(tcpByteStream);
 
 #if ASYNC
-        var response = await sut.ReadAsync(TimeSpan.FromMilliseconds(10)).ConfigureAwait(false);
+        var response = await sut.ReadAsync(TimeSpan.FromMilliseconds(10));
 #else
         var response = sut.Read(TimeSpan.FromMilliseconds(10));
 #endif
@@ -171,7 +171,7 @@ namespace PrimS.Telnet.Sync.CiTests
         using var sut = new ByteStreamHandler(tcpByteStream);
 
 #if ASYNC
-        var response = await sut.ReadAsync(TimeSpan.FromMilliseconds(10)).ConfigureAwait(false);
+        var response = await sut.ReadAsync(TimeSpan.FromMilliseconds(10));
 #else
         var response = sut.Read(TimeSpan.FromMilliseconds(10));
 #endif
@@ -208,7 +208,7 @@ namespace PrimS.Telnet.Sync.CiTests
         using var sut = new ByteStreamHandler(tcpByteStream);
 
 #if ASYNC
-        var response = await sut.ReadAsync(TimeSpan.FromMilliseconds(10)).ConfigureAwait(false);
+        var response = await sut.ReadAsync(TimeSpan.FromMilliseconds(10));
         A.CallTo(() => networkStream.WriteAsync(A<byte[]>.Ignored, 0, 3, A<CancellationToken>.Ignored))
                             .WhenArgumentsMatch(o => o[0] is byte[] param && param[0] == (byte)Commands.InterpretAsCommand && param[1] == (byte)Commands.Will && param[2] == 3)
                             .MustHaveHappened();
@@ -252,7 +252,7 @@ namespace PrimS.Telnet.Sync.CiTests
           using (var sut = new ByteStreamHandler(tcpByteStream))
           {
 #if ASYNC
-            var response = await sut.ReadAsync(TimeSpan.FromMilliseconds(10)).ConfigureAwait(false);
+            var response = await sut.ReadAsync(TimeSpan.FromMilliseconds(10));
             A.CallTo(() => networkStream.WriteAsync(A<byte[]>.Ignored, 0, 3, A<CancellationToken>.Ignored))
                 .WhenArgumentsMatch(o => o[0] is byte[] param && param[0] == (byte)Commands.InterpretAsCommand && param[1] == (byte)Commands.Wont && param[2] == 1)
                 .MustHaveHappened();
@@ -298,7 +298,7 @@ namespace PrimS.Telnet.Sync.CiTests
           using (var sut = new ByteStreamHandler(tcpByteStream))
           {
 #if ASYNC
-            var response = await sut.ReadAsync(TimeSpan.FromMilliseconds(10)).ConfigureAwait(false);
+            var response = await sut.ReadAsync(TimeSpan.FromMilliseconds(10));
 #else
             var response = sut.Read(TimeSpan.FromMilliseconds(10));
 #endif
@@ -345,7 +345,7 @@ namespace PrimS.Telnet.Sync.CiTests
           using (var sut = new ByteStreamHandler(tcpByteStream))
           {
 #if ASYNC
-            var response = await sut.ReadAsync(TimeSpan.FromMilliseconds(10)).ConfigureAwait(false);
+            var response = await sut.ReadAsync(TimeSpan.FromMilliseconds(10));
 #else
             var response = sut.Read(TimeSpan.FromMilliseconds(10));
 #endif
@@ -392,7 +392,7 @@ namespace PrimS.Telnet.Sync.CiTests
           using (var sut = new ByteStreamHandler(tcpByteStream))
           {
 #if ASYNC
-            var response = await sut.ReadAsync(TimeSpan.FromMilliseconds(10)).ConfigureAwait(false);
+            var response = await sut.ReadAsync(TimeSpan.FromMilliseconds(10));
 #else
             var response = sut.Read(TimeSpan.FromMilliseconds(10));
 #endif
@@ -434,7 +434,7 @@ namespace PrimS.Telnet.Sync.CiTests
 
 #if ASYNC
               cancellationToken.CancelAfter(100);
-              await sut.ReadAsync(TimeSpan.FromMilliseconds(1000)).ConfigureAwait(false);
+              await sut.ReadAsync(TimeSpan.FromMilliseconds(1000));
 #else
               var t = new Thread(new ThreadStart(() =>
               {

@@ -9,11 +9,7 @@
   /// </summary>
   public partial class Client
   {
-    /// <summary>
-    /// Reads from the stream.
-    /// </summary>
-    /// <param name="timeout">The timeout.</param>
-    /// <returns>Any text read from the stream.</returns>
+    /// <inheritdoc/>
     public string Read(TimeSpan timeout)
     {
       var handler = new ByteStreamHandler(ByteStream, InternalCancellation, MillisecondReadDelay);
